@@ -23,8 +23,11 @@
         padding: 10px;
         height:100%;
     }
+
+    
     .content {
         flex: 1;
         padding: 20px;
     }
+
 </style>

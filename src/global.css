@@ -43,6 +43,7 @@
     --font-color: #FF262C;
     --font-secondary-color: #030303;
     --background-color: #E5E5E5; /* gray89 */
+    --my-gray: #5b5b5b; /* gray96 */
 }
 
 body {
@@ -54,3 +55,4 @@ body {
 .secondary-color {
     color: var(--font-secondary-color);
 }
+
