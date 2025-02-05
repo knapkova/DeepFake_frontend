@@ -1,0 +1,56 @@
+/* src/global.css */
+
+/* Font definitions */
+@font-face {
+    font-family: 'Nexa-Black';
+    src: url('/path/to/Nexa-Black.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Nexa-XBold';
+    src: url('/path/to/Nexa-XBold.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Open Sans-SemiBold';
+    src: url('/path/to/OpenSans-SemiBold.woff2') format('woff2');
+}
+
+/* Typography */
+.large-title {
+    font-family: 'Nexa-Black';
+    font-size: 86pt;
+}
+
+.title {
+    font-family: 'Nexa-XBold';
+    font-size: 50pt;
+}
+
+.headline {
+    font-family: 'Open Sans-SemiBold';
+    font-size: 21pt;
+}
+
+.description {
+    font-family: 'Open Sans-SemiBold';
+    font-size: 15pt;
+}
+
+/* Colors */
+:root {
+    --brand-color: #FF262C;
+    --font-color: #FF262C;
+    --font-secondary-color: #030303;
+    --background-color: #E5E5E5; /* gray89 */
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--font-color);
+}
+
+/* Apply secondary font color where needed */
+.secondary-color {
+    color: var(--font-secondary-color);
+}
