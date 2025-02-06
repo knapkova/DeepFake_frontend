@@ -4,7 +4,7 @@
 </script>
 
 <div class="layout">
-    <aside class="sidebar">
+    <aside class="sidebar-container">
         <Sidebar />
     </aside>
 
@@ -18,12 +18,12 @@
         display: flex;
         height: 100vh;
     }
-    .sidebar {
+    .sidebar-container {
         background: var(--background-color);
         padding: 10px;
         height:100%;
     }
-
+    
     
     .content {
         flex: 1;

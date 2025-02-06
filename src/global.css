@@ -16,7 +16,19 @@
     src: url('/path/to/OpenSans-SemiBold.woff2') format('woff2');
 }
 
+body {
+    font-family: 'Open Sans-SemiBold', sans-serif; /* Replace with your desired font */
+    font-size: 16px; /* Set a default font size */
+    color: var(--font-color); /* Set a default font color */
+    background-color: var(--background-color); /* Set a default background color */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 /* Typography */
+
+
 .large-title {
     font-family: 'Nexa-Black';
     font-size: 86pt;

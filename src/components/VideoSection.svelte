@@ -1,61 +1,101 @@
 <script>
-    let videos = [
-        { title: "Pristanie na mesiaci", subtitle: "Konšpiračná teória", duration: "12:00min", image: "/moon.jpg" },
-        { title: "Legenda Nicolasa Cage", subtitle: "Filmový Deepfake", duration: "07:00min", image: "/nicolas-cage.jpg" }
-    ];
+    import { onMount } from 'svelte';
+    import '../global.css';
+
+    /** @type {Array<{coverPhoto: string, name: string, description: string, duration: string}>} */
+    let videos = [];
+
+    onMount(async () => {
+        try {
+            const response = await fetch('http://localhost:5020/api/Admin/Categories/GetCategories');
+            if (response.ok) {
+                videos = await response.json();
+            } else {
+                console.error('Failed to fetch videos:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching videos:', error);
+        }
+    });
 </script>
+
 
 <div class="video-section">
     {#each videos as video}
-        <div class="video-card">
-            <img src={video.image} alt={video.title} />
+    <div class="selection">
+    <button class="play-btn"> ▷</button>
+        <div class="video-card" style="background-image: url({video.coverPhoto});">
             <div class="video-info">
-                <h2>{video.title}</h2>
-                <p>{video.subtitle}</p>
-                <span>{video.duration}</span>
+                <div>
+                    <h2>{video.name}</h2>
+                    <p>{video.description}</p> 
+                </div>
+                <h3>{video.duration}:00 min</h3>
             </div>
-            <button class="play-btn">▶</button>
         </div>
+    </div>
     {/each}
 </div>
 
 <style>
     .video-section {
         flex: 1;
-        background: #222;
+        background: rgb(206, 205, 205);
         color: white;
         display: flex;
-        flex-direction: column;
-        padding: 20px;
+        flex-wrap: wrap;
     }
 
     .video-card {
-        background: black;
-        border-radius: 10px;
-        overflow: hidden;
-        position: relative;
-        margin-bottom: 20px;
-    }
+        flex: 1 1 calc(50% - 20px); 
+        display: flex;
+        flex-direction: row;
+        background-size: cover;
 
-    .video-card img {
-        width: 100%;
-        height: auto;
+        background-position: center;
+        padding: 10px;
+        color: white;
+        min-width: 500px; 
+        
     }
 
     .video-info {
-        padding: 15px;
+        margin-top: auto;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    
+    .video-info p {
+        margin: 5px 0;
+        font-size: 14px;
+        
     }
 
     .play-btn {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        background: red;
-        border: none;
+        max-height: 20%;
+        max-width: 20%;
+        aspect-ratio: 1;
+        font-size: 35px;
+        padding: 5px 10px;
+        background: #ff0000;
         color: white;
-        padding: 10px;
-        font-size: 20px;
+        border: none;
         cursor: pointer;
-        border-radius: 50%;
+        font-weight: bold;
     }
+
+    .duration{
+        color: white;
+        font-weight: bold;
+    }
+    .selection{
+        display: flex;
+        flex-direction: row;
+    }
+
+
+    
 </style>
