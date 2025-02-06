@@ -7,7 +7,9 @@
 
     onMount(async () => {
         try {
-            const response = await fetch('http://localhost:5020/api/Admin/Categories/GetCategories');
+            const apiRoot = import.meta.env.VITE_API_ROOT;
+            console.log("API root:", apiRoot);
+            const response = await fetch(`${apiRoot}/api/Admin/Categories/GetActiveCategories`);
             if (response.ok) {
                 videos = await response.json();
             } else {

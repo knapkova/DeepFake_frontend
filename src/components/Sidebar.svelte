@@ -20,6 +20,7 @@
                 <a href="/">Hlavní stránka</a>
                 <a href="/about">Jak hrát</a>
                 <a href="/contact">O zvolSi.info</a>
+                <a href="/admin">Admin</a>
             </nav>
         {/if}
     </div>
