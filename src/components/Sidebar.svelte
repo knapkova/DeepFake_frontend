@@ -101,9 +101,10 @@
     }
 
     .hamburger {
-        cursor: pointer;
-        color: var(--my-gray);
-        font-size: 30px;
-
+        cursor: pointer !important;
+        color: var(--my-gray) !important;
+        font-size: 30px !important;
+        background: transparent !important; 
+        border: none !important; 
     }
 </style>
