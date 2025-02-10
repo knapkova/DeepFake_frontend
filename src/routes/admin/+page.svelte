@@ -5,4 +5,5 @@
     Mainpage
     <a href="/">Úvodní fotografie</a>
     <a href="admin/categories">Kategorie</a>
+    <a href="admin/correctHeadline">Úkol - Správný titulek</a>
 </nav>

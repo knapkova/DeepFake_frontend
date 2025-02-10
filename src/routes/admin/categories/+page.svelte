@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    //import '../../global.css';
+    import '../../../styles/admin.css'
 
     interface Category {
         id: number;
@@ -117,47 +117,3 @@
     </table>
 </div>
 
-<style>
-    .admin-section {
-        margin-top: 20px;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-
-    th {
-        background-color: #f2f2f2;
-    }
-
-    input[type="text"], input[type="number"] {
-        width: 100%;
-        padding: 5px;
-        box-sizing: border-box;
-    }
-
-    button {
-        margin-right: 5px;
-        padding: 5px 10px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background-color: #0056b3;
-    }
-
-    img {
-        border-radius: 5px;
-    }
-</style>
