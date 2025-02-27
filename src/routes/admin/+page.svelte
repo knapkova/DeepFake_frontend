@@ -6,4 +6,11 @@
     <a href="/">Úvodní fotografie</a>
     <a href="admin/categories">Kategorie</a>
     <a href="admin/correctHeadline">Úkol - Správný titulek</a>
+    <a href="admin/wrongObjectPicture">Úkol - Hledání předmětu na fotce</a>
+</nav>
+
+<nav class="menu-options">
+    hry
+    <a href="/games/match_headline">match headline</a>
+
 </nav>

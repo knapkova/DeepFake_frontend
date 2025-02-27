@@ -1,15 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import '../../../styles/admin.css'
+    import type {Category} from '$types/interfaces'
 
-    interface Category {
-        id: number;
-        name: string;
-        description: string;
-        visible: boolean;
-        duration: number;
-        coverPhoto: string;
-    }
+
 
     let categories: Category[] = [];
 

@@ -1,24 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import '../../../styles/admin.css'
-
-    interface Category {
-        id: number;
-        name: string;
-        description: string;
-        visible: boolean;
-        duration: number;
-        coverPhoto: string;
-    }
-
-    interface Headline {
-        id: number;
-        headline: string;
-        content: string;
-        visible: boolean;
-        categoryId: number;
-        category?: Category;
-    }
+    import type {Category, Headline} from '$types/interfaces'
+    
 
     let headlines: Headline[] = [];
     let categories: Category[] = [];
@@ -106,26 +90,34 @@
             {#each headlines as headline}
                 <tr>
                     <td>{headline.id}</td>
+                    
+                    <!-- Headline Textarea -->
                     <td>
-                        <textarea value={headline.headline} on:input={(e) => { 
+                        <textarea bind:value={headline.headline} on:blur={(e) => { 
                             const target = e.target as HTMLTextAreaElement;
                             editHeadline(headline.id, 'headline', target.value); 
                         }}></textarea>
                     </td>
+
+                    <!-- Content Textarea -->
                     <td>
-                        <textarea value={headline.content} on:input={(e) => {
+                        <textarea bind:value={headline.content} on:blur={(e) => {
                             const target = e.target as HTMLTextAreaElement;
                             editHeadline(headline.id, 'content', target.value);
                         }}></textarea>
                     </td>
+
+                    <!-- Checkbox for Visibility -->
                     <td>
                         <input type="checkbox" checked={headline.visible} on:change={(e) => {
                             const target = e.target as HTMLInputElement;
                             editHeadline(headline.id, 'visible', target.checked);
                         }} />
                     </td>
+
+                    <!-- Category Selection -->
                     <td>
-                        <select value={headline.categoryId} on:change={(e) => {
+                        <select bind:value={headline.categoryId} on:blur={(e) => {
                             const target = e.target as HTMLSelectElement;
                             editHeadline(headline.id, 'categoryId', parseInt(target.value, 10));
                         }}>
@@ -134,6 +126,8 @@
                             {/each}
                         </select>
                     </td>
+
+                    <!-- Delete Button -->
                     <td>
                         <button on:click={() => deleteHeadline(headline.id)}>Smazat</button>
                     </td>
