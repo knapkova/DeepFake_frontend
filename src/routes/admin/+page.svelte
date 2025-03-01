@@ -1,6 +1,7 @@
     
 <h1>Administrativní část</h1>
 <p>Administrativní část je zde pro správu obsahu webu. Zde můžete přidávat, upravovat a mazat obsah stránky.</p>
+<h2>Editování jednotlivých úkolů ve hrách</h2>
 <nav class="menu-options">
     Mainpage
     <a href="/">Úvodní fotografie</a>
@@ -14,3 +15,13 @@
     <a href="/games/match_headline">match headline</a>
 
 </nav>
+
+<style>
+.menu-options {
+    display: flex;
+    flex-direction: column;
+    flex-wrap:wrap;
+    margin: 20px 0;
+}
+
+</style>

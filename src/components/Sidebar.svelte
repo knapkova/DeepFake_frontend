@@ -54,7 +54,10 @@
         width: 100%;
     }
     .sidebar.open {
-        width: 150px;    }
+        width: 120px;  
+        border-right: 0.5px solid rgba(0, 0, 0, 0.358);
+ 
+     }
 
 
     .logo img {
