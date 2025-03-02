@@ -8,6 +8,8 @@
     <a href="admin/categories">Kategorie</a>
     <a href="admin/correctHeadline">Úkol - Správný titulek</a>
     <a href="admin/wrongObjectPicture">Úkol - Hledání předmětu na fotce</a>
+    <a href="admin/findPictureSource">Úkol - Najdi zdroj k obrázku</a>
+    <a href="admin/manipulativeText">Úkol - Manipulační text</a>
 </nav>
 
 <nav class="menu-options">
