@@ -35,12 +35,21 @@ export interface AssignmentIntroductionArticle{
     imgae:File;
 }
 
+// manipulative text
+
 export interface AssignmentManipulativeText{
     id:number;
     text:string;
     header:string;
     manipulativeParts:JSON;
 }
+
+export interface ManipulativePart {
+    startIndex: number;
+    endIndex: number;
+    reason: string;
+}
+
 
 export interface AssignmentFindPictureSource{
     id:number;
