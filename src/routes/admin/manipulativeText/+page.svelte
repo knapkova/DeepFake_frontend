@@ -39,9 +39,12 @@
 
 
 </script>
+<a href="/admin" class="back-link">Zpět na přehled</a>
 
-<p>empti</p>
+<h2>Úkol: Manipulativní texty</h2>
+
 <button onclick={navigate}>+ Přidat nové</button>
+
 <table>
     <thead>
         <tr>
