@@ -1,32 +1,29 @@
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
+    import type { Category } from '$types/interfaces';
+    import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+    import { writable } from 'svelte/store';
+
+
     import '../global.css';
 
-    /** @type {Array<{coverPhoto: string, name: string, description: string, duration: string}>} */
-    let videos = [];
+    const request_get = '/api/Admin/Categories/GetCategories';
+    let categories = writable<Category[]>([]);
 
     onMount(async () => {
-        try {
-            const apiRoot = import.meta.env.VITE_API_ROOT;
-            console.log("API root:", apiRoot);
-            const response = await fetch(`${apiRoot}/api/Admin/Categories/GetActiveCategories`);
-            if (response.ok) {
-                videos = await response.json();
-            } else {
-                console.error('Failed to fetch videos:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error fetching videos:', error);
-        }
+      const response = await fetch(PUBLIC_VITE_API_ROOT + request_get); 
+      const data = await response.json();
+      categories.set(data);
+      console.log(data);
     });
 </script>
 
 
 <div class="video-section">
-    {#each videos as video}
+    {#each $categories as video}
     <div class="selection">
     <button class="play-btn"> ▷</button>
-        <div class="video-card" style="background-image: url({video.coverPhoto});">
+        <div class="video-card" style="background-image: url({video.imgSrc});">
             <div class="video-info">
                 <div>
                     <h2>{video.name}</h2>
@@ -80,13 +77,12 @@
         max-height: 20%;
         max-width: 20%;
         aspect-ratio: 1;
-        font-size: 35px;
+        font-size: 30px;
         padding: 5px 10px;
         background: #ff0000;
         color: white;
         border: none;
         cursor: pointer;
-        font-weight: bold;
     }
 
     .duration{
