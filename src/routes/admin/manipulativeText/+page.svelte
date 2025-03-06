@@ -3,7 +3,7 @@
     import { writable } from 'svelte/store';
     import type {AssignmentManipulativeText, ManipulativePart} from '$types/interfaces';
     import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
-
+    import '../../../styles/admin_tables.css';
     const api_get = "/api/Admin/AssignmentManipulativeText/GetAssignmentManipulativeTexts";
     const api_delete = "/api/Admin/AssignmentManipulativeText/Delete";
     const api_update = "/api/Admin/AssignmentManipulativeText/Update";
@@ -16,13 +16,12 @@
 
     let manipulativeTexts = writable<AssignmentManipulativeText[]>([]);
         onMount(async () => {
-            const response = await fetch(PUBLIC_VITE_API_ROOT + api_get); // Adjust the API endpoint as needed
+            const response = await fetch(PUBLIC_VITE_API_ROOT + api_get); 
             const data = await response.json();
             data.forEach((item: AssignmentManipulativeText) => {
             item.manipulativeParts = JSON.parse(item.manipulativeParts as unknown as string);
         });
             manipulativeTexts.set(data);
-            console.log(data);
         });
 
         async function deleteText(id: number) {
@@ -74,33 +73,3 @@
     </tbody>
 </table>
 
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-
-    th {
-        background-color: #f2f2f2;
-    }
-
-    button {
-        padding: 5px 10px;
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background-color: #c82333;
-    }
-</style>

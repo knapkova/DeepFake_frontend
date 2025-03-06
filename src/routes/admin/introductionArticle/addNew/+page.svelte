@@ -2,10 +2,8 @@
     import { enhance } from '$app/forms';
     import type { PageData } from './$types';
     import { superForm } from 'sveltekit-superforms';
-    import { writable } from 'svelte/store';
     import '../../../../styles/form.css'
 
-    // `data` comes from the server load function
     export let data: PageData;
     const { form, errors, message } = superForm(data.form);
 
