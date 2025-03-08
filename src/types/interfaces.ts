@@ -4,7 +4,7 @@ export interface Category {
     description: string;
     visible: boolean;
     duration: number;
-    coverPhoto: string;
+    imgSrc: string;
 }
 
 export interface Headline {
@@ -30,7 +30,7 @@ export interface AssignmentIntroductionArticle{
     id:number;
     title:string;
     content:string;
-    instruction:string;
+    Instructions:string;
     imgSrc:string;
     imgae:File;
 }
@@ -55,7 +55,7 @@ export interface AssignmentFindPictureSource{
     id:number;
     imgSrc:string;
     image:File;
-    header:string;
-    description:string;
+    imgTitle:string;
+    imgDescription:string;
     imgAlt:string;
 }

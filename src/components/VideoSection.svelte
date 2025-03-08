@@ -3,97 +3,112 @@
     import type { Category } from '$types/interfaces';
     import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
     import { writable } from 'svelte/store';
-
-
-    import '../global.css';
-
+  
     const request_get = '/api/Admin/Categories/GetCategories';
     let categories = writable<Category[]>([]);
-
+  
     onMount(async () => {
       const response = await fetch(PUBLIC_VITE_API_ROOT + request_get); 
       const data = await response.json();
       categories.set(data);
-      console.log(data);
     });
-</script>
-
-
-<div class="video-section">
-    {#each $categories as video}
-    <div class="selection">
-    <button class="play-btn"> ▷</button>
-        <div class="video-card" style="background-image: url({video.imgSrc});">
-            <div class="video-info">
-                <div>
-                    <h2>{video.name}</h2>
-                    <p>{video.description}</p> 
-                </div>
-                <h3>{video.duration}:00 min</h3>
+  </script>
+  
+  <div class="scrollable-container">
+    {#each $categories as video (video.id)}
+      <div class="selection">
+        <button class="play-btn">▷</button>
+        <div
+          class="video-card"
+          style="background-image: url({video.imgSrc});"
+        >
+          <div class="video-info">
+            <div class="video-text">
+              <h2>{video.name}</h2>
+              <p>{video.description}</p>
             </div>
+            <h3>{video.duration}:00 min</h3>
+          </div>
         </div>
-    </div>
+      </div>
     {/each}
-</div>
+  </div>
+  
+  <style>
+    /* Container fixed on the right side */
+    .scrollable-container {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 550px;       
+      height: 100vh;      /* Full viewport height */
+      background-color: #f1f1f1;
+      overflow-y: auto;   /* Scroll if content exceeds height */
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;          /* Spacing between items */
+      padding-right: 1rem;
+      padding-top: 1rem;
 
-<style>
-    .video-section {
-        flex: 1;
-        background: rgb(206, 205, 205);
-        color: white;
-        display: flex;
-        flex-wrap: wrap;
     }
-
-    .video-card {
-        flex: 1 1 calc(50% - 20px); 
-        display: flex;
-        flex-direction: row;
-        background-size: cover;
-
-        background-position: center;
-        padding: 10px;
-        color: white;
-        min-width: 500px; 
-        
+  
+    /* One “card” row: play button + thumbnail card */
+    .selection {
+      display: flex;
+      align-items: flex-end;
     }
-
-    .video-info {
-        margin-top: auto;
-        background: rgba(0, 0, 0, 0.8);
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
-    }
-
-    
-    .video-info p {
-        margin: 5px 0;
-        font-size: 14px;
-        
-    }
-
+  
     .play-btn {
-        max-height: 20%;
-        max-width: 20%;
-        aspect-ratio: 1;
-        font-size: 30px;
-        padding: 5px 10px;
-        background: #ff0000;
-        color: white;
-        border: none;
-        cursor: pointer;
+      background-color: #ff0000;
+      color: #fff;
+      border: none;
+      font-size: 24px;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
     }
-
-    .duration{
-        color: white;
-        font-weight: bold;
+  
+    /* The thumbnail container */
+    .video-card {
+      flex: 1;
+      height: 440px;                  /* Adjust as needed */
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
     }
-    .selection{
-        display: flex;
-        flex-direction: row;
+  
+    /* Dark overlay with text at the bottom */
+    .video-info {
+      position: absolute;
+      bottom: 0;
+      left: 0; 
+      right: 0;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      padding: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-
-
-    
-</style>
+  
+    .video-info h2 {
+      margin: 0 0 0.25rem;
+      font-size: 2rem;
+    }
+  
+    .video-info p {
+      margin: 0;
+      font-size: 0.8rem;
+    }
+  
+    .video-info h3 {
+      margin: 0;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+  </style>
+  

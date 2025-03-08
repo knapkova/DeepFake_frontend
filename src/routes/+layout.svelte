@@ -40,6 +40,7 @@
     .content {
       flex: 1;
       padding: 20px;
+      margin-right: 550px;
     }
   </style>
   

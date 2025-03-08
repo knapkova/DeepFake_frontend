@@ -26,6 +26,8 @@
         background-repeat: no-repeat;
         background-position: center;
         align-items: start;
+        margin-right: 18px;
+
     }
 
 </style>
