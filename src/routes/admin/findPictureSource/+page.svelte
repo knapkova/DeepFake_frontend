@@ -4,13 +4,11 @@
 
     import '../../../styles/admin.css';
     import type { AssignmentFindPictureSource } from '$types/interfaces';
-    import Form from '$components/Form.svelte';
 	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
 
 let updateMessage: string = '';
 
 let request_get = '/api/Admin/AssignmentFindPictureSource/GetAssignmentFindPictureSources';
-let request_create = '/api/Admin/AssignmentFindPictureSource/Create';
 let request_update = '/api/Admin/AssignmentFindPictureSource/Update';
 let request_delete = '/api/Admin/AssignmentFindPictureSource/Delete';
 
@@ -61,6 +59,9 @@ async function deleteAssignment(id:number){
                 <th>Popis</th>
                 <th>Alt</th>
                 <th>Obrázek</th>
+                <th>Viditelné</th>
+
+                <th>Kategorie</th>
                 <th>Akce</th>
             </tr>
         </thead>
@@ -71,7 +72,15 @@ async function deleteAssignment(id:number){
                 <td>{value.imgTitle}</td>
                 <td>{value.imgDescription}</td>
                 <td>{value.imgAlt}</td>
+                
                 <td><img src={value.imgSrc} alt={value.imgAlt} /></td>
+                <td>
+                    <input
+                      type="checkbox"
+                      bind:checked={value.visible}
+                    />
+                </td>
+                <td>{value.categoryId}</td>
                 <td>
                     <button onclick={() => deleteAssignment(value.id)}>Smazat</button>
             </tr>
