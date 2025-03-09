@@ -10,7 +10,9 @@ const api_post = "/api/Admin/AssignmentManipulativeText/CreateAssignmentManipula
 const newAssignmentSchema = z.object({
 	header: z.string().min(5, { message: 'min. 5 znaků' }),
 	text: z.string().min(20, { message: 'min. 20 znaků' }),
-	manipulativeParts: z.string().min(5, { message: 'zadejte alespoň jednu manipulativní část' }).default("[]")
+	visible: z.boolean(),
+    categoryId: z.number(),
+    manipulativeParts: z.string().min(5, { message: 'zadejte alespoň jednu manipulativní část' }).default("[]")
 });
 
 export const load: PageServerLoad = async () => {
@@ -36,8 +38,7 @@ export const actions: Actions = {
                 },
                 body: JSON.stringify(form.data),
             });
-            console.log(JSON.stringify(form.data));
-            console.log(response);
+        
             if (!response.ok) {
                 return fail(500, { message: 'Failed to save data.' });
             }

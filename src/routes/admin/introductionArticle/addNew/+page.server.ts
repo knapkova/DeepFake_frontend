@@ -16,6 +16,8 @@ const newAssignmentSchema = z.object({
     Content: z.string(),
     Instructions: z.string().min(5, { message: 'min. 5 znaků' }),
     ImgSrc: z.string(),
+    visible: z.boolean(),
+    categoryId: z.number(),
     Image: z.any()
       .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
       .refine(
@@ -44,6 +46,8 @@ export const actions: Actions = {
             formData.append('Instructions', form.data.Instructions);
             formData.append('ImgSrc', 'non-empty');
             formData.append('Image', form.data.Image);
+            formData.append('Visible', form.data.visible.toString());
+            formData.append('CategoryId', form.data.categoryId.toString());
             console.log(formData);
 
             const response = await fetch(`${PUBLIC_VITE_API_ROOT}${api_post}`, {

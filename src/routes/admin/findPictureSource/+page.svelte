@@ -60,7 +60,6 @@ async function deleteAssignment(id:number){
                 <th>Alt</th>
                 <th>Obrázek</th>
                 <th>Viditelné</th>
-
                 <th>Kategorie</th>
                 <th>Akce</th>
             </tr>

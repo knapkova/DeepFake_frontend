@@ -2,10 +2,27 @@
     import { enhance } from '$app/forms';
     import type { PageData } from './$types';
     import { superForm } from 'sveltekit-superforms';
+
+    import { writable } from 'svelte/store';
+    import { onMount } from 'svelte';
+    import type { Category } from '$types/interfaces';
     import '../../../../styles/form.css'
+    import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+
 
     export let data: PageData;
     const { form, errors, message } = superForm(data.form);
+    const request_get = '/api/Admin/Categories/GetCategories';
+
+
+    let categories = writable<Category[]>([]);
+  
+    onMount(async () => {
+        const response = await fetch(PUBLIC_VITE_API_ROOT + request_get); 
+        const data = await response.json();
+        categories.set(data);
+        console.log(data);
+    });
 
 </script>   
 <div>
@@ -82,6 +99,30 @@
                 <div class="error">{$errors.Instructions}</div>
             {/if}
 
+        </div>
+
+        <div class="form-group">
+            <label for="visible"> Zobrazit</label>
+            <input
+                id="visible"
+                type="checkbox"
+                name="visible"
+                bind:checked={$form.visible}
+                class="form-control"
+        
+            />
+        </div>
+    
+        <div class="form-group">
+            <label for="CategoryId">Kategorie</label>
+            <select id="CategoryId" name="CategoryId">
+                {#each $categories as category}
+                                <option value={category.id}>{category.name}</option>
+                {/each}
+            </select>
+            {#if $errors.categoryId}
+                <div class="error">{$errors.categoryId}</div>
+            {/if}
         </div>
         <button type="submit" class="btn-submit">Vytvořit úkol</button>
 

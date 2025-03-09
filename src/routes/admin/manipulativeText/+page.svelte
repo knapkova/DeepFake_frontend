@@ -50,6 +50,8 @@
             <th>Nadpis</th>
             <th>Text</th>
             <th>Manipulativní části</th>
+            <th>Viditelné</th>
+            <th>Kategorie</th>
             <th>Akce</th>
         </tr>
     </thead>
@@ -65,6 +67,13 @@
                         {/each}
                     </ul>
                 </td>
+                <td>
+                    <input
+                      type="checkbox"
+                      bind:checked={text.visible}
+                    />
+                </td>
+                <td>{text.categoryId}</td>
                 <td>
                     <button onclick={() => deleteText(text.id)}>Smazat</button>
                 </td>

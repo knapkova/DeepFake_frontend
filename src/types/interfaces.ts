@@ -33,6 +33,8 @@ export interface AssignmentIntroductionArticle{
     Instructions:string;
     imgSrc:string;
     imgae:File;
+    visible:boolean;
+    categoryId:number;
 }
 
 // manipulative text
@@ -42,6 +44,8 @@ export interface AssignmentManipulativeText{
     text:string;
     header:string;
     manipulativeParts:JSON;
+    visible:boolean;
+    categoryId:number;
 }
 
 export interface ManipulativePart {
@@ -58,4 +62,14 @@ export interface AssignmentFindPictureSource{
     imgTitle:string;
     imgDescription:string;
     imgAlt:string;
+    visible:boolean;
+    categoryId:number;
+}
+
+export interface CategoryAssignment{
+    categoryId: number,
+    orderIndex: number,
+    assignmentType: number,
+    assignmentId: number,
+    id: number
 }

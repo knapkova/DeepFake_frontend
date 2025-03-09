@@ -45,7 +45,10 @@ async function deleteText(id: number) {
             <th>Nadpis</th>
             <th>Text</th>
             <th>Fotografie</th>
+            <th>Viditelné</th>
+            <th>Kategorie</th>
             <th>Akce</th>
+
         </tr>
     </thead>
 
@@ -56,7 +59,14 @@ async function deleteText(id: number) {
                 <td>{art.content}</td>
                 <td><a href={art.imgSrc}>Obrázek</a></td>
                 <td>
-                    <a href="/admin/introductionArticle/edit/{art.id}">Upravit</a>
+                    <input
+                      type="checkbox"
+                      bind:checked={art.visible}
+                    />
+                </td>
+                <td>{art.categoryId}</td>
+                <td>
+                    <a href="/admin/introductionArticle/edit/{art.id}" target="_blank">Upravit</a>
                     <button onclick={() => deleteText(art.id)}>Smazat</button>
                 </td>
             </tr>

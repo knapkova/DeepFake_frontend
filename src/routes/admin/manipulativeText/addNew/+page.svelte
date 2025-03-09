@@ -3,7 +3,12 @@
     import type { PageData } from './$types';
     import { superForm } from 'sveltekit-superforms';
     import { writable } from 'svelte/store';
+    import type { Category } from '$types/interfaces';
+    import { onMount } from 'svelte';
+
     import '../../../../styles/form.css'
+    import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+
 
     // `data` comes from the server load function
     export let data: PageData;
@@ -14,6 +19,17 @@
         endIndex: number;
         reason: string;
     }
+
+    let categories = writable<Category[]>([]);
+  
+    onMount(async () => {
+        const request_get = '/api/Admin/Categories/GetCategories';
+
+        const response = await fetch(PUBLIC_VITE_API_ROOT + request_get); 
+        const data = await response.json();
+        categories.set(data);
+        console.log(data);
+    });
 
     let manipulativeParts = writable<ManipulativePart[]>([]);
     let cursorPosition = writable({ start: 0, end: 0 });
@@ -95,6 +111,30 @@
         {/each}
         {#if $errors.manipulativeParts}
             <div class="error">{$errors.manipulativeParts}</div>
+        {/if}
+    </div>
+
+    <div class="form-group">
+        <label for="visible"> Zobrazit</label>
+        <input
+            id="visible"
+            type="checkbox"
+            name="visible"
+            bind:checked={$form.visible}
+            class="form-control"
+    
+        />
+    </div>
+
+    <div class="form-group">
+        <label for="CategoryId">Kategorie</label>
+        <select id="CategoryId" name="CategoryId">
+            {#each $categories as category}
+                            <option value={category.id}>{category.name}</option>
+            {/each}
+        </select>
+        {#if $errors.categoryId}
+            <div class="error">{$errors.categoryId}</div>
         {/if}
     </div>
 
