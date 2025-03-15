@@ -4,7 +4,7 @@
     import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
     import { writable } from 'svelte/store';
   
-    const request_get = '/api/Admin/Categories/GetCategories';
+    const request_get = '/api/Admin/Categories/GetActiveCategories';
     let categories = writable<Category[]>([]);
   
     onMount(async () => {
@@ -63,8 +63,8 @@
       color: #fff;
       border: none;
       font-size: 24px;
-      width: 50px;
-      height: 50px;
+      width: 72px;
+      height: 72px;
       cursor: pointer;
     }
   

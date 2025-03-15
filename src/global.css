@@ -81,11 +81,10 @@ body {
 .main-content {
     color: black;
     flex: 2;
-    padding: 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-image: url("../assets/zvolsiinfo_QLogoTransparent.png"); /* Update with your image path */
+    background-image: url("../assets/zvolsiinfo_QLogoTransparent.png"); 
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
