@@ -73,3 +73,24 @@ export interface CategoryAssignment{
     assignmentId: number,
     id: number
 }
+
+
+
+// Quiz
+
+export interface AssignmentEndQuiz {
+    question: Question;
+    answer: Answer;
+}
+export interface Question {
+    id: number;
+    question: string;
+    categoryId: number;
+}
+
+export interface Answer {
+    id: number;
+    answer: string;
+    correct: boolean;
+    questionId: number;
+}
