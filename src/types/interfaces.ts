@@ -78,19 +78,23 @@ export interface CategoryAssignment{
 
 // Quiz
 
-export interface AssignmentEndQuiz {
-    question: Question;
-    answer: Answer;
-}
-export interface Question {
+export interface QuestionEndQuiz {
     id: number;
     question: string;
     categoryId: number;
+    answer: answersEndQuiz[];
 }
-
-export interface Answer {
-    id: number;
+export interface answersEndQuiz {
     answer: string;
     correct: boolean;
-    questionId: number;
+}
+
+
+export interface AssignmentCognitiveBias{
+    id:number;
+    cognitiveBias:string;
+    definition:string;
+    example:string;
+    visible:boolean;
+    categoryId:number;
 }

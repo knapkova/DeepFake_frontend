@@ -10,6 +10,7 @@
     <a href="admin/findPictureSource">Úkol - Najdi zdroj k obrázku</a>
     <a href="admin/manipulativeText">Úkol - Manipulační text</a>
     <a href="admin/introductionArticle">Úkol - Úvodní článek</a>
+    <a href="admin/cognitiveBias">Úkol - Konfirmační zkreslení</a>
 </nav>
 
 <nav class="menu-options">

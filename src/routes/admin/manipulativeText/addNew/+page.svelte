@@ -97,8 +97,6 @@
         <label>Manipulativní části</label>
         <button type="button" on:click={addManipulativePart} class="btn-add">Přidat část</button>
         {#each $manipulativeParts as part, index}
-        {console.log(part)}
-        {console.log(JSON.stringify($manipulativeParts))}
             <div class="manipulative-part">
                 <label>Počáteční index</label>
                 <input type="number" class="form-control" bind:value={part.startIndex} placeholder="Počáteční index" />
