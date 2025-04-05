@@ -120,3 +120,19 @@
         font-size: 14px;
         color: #666;
     }
+    .logged-in-message {
+    background: #e0ffe0;
+    border: 1px solid #8bc34a;
+    padding: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    font-family: sans-serif;
+  }
+  
+  .logged-in-message .icon {
+    font-size: 1.5rem;
+    color: #4caf50;
+  }

@@ -186,7 +186,7 @@
             <span class="arrow">➡️</span>
             <div class="pair-title">{source.imgTitle}</div>
           </div>
-          <p class="description">Proč tomu tak je?⬇️</p>
+          <p class="description">Proč tomu tak je? ⬇️</p>
           <p class="img-description">{source.imgDescription}</p>
         </div>
       {/each}
@@ -325,6 +325,7 @@
     width: 260px;
     transition: background 0.3s, transform 0.2s;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    color: #333;
   }
   
   .completed-pair:hover {
