@@ -2,9 +2,11 @@
     import { onMount } from "svelte";
     import zvolsiinfoSidebar from '../assets/zvolsiingo_redLogo.png'
     import '../global.css';
+    export let marginRight = '0px';
+
 </script>
 
-<div class="main-content">
+<div class="main-content" style="margin-right: {marginRight};">
     <h3 class="gray">Quiz</h3>
     <h1>Otestuj se v deepfaku!</h1>
     <div class="info" >

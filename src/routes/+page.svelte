@@ -5,7 +5,7 @@
 </script>
 
 <div class="container">
-        <MainContent />
+        <MainContent marginRight="550px"/>
 
         <VideoSection />
 
@@ -18,4 +18,5 @@
         height: 100vh;
         background-color: var(--background-color);
     }
+
 </style>

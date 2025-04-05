@@ -5,16 +5,17 @@ import { superForm } from 'sveltekit-superforms';
 import { onMount } from 'svelte';
 import PasswordStrength from '../../../lib/PasswordStrength.svelte'
 import '../../../styles/form.css'
+import { goto } from '$app/navigation';
 
 export let data: PageData;
 
+interface ActionResult {
+    redirectTo?: string;
+    message?: string;
+    [key: string]: any;
+  }
+
 const { form, errors, message } = superForm(data.form);
-
-
-
-onMount(async () => {
-  
-}); 
 
 </script>
 

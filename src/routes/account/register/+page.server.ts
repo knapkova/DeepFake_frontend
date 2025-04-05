@@ -15,8 +15,22 @@ const registerScheme = z
   .object({
     username: z.string().min(3, { message: 'min. 3 znaky' }),
     email: z.string().email({ message: 'neplatný email' }),
-    password: z.string().min(6, { message: 'min. 6 znaků' }),
-    repeatedPassword: z.string()
+	password: z
+	.string()
+	.min(6, { message: 'min. 6 znaků' })
+	.refine(val => /[^A-Za-z0-9]/.test(val), {
+	  message: 'alespoň jeden speciální znak'
+	})
+	.refine(val => /\d/.test(val), {
+	  message: "alespoň jedno číslo ('0'-'9')."
+	})
+	.refine(val => /[A-Z]/.test(val), {
+	  message: "alespoň jedno velké písmeno ('A'-'Z')."
+	})  
+	.refine(val => /[a-z]/.test(val), {
+		message: "alespoň jedno malé písmeno ('a'-'z')."
+	  }),    
+	  repeatedPassword: z.string()
   })
   .superRefine((data, ctx) => {
     if (data.password !== data.repeatedPassword) {
@@ -70,12 +84,14 @@ export const actions: Actions = {
 				}
 				return fail(response.status, { form });
 			}
+
             console.log('Success response:', response);
             return message(form, "Registrace proběhla úspěšně! :)");
 
-        		} catch (e) {
-			console.error(e);
-			return fail(500, { form });
+        		} 
+			catch (e) {
+				console.error(e);
+				return fail(500, { form });
 		}
 	}
 }
