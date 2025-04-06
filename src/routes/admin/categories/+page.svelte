@@ -7,12 +7,10 @@
   
     let updateMessage: string = '';
   
-    // API endpoints – adjust these as needed.
     const request_get = '/api/Admin/Categories/GetCategories';
     const request_update = '/api/Admin/Categories/Update'; 
     const request_delete = '/api/Admin/Categories/Delete';
   
-    // We'll store categories in a writable store.
     let categories = writable<Category[]>([]);
   
     onMount(async () => {
@@ -37,6 +35,7 @@
 
         const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_update}`, {
             method: 'POST',
+
             body: formData
         });
 

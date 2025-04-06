@@ -2,7 +2,6 @@
     import { enhance } from '$app/forms';
     import type { PageData } from './$types';
     import { superForm } from 'sveltekit-superforms';
-
     import { writable } from 'svelte/store';
     import { onMount } from 'svelte';
     import type { Category } from '$types/interfaces';
@@ -52,7 +51,7 @@
                 <div class="error">{$errors.Title}</div>
             {/if}
         </div>
-
+          
         <div class="form-group">
             <label for="Content">Content</label>
             <textarea

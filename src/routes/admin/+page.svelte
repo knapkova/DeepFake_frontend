@@ -16,8 +16,10 @@
 <nav class="menu-options">
     hry
     <a href="/games/match_headline">match headline</a>
-    
+</nav>
 
+<nav class="menu-options">
+    <a href="/admin/users">Uživatelé</a>
 </nav>
 
 <style>

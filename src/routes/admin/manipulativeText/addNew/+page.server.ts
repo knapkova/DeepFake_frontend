@@ -22,7 +22,7 @@ export const load: PageServerLoad = async () => {
 
 
 export const actions: Actions = {
-    default: async({request})=>{
+    default: async({request, fetch})=>{
         const form = await superValidate(request, zod(newAssignmentSchema));
         console.log(form);
 

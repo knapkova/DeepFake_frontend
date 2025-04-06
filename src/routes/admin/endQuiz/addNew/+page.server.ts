@@ -20,7 +20,7 @@ const newQuestionWithAnswersSchema = z.object({
   };
 
   export const actions: Actions = {
-    default: async ({ request }: { request: Request }) => {
+    default: async({request, fetch})=> {
       // Validace odeslaného payloadu podle našeho schématu
       const form = await superValidate(request, zod(newQuestionWithAnswersSchema));
       if (!form.valid) {

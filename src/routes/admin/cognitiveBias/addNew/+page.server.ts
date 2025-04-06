@@ -21,7 +21,7 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-    default: async({request})=>{
+    default: async({request, fetch})=>{
         const form = await superValidate(request, zod(newAssignmentSchema));
         console.log(form);
 
@@ -37,6 +37,7 @@ export const actions: Actions = {
                 },
                 body: JSON.stringify(form.data),
             });
+            console.log("Response from server:");
             console.log(response);
         
             if (!response.ok) {

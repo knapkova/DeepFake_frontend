@@ -6,6 +6,7 @@
     import type { Category } from '$types/interfaces';
     import { superForm } from 'sveltekit-superforms';
     import '../../../../styles/form.css'
+
     import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
 
     export let data: PageData;
@@ -27,6 +28,7 @@
 {#if $message}
     <div class="update-message">{$message}</div>
     {/if}
+
 
 <form use:enhance method="post" class="form-container" enctype="multipart/form-data">
     <a href="/admin/findPictureSource" class="back-link">Zpět na seznam</a>
@@ -61,10 +63,10 @@
     </div>
 
     <div class="form-group">
-        <label for="CategoryId">Kategorie</label>
-        <select id="CategoryId" name="CategoryId">
+        <label for="categoryId">Kategorie</label>
+        <select id="categoryId" name="categoryId" bind:value={$form.categoryId} class="form-control">
             {#each $categories as category}
-                            <option value={category.id}>{category.name}</option>
+                <option value={category.id}>{category.name}</option>
             {/each}
         </select>
         {#if $errors.categoryId}

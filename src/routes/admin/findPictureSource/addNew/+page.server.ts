@@ -30,7 +30,7 @@ export const load: PageServerLoad = async () => {
 }
 
 export const actions: Actions = {
-    default: async ({ request }: { request: Request }) => {
+    default: async({request, fetch}) => {
     const form = await superValidate(request, zod(newAssignmentSchema),{ allowFiles: true });
     
     if (!form.valid) {
@@ -52,6 +52,7 @@ export const actions: Actions = {
             method: 'POST',
             body: formData
         });
+        console.log(response);
         if (!response.ok) {
             const errorText = await response.text();
             console.error('API error:', errorText);

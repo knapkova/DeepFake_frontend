@@ -14,7 +14,7 @@
 {/if}
 
 <form use:enhance method="post" class="form-container" enctype="multipart/form-data">
-    <a href="/admin/findPictureSource" class="back-link">Zpět na seznam</a>
+    <a href="/admin/categories" class="back-link">Zpět na seznam</a>
     <h2>Vytvořit novou kategorii</h2>
     <p>Vyplňte prosím níže uvedený formulář.</p>
     <div class="form-group">

@@ -9,8 +9,8 @@
 let updateMessage: string = '';
 
 let request_get = '/api/Admin/AssignmentFindPictureSource/GetAssignmentFindPictureSources';
-let request_update = '/api/Admin/AssignmentFindPictureSource/Update';
-let request_delete = '/api/Admin/AssignmentFindPictureSource/Delete';
+let request_update = '/api/Admin/AssignmentFindPictureSource/Update/';
+let request_delete = '/api/Admin/AssignmentFindPictureSource/Delete/';
 
 function navigate(){
     window.location.href = "/admin/findPictureSource/addNew";
@@ -28,7 +28,7 @@ let findPictureSources = writable<AssignmentFindPictureSource[]>([]);
 
 
 async function deleteAssignment(id:number){
-    const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_delete}/${id}`, {
+    const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_delete}${id}`, {
         method: 'DELETE'
     });
     if (response.ok) {
@@ -72,7 +72,7 @@ async function deleteAssignment(id:number){
                 <td>{value.imgDescription}</td>
                 <td>{value.imgAlt}</td>
                 
-                <td><img src={value.imgSrc} alt={value.imgAlt} /></td>
+                <td><img src={value.imgSrc} alt={value.imgAlt} width="200px" /></td>
                 <td>
                     <input
                       type="checkbox"

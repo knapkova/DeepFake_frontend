@@ -1,7 +1,7 @@
 import { fail, message } from 'sveltekit-superforms';
 import { z } from 'zod';
 import { superValidate } from 'sveltekit-superforms/server';
-import type { Actions, PageServerLoad } from '../$types';
+import type { Actions, PageServerLoad } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
 import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
 
@@ -29,7 +29,7 @@ export const load: PageServerLoad = async () => {
     return { form };
 }
 export const actions: Actions = {
-    default: async ({ request }) => {
+    default: async ({ request, fetch }) => {
         const form = await superValidate(request, zod(newCategorySchema), { allowFiles: true });    
         if (!form.valid) {
             return fail(400, { form });
