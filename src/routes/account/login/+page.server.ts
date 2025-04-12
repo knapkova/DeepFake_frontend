@@ -5,6 +5,8 @@ import type { Actions, PageServerLoad } from './$types';
 import { zod } from 'sveltekit-superforms/adapters';
 import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
 import type { Cookies } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
+
 
 
 
@@ -46,7 +48,7 @@ export const actions: Actions = {
             errorData.message = await response.text();
           }
           console.log('Error response:', errorData);
-          return fail(response.status, { form });
+          return fail(response.status, { form,message: errorData.message || 'Unknown error' });
         }
         
         const result = await response.json();
@@ -55,7 +57,7 @@ export const actions: Actions = {
           path: '/',
           httpOnly: true,
           sameSite: 'lax'
-          // Secure: true in production (HTTPS)
+          // TODO: Secure: true in production (HTTPS)
         });
         
         const jwt = cookies.get('jwt');

@@ -4,28 +4,35 @@ import type { PageData } from './$types';
 import { superForm } from 'sveltekit-superforms';
 import { onMount } from 'svelte';
 import { user, isAuthenticated } from '../../../stores/auth';
+import spinner from '../../../assets/bouncing-ball.svg';
+
 
 import '../../../styles/form.css'
 
+let response_srvr = '';
 let auth = false;
 let userData = {
     userName: '',
     email:'',
-     role:'',
+    role:'',
   };
   isAuthenticated.subscribe(a => auth = a)
   user.subscribe(u => userData = u)
 
 export let data: PageData;
-const { form, errors, message, enhance } = superForm(data.form, {
+const { form, errors, enhance, delayed } = superForm(data.form, {
     onUpdate({ result }) {
       // result.data contains the extra data returned from the action.
       const actionData = result.data as { user?: { userName: string; email: string; role: string }, message?: string };
-      console.log('Action data:', actionData);
+      if (actionData?.message) {
+        response_srvr = actionData.message
+      }
       if (actionData?.user) {
         user.set(actionData.user);
         isAuthenticated.set(true);
+        response_srvr = '';
       }
+      
     }
   });
 </script>
@@ -34,6 +41,11 @@ const { form, errors, message, enhance } = superForm(data.form, {
   {#if auth }
     <div class="update-message">Přihlášení proběhlo úspěšně</div>
   {/if}
+  {#if response_srvr}
+    <div class="global-error">{response_srvr}</div>
+  {/if}
+
+
 
   {#if !auth}
     <form use:enhance method="post" class="form-container">
@@ -70,7 +82,14 @@ const { form, errors, message, enhance } = superForm(data.form, {
             <div class="error-message">{$errors.password}</div>
         {/if}
         </div>
-        <button type="submit" class="btn-submit">Přihlásit se</button>
+
+        
+        {#if $delayed}
+          <img src={spinner} alt="loading spinner" class="spinner" />
+        {:else}
+          <button type="submit" class="btn-submit">Přihlásit se</button>
+        {/if}
+        
     </form>
     {:else}
     <div class="logged-in-message">
@@ -83,3 +102,27 @@ const { form, errors, message, enhance } = superForm(data.form, {
     {/if}
 
 </div>
+
+<style>
+  .spinner {
+    display: block;
+    margin: 0 auto; /* centers the spinner horizontally */
+    animation: sideToSide 1.5s ease-in-out infinite;
+  }
+  @keyframes sideToSide {
+    0%   { transform: translateX(0); }
+    50%  { transform: translateX(20px); }
+    100% { transform: translateX(0); }
+  }
+
+  .global-error {
+  color: #b00020;
+  background-color: #fff0f0;
+  border: 1px solid #f8bbd0;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+}
+</style>
