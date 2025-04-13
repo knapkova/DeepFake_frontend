@@ -3,9 +3,9 @@
     import { onMount } from 'svelte';
     import { writable, get } from 'svelte/store';
     import type { AssignmentCognitiveBias } from '$types/interfaces';
-    import {flip} from "svelte/animate";
-    import {dndzone } from "svelte-dnd-action";
-    import type {DndEvent} from "svelte-dnd-action";
+    import Board from '$lib/dnd_board.svelte';
+    import '../styles/04_dnd.css';
+
 
 
     const category_id = 10;
@@ -13,6 +13,7 @@
 
     let bias = writable<AssignmentCognitiveBias[]>([]);
     const definitions = writable<string[]>([]);
+    let examples = writable<string[]>([]);
     const userAnswers = writable<Record<number, string>>({});
 
     let state: 'start' | 'definition' | 'examples' | 'end' = 'start';
@@ -23,13 +24,6 @@
     let evaluation: Record<number, 'correct' | 'wrong'> = {};
     let evaluated = false;
 
-    const flipDurationMs = 300;
-    function handleDndConsider(e: CustomEvent<DndEvent<AssignmentCognitiveBias>>) {
-        bias.set(e.detail.items);
-    }
-    function handleDndFinalize(e: CustomEvent<DndEvent<AssignmentCognitiveBias>>) {
-        bias.set(e.detail.items);
-    }
 
     onMount(async () => {
         try {
@@ -48,6 +42,7 @@
             });
             bias.set(biases);
             definitions.set(biases.map(item => item.definition));
+            examples.set(biases.map(item => item.example));
         } catch (error) {
             console.error('Failed to fetch cognitive biases:', error);
         }
@@ -76,60 +71,36 @@
             message_bad = 'Některé odpovědi jsou špatné. Zkus to znovu.';
         }
     }
+
+
+    $: columnItems = [
+        ...$bias.map(b => ({
+            id: b.id,
+            name: b.cognitiveBias,
+            definition: b.definition,
+            correct_example: b.example,
+            items: [] 
+        })),
+        {
+            id: 'examples',
+            name: 'Příklady',
+            definition:'',
+            correct_example: '',
+
+            items: $bias.flatMap(b => {
+                // Make sure b.definition is an array
+                const defs = Array.isArray(b.example) ? b.example : [b.example];
+                // Return each definition as an item.
+                return defs.map((def, idx) => ({
+                    id: `${b.id}-${idx}`,
+                    name: def
+                }));
+            })
+        }
+    ];
 </script>
 
-<style>
-    .assessment-section {
-        padding: 1.5rem;
-        max-width: 800px;
-        margin: 2rem auto;
-        background: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
-    .card {
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-    }
-    .card-header {
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-    .card-body {
-        font-size: 1rem;
-        color: #495057;
-    }
-    select.form-select {
-        display: block;
-        width: 100%;
-        padding: 0.375rem 0.75rem;
-        border: 1px solid #ced4da;
-        border-radius: 0.25rem;
-        margin-top: 0.5rem;
-    }
-    /* Highlight correct answers green and wrong red */
-    .correct-answer {
-        border-color: green;
-    }
-    .wrong-answer {
-        border-color: red;
-    }
-    button.check-btn {
-        padding: 0.5rem 1rem;
-        font-weight: 600;
-        border: none;
-        background-color: #007bff;
-        color: #fff;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-    button.check-btn:hover {
-        background-color: #0069d9;
-    }
-</style>
+
 
 
 <div class="assessment-section">
@@ -174,34 +145,16 @@
     {/each}
     <button class="check-btn" on:click={checkDefinitions}>Zkontrolovat definice</button>
     {/if}
+
     {#if state=='examples'}
-    {#each $bias as bia}
-    <div class="card">
-        <div class="card-header">
-            {bia.cognitiveBias}
-        </div>
-        <div class="card-body">
-            <p><strong>Definice</strong></p>
-            <select>
-                    <option>{bia.definition}</option>
-            </select>
-        </div>
-        
-    </div>
-{/each}
-<section use:dndzone={{ items: $bias, flipDurationMs }} 
-             on:consider={handleDndConsider} 
-             on:finalize={handleDndFinalize}>
-        {#each $bias as item (item.id)}
-            <div animate:flip={{ duration: flipDurationMs }}>{item.example}</div>
-        {/each}
-    </section>
+    <Board {columnItems} />
     {/if}
+
+
     {#if state === 'start'}
         <button class="btn btn-primary" on:click={() => state = 'definition'}>Začít</button>
-    
-    
-    
-    
-    {/if}
+        {/if}
+
+
+
 </div>
