@@ -79,12 +79,14 @@
             name: b.cognitiveBias,
             definition: b.definition,
             correct_example: b.example,
+            card_error: false,
             items: [] 
         })),
         {
             id: 'examples',
             name: 'Příklady',
             definition:'',
+            card_error: false,
             correct_example: '',
 
             items: $bias.flatMap(b => {
@@ -149,7 +151,6 @@
     {#if state=='examples'}
     <Board {columnItems} />
     {/if}
-
 
     {#if state === 'start'}
         <button class="btn btn-primary" on:click={() => state = 'definition'}>Začít</button>

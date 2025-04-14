@@ -13,6 +13,7 @@
         name: string;
         definition: string;
         correct_example: string;
+        card_error: boolean;
         items: { id: string; name: string }[];
     }
   
@@ -21,15 +22,30 @@
     export let state: 'start' | 'end' = 'start';
     const flipDurationMs = 200;
   
-    // --- Column-level dndzone: reordering the columns
-    function handleDndConsiderColumns(e) {
-      // Update the entire list of columns when the drag is in progress
-      columnItems = e.detail.items;
+    function checkDropZones() {
+    let allCorrect = true;
+
+    // Map over columns to mark incorrect ones.
+    columnItems = columnItems.map(column => {
+      // Only for cognitive bias columns (skip the examples column)
+      if (column.id !== 'examples') {
+        if (column.items.length !== 1 || column.items[0].name.trim() !== column.correct_example.trim()) {
+          allCorrect = false;
+          // Add an error flag
+          return { ...column, card_error: true };
+        } else {
+          return { ...column, card_error: false };
+        }
+      }
+      return { ...column, error: false };
+    });
+
+    if (allCorrect) {
+      alert("All drop zones are correct!");
+    } else {
+      alert("Some drop zones are incorrect. Please check the highlighted columns.");
     }
-    function handleDndFinalizeColumns(e) {
-      // Finalize the reordering of columns
-      columnItems = e.detail.items;
-    }
+  }
   
     // --- Card-level dndzone: reordering/moving items within a column
     function handleDndConsiderCards(cid, e) {
@@ -55,20 +71,23 @@
   <section class="board">
     {#each columnItems as column (column.id)}
       <!-- Each column is rendered as a card -->
-      <div class="card" animate:flip={{ duration: flipDurationMs }}>
+      <div 
+        class="card"
+        animate:flip={{ duration: flipDurationMs }}
+        class:card-error={column.card_error}>
         <div class="card-header">
           {column.name}
           {#if column.definition}
-            <p><strong>Definice</strong></p>
-            <select class="form-select">
+            <p class="definition-tooltip"><strong>💡 zobrazit definici</strong></p>
+            <select class="form-select" id="hidden">
               <option>{column.definition}</option>
             </select>
           {/if}
         </div>
         <div class="card-body">
-          
           <!-- Drop zone for the column's items -->
-          <div class="dropzone"
+          <div class="dropzone" 
+               class:incorrect={column.card_error}
                use:dndzone={{ items: column.items, flipDurationMs, type: 'cards' }}
                on:consider={(e) => handleDndConsiderCards(column.id, e)}
                on:finalize={(e) => handleDndFinalizeCards(column.id, e)}>
@@ -81,5 +100,9 @@
         </div>
       </div>
     {/each}
+    <button class="check-btn" on:click={checkDropZones}>
+      Zkontrolovat definice
+    </button>
   </section>
+ 
   
