@@ -4,8 +4,6 @@
     import { flip } from 'svelte/animate';
     import { dndzone } from 'svelte-dnd-action';
     import { onMount } from 'svelte';
-    import { writable, get } from 'svelte/store';
-    import type { AssignmentCognitiveBias } from '$types/interfaces';
     import '../styles/04_dnd.css'
 
     interface ColumnItem {
@@ -19,7 +17,8 @@
   
     
     export let columnItems: ColumnItem[] = []; // Provided either as a prop or initiated here.
-    export let state: 'start' | 'end' = 'start';
+    export let onAllCorrect = (msg: string) => {};
+
     const flipDurationMs = 200;
   
     function checkDropZones() {
@@ -41,14 +40,14 @@
     });
 
     if (allCorrect) {
-      alert("All drop zones are correct!");
-    } else {
-      alert("Some drop zones are incorrect. Please check the highlighted columns.");
+      onAllCorrect("Všechny odpovědi jsou správné! Jsi připraven pokračovat dále?");
     }
   }
   
     // --- Card-level dndzone: reordering/moving items within a column
-    function handleDndConsiderCards(cid, e) {
+    function handleDndConsiderCards(cid: number|string, e) {
+      console.log("cid:" + typeof cid);
+      console.log(typeof e);
       // Find the column by its id
       const colIdx = columnItems.findIndex(c => c.id === cid);
       // Update that column’s items (while keeping the other columns unchanged)
@@ -56,7 +55,7 @@
       // Spread into a new array so Svelte’s reactivity is triggered.
       columnItems = [...columnItems];
     }
-    function handleDndFinalizeCards(cid, e) {
+    function handleDndFinalizeCards(cid: number|string, e) {
       const colIdx = columnItems.findIndex(c => c.id === cid);
       columnItems[colIdx].items = e.detail.items;
       columnItems = [...columnItems];

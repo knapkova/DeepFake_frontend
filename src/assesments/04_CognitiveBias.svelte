@@ -24,6 +24,10 @@
     let evaluation: Record<number, 'correct' | 'wrong'> = {};
     let evaluated = false;
 
+    function handleAllCorrect(msg: string) {
+      message_correct = msg;
+  }
+
 
     onMount(async () => {
         try {
@@ -149,7 +153,23 @@
     {/if}
 
     {#if state=='examples'}
-    <Board {columnItems} />
+    <Board {columnItems} onAllCorrect={handleAllCorrect} />
+    {#if message_correct}
+        <div class ="alert alert-success" role="alert">
+            {message_correct}
+            <button class="btn btn-primary" on:click={() => {
+                state = 'end';
+                message_correct = '';
+                message_bad = '';
+            }}>Pokračovat</button>
+        </div>
+    {/if}
+    {/if}
+
+    {#if state == 'end'}
+        <div class="alert alert-success" role="alert">
+            mega nejvesi borec!
+        </div>
     {/if}
 
     {#if state === 'start'}

@@ -1,0 +1,135 @@
+/* Overall section styling */
+.assessment-section {
+    padding: 2rem;
+    max-width: 900px;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* Modern Card style */
+  .card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .card:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  }
+  
+  /* Card header & body styling */
+  .card-header {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+  .card-body {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #555;
+  }
+  
+  /* Modern select styling */
+  select.form-select {
+    display: block;
+    width: 100%;
+    padding: 0.6rem;
+    margin-top: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+  }
+  
+  /* Answer highlighting */
+  .correct-answer {
+    border-color: #28a745 !important;
+  }
+  .wrong-answer {
+    border-color: #dc3545 !important;
+  }
+  
+  /* Board container - vertical stacking of column cards */
+  .board {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    margin: 1rem 0;
+    background: #f8f9fa;
+    border-radius: 8px;
+  }
+  
+  /* Drop zone styling (for drag/drop areas within a card) */
+  .dropzone {
+    background: #fafafa;
+    border: 2px dashed #ccc;
+    border-radius: 6px;
+    padding: 0.5rem;
+    min-height: 60px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  .dropzone:hover,
+  .dropzone:focus {
+    background-color: #f0f0f0;
+    border-color: #bbb;
+  }
+  
+  /* Draggable items inside drop zones */
+  .card-item {
+    padding: 0.5rem 0.75rem;
+    background: #e05d7162;            /* white background */
+    color: #333;                /* darker text */
+    border: 1px solid #ddd;     /* subtle border */
+    border-radius: 4px;
+    cursor: grab;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 0.95rem;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  
+  .card-item:hover {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-item:active {
+    transform: scale(0.98);
+    box-shadow: none;
+    cursor: grabbing;
+  }
+
+  #hidden {
+    filter: blur(3px);
+    transition: filter 0.5s ease, transform 0.5s ease;
+  }
+  
+  .definition-tooltip {
+    color: #bbb;
+    font-size: 0.8rem;
+    font-style: italic;
+  }
+  
+  .definition-tooltip:hover + #hidden {
+    filter: blur(0);
+  }
+
+  .card-error {
+    border: 2px solid #dc3545;
+    box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
+  }

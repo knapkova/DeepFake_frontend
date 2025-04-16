@@ -10,8 +10,8 @@
   
     let questions = writable<QuestionEndQuiz[]>([]);
     let selectedAnswers = writable<number[]>([]);
-    let state: 'start' | 'quiz' = 'start'; // Removed the 'result' state
-    let quizEvaluated = false; // true when user clicks Vyhodnotit
+    let state: 'start' | 'quiz' = 'start'; 
+    let quizEvaluated = false; 
     let score = 0;
     let progress = writable(0);
   
