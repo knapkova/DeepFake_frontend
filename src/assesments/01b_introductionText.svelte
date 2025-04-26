@@ -1,16 +1,19 @@
 <script lang="ts">
     import { onMount } from "svelte"
+    import GlowButton from "$lib/glow_button.svelte"
     import {PUBLIC_VITE_API_ROOT} from "$env/static/public"
     import { writable } from "svelte/store"
     import type { AssignmentIntroductionArticle, StartQuiz } from "$types/interfaces"
     import DndConditional from "$lib/dnd_conditional_fr_now.svelte"
     import { fly, fade, scale } from "svelte/transition";
     import { cubicOut, backOut } from "svelte/easing";
+    import FunFact from "../components/FunFact.svelte"
 
     let rotation = 0;
+    let funfact = false;
 
   // Example emoji positions (left and top in pixels)
-  const baseEmoji = { emoji: "🧍" };
+  const baseEmoji = { emoji: "𖨆" };
   let emojiPositions = [
     { x: 20, y: 20, ...baseEmoji },
     { x: 120, y: 20, ...baseEmoji },
@@ -19,49 +22,35 @@
     
     const state = writable<'start' | 'emotions' | 'quiz' | 'end'>('start');
 
-    const article_id = 5
+    const article_id = 6
     let article = writable<AssignmentIntroductionArticle[]>([])
     let quiz = writable<StartQuiz[]>([])
     const get_req = "/api/Admin/AssignmentIntroductionArticle/GetAssignmentIntroductionArticlesById/" + article_id
-    const get_quiz = "/api/AssignmentIntroductionQuestions/GetIntroductionQuestionsByIntroductionTextId/" + article_id
 
     onMount(() => {
-        fetchArticle().then(data => {
-            article.set(data);
-        });
-        fetchQuiz().then(data => {
-                  quiz.set(data);
-        });
+    fetchArticle().then((data) => {
+      article.set(data);
+      if (data.length > 0) {
+        // Extract the quiz questions from the article and update the quiz store.
+        quiz.set(data[0].questions);
+      }
     });
-
-    async function fetchQuiz() {
-        const response = await fetch(PUBLIC_VITE_API_ROOT + get_quiz, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-        })
-        const data = await response.json()
-        console.log("data", data)
-        const quiz: StartQuiz[] = Array.isArray(data) ? data : [data]
-
-        return quiz
-    }
+  });
 
     async function fetchArticle() {
-        const response = await fetch(PUBLIC_VITE_API_ROOT + get_req, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-        })
-        const data = await response.json()
-        console.log("data", data)
-        const article: AssignmentIntroductionArticle[] = Array.isArray(data) ? data : [data]
-        return article
-    }
+      const response = await fetch(PUBLIC_VITE_API_ROOT + get_req, {
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+          },
+      });
+      const data = await response.json();
+      console.log("data", data);
+      const fetchedArticle: AssignmentIntroductionArticle[] = 
+          Array.isArray(data) ? data : [data];
+      return fetchedArticle;
+  }
 
     function draggable(node: HTMLElement, emoji: { x: number; y: number; emoji: string }) {
     let startX: number, startY: number;
@@ -157,11 +146,19 @@
 
 {#if $state === 'end'}
     <div class="end" in:fly={{y:200,duration:500,easing:backOut}}>
+      
       <h2>🎉 Congratulations!</h2>
       <p>You completed the challenge.</p>
       <button class="btn" on:click={() => state.set('start')}>Jsem ready jít dál</button>
     </div>
+    <button on:click={() => funfact = !funfact} class="btn btn-primary">
+        Fun Fact </button>
+    <FunFact showFunFact={funfact} header="Fun Fact" text="Did you know that the average person spends about 6 months of their life waiting for red lights to turn green?"/>
+
   {/if}
+
+  <GlowButton/>
+
 
 
 
@@ -194,13 +191,15 @@
   /* Emoji styling */
   .emoji {
   font-size: 2rem;
+  color: #fff;
   user-select: none;
   cursor: move;
   /* Adding a text shadow to give better contrast */
   text-shadow: 0 2px 4px rgba(224, 216, 216, 0.7);
   /* Optionally add a light background with border-radius */
   background-color: rgba(0, 0, 0, 0.8);
-  padding: 0.2rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
   border-radius: 50%;
 }
   

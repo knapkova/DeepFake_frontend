@@ -105,3 +105,17 @@ export interface User{
     email: string;
     role: string;
 }
+
+export interface StartQuiz{
+    id: number;
+    term: string;
+    description: string;
+    assignmentIntroductionArticleId: number;
+}
+
+export interface FunFact{
+    id: number;
+    title: string;
+    text: string;
+    categoryId: number;
+}
