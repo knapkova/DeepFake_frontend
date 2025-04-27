@@ -4,8 +4,13 @@
     import type { QuestionEndQuiz, answersEndQuiz } from '$types/interfaces';
     import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
     import "../styles/quiz.css";
+    export let onLevelComplete: () => void = () => {};
+
+  function completeLevel() {
+    onLevelComplete();
+  }
   
-    let category_id = 10;
+    let category_id = 11;
     const api_get_by_category = "/api/AssignmentQuiz/GetQuestionsByCategoryId/";
   
     let questions = writable<QuestionEndQuiz[]>([]);
@@ -140,7 +145,7 @@
           <p>
             Dosáhli jste <strong>{score}</strong> bodů z <strong>{$questions.length}</strong>.
           </p>
-          <button class="restart-btn" on:click={restartQuiz}>Zkusit znovu</button>
+          <button class="restart-btn" on:click={() =>completeLevel()}>Zkusit znovu</button>
         </div>
       {/if}
     </div>

@@ -8,6 +8,14 @@
     import { fly, fade, scale } from "svelte/transition";
     import { cubicOut, backOut } from "svelte/easing";
     import FunFact from "../components/FunFact.svelte"
+    
+
+     export let onLevelComplete: () => void = () => {};
+
+    // Call this function when the level is ready to complete.
+    function completeLevel() {
+      onLevelComplete();
+    }
 
     let rotation = 0;
     let funfact = false;
@@ -15,9 +23,9 @@
   // Example emoji positions (left and top in pixels)
   const baseEmoji = { emoji: "𖨆" };
   let emojiPositions = [
-    { x: 20, y: 20, ...baseEmoji },
-    { x: 120, y: 20, ...baseEmoji },
-    { x: 220, y: 20, ...baseEmoji }
+    { x: 20, y: 400, ...baseEmoji },
+    { x: 80, y: 400, ...baseEmoji },
+    { x: 140, y: 400, ...baseEmoji }
   ];
     
     const state = writable<'start' | 'emotions' | 'quiz' | 'end'>('start');
@@ -149,7 +157,7 @@
       
       <h2>🎉 Congratulations!</h2>
       <p>You completed the challenge.</p>
-      <button class="btn" on:click={() => state.set('start')}>Jsem ready jít dál</button>
+      <button class="btn" on:click={() => completeLevel()}>Jsem ready jít dál</button>
     </div>
     <button on:click={() => funfact = !funfact} class="btn btn-primary">
         Fun Fact </button>

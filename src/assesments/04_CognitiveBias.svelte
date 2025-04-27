@@ -5,10 +5,16 @@
     import type { AssignmentCognitiveBias } from '$types/interfaces';
     import Board from '$lib/dnd_board.svelte';
     import '../styles/04_dnd.css';
+    export let onLevelComplete: () => void = () => {};
+
+  function completeLevel() {
+    onLevelComplete();
+    console.log('Level completed');
+  }
 
 
 
-    const category_id = 10;
+    const category_id = 11;
     const get_req = '/api/Admin/AssignmentCognitiveBias/GetAssignmentsCognitiveBiasByCategoryId/' + category_id;
 
     let bias = writable<AssignmentCognitiveBias[]>([]);
@@ -117,6 +123,10 @@
             {message_bad}
         </div>
     {/if}
+
+    {#if state === 'start'}
+        <button class="btn btn-primary" on:click={() => state = 'definition'}>Začít</button>
+        {/if}
     
 {#if state == 'definition'}
 {#if message_correct}
@@ -169,12 +179,12 @@
     {#if state == 'end'}
         <div class="alert alert-success" role="alert">
             mega nejvesi borec!
+            <button class="btn btn-primary" on:click={() => completeLevel()}>Daal</button>
+
         </div>
     {/if}
 
-    {#if state === 'start'}
-        <button class="btn btn-primary" on:click={() => state = 'definition'}>Začít</button>
-        {/if}
+    
 
 
 

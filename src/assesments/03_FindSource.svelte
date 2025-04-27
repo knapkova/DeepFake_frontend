@@ -3,6 +3,12 @@
   import { writable, get } from 'svelte/store';
   import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
 
+  export let onLevelComplete: () => void = () => {};
+
+  function completeLevel() {
+    onLevelComplete();
+  }
+
   interface AssignmentFindPictureSource {
     id: number;
     imgSrc: string;
@@ -191,7 +197,7 @@
         </div>
       {/each}
     </div>
-    <button class="start-btn" on:click={startGame}>Hrát znovu</button>
+    <button class="start-btn" on:click={() => completeLevel()}>Další pls</button>
   {/if}
 </div>
 
