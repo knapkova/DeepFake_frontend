@@ -12,12 +12,16 @@
       const data = await response.json();
       categories.set(data);
     });
+
+    function navigate(dest:string){
+      window.location.href = dest;
+}
   </script>
   
   <div class="scrollable-container">
     {#each $categories as video (video.id)}
       <div class="selection">
-        <button class="play-btn">▷</button>
+        <button onclick={() => navigate("/marsGate")} class="play-btn">▷</button>
         <div
           class="video-card"
           style="background-image: url({video.imgSrc});"
