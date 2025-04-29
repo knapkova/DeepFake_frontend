@@ -6,7 +6,8 @@
     import CognitiveBias from "$assesments/04_CognitiveBias.svelte";
     import { tick } from "svelte";
     import IntroductionText from "$assesments/01b_introductionText.svelte";
-    import { onMount } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
+    import { beforeNavigate } from '$app/navigation';
     import { PUBLIC_VITE_API_ROOT } from "$env/static/public";
     import FunFactPopUp from "$components/FunFact.svelte"
     import NewsletterPopUp from "$components/Newsletter_Popup.svelte"
@@ -15,11 +16,34 @@
     import { Tween } from 'svelte/motion';
     import { cubicOut } from 'svelte/easing';
     import ProgressBar from "$components/ProgressBar.svelte";
+    import { derived } from "svelte/store";
+
+    
 
     import "$styles/styles.css"
     import IntroductionWindow from "$components/IntroductionWindow.svelte"
 	import Motivations from "$assesments/02_motivations.svelte";
     import { writable } from "svelte/store";
+
+    function persisted<T>(key: string, init: T) {
+    let initial: T;
+    try {
+      const raw = localStorage.getItem(key);
+      initial = raw ? JSON.parse(raw) : init;
+    } catch {
+      initial = init;
+    }
+    const store = writable<T>(initial);
+    store.subscribe((v) => {
+      try { localStorage.setItem(key, JSON.stringify(v)); }
+      catch {} // ignore quota errors
+    });
+    return store;
+  }
+
+  // persist both your “which screen” and “progress” stores
+  export const state_game    = persisted<1|2|3|4|5|6|7>('state_game', 1);
+  export const progress     = persisted<number>('progress',   100);
 
     const categoryId = 11;
 
@@ -28,7 +52,7 @@
     let category = writable<Category | null>(null);
 
     
-    let state_game = writable<1 | 2 | 3 | 4 | 5 | 6 | 7>(1);
+    //let state_game = writable<1 | 2 | 3 | 4 | 5 | 6 | 7>(1);
     const current_meme = writable<FeedbackMeme | null>(null);
     let funFactStore = writable<FunFact[]>([]);
     let feedbackMemes = writable<FeedbackMeme[]>([]);
@@ -39,8 +63,11 @@
     let funfact_text = writable("");
     let funfact_header =writable("");    
     let showFunFact = writable(false);
+    
+    const showNewsletter = derived(state_game, $state_game => $state_game === 7);
 
-    let progress = writable(100);
+
+    //let progress = writable(100);
 
     async function getCategory() {
        const response =  await fetch(PUBLIC_VITE_API_ROOT + api_get_category, {
@@ -60,8 +87,12 @@
         console.log("Fun facts:", data.funFacts);
     }
 
-    function handleLevelComplete() {
+    async function handleLevelComplete() {
+      getRandomFunFact()
       state_game.update(n => (n < 7 ? (n + 1) as 1 | 2 | 3 | 4 | 5 | 6 | 7: n))
+      await tick()
+      progress.set($progress-(0.25*$progress))
+
   }
 
 
@@ -116,6 +147,8 @@
     onMount(() => {
         getCategory();
     });
+
+    
     
     
     const animatedProgress = new Tween(0, { duration: 400, easing: cubicOut });
@@ -128,7 +161,7 @@ $effect(() => {
 
 
 {#if $state_game === 1}
-    <IntroductionWindow  bind:state_game />
+    <IntroductionWindow {state_game} on:stateChange={(e) => state_game.set(e.detail)} />
 {/if}
 
 {#if $state_game != 1}
@@ -138,25 +171,15 @@ $effect(() => {
   <div class="progress-container relative w-full bg-gray-400 rounded-full dark:bg-gray-700 h-6 overflow-hidden">
           <ProgressBar {progress} />
         </div>
-<Button on:click={() => (progress.set($progress-(0.25*$progress)))} class="mt-8">
-  Randomize
-</Button>
-
-<Button on:click={() => getRandomFunFact()} class="mt-8">
-  get fun fact random
-</Button>
 
 <FunFactPopUp showFunFact={$showFunFact} header={$funfact_header} text={$funfact_text}/>
 
-<Button on:click={async () => current_meme.set(await get_random_meme())  } class="mt-8">
-  get feedback meme random
-</Button>
+
 
 {#if $current_meme}
   <img src={$current_meme.imgSrc} alt="Feedback Meme" class="w-1/2 mx-auto mt-4" />
 {/if}
 </div>
-
 {/if}
 
 
@@ -164,6 +187,7 @@ $effect(() => {
 
 {#if $state_game === 2}
   <IntroductionText onLevelComplete={handleLevelComplete}  />
+  {progress.set(100)}
 {/if}
 
 {#if $state_game === 3}
@@ -183,10 +207,18 @@ $effect(() => {
 {/if}
 
 {#if $state_game === 7}
-  <NewsletterPopUp />
+  <NewsletterPopUp showNewsletter={$showNewsletter} />
 {/if}
 
-<Button on:click={() => state_game.update(n => (n < 5 ? (n + 1) as 1 | 2 | 3 | 4 | 5 | 6 | 7 : n))} class="mt-8">
+<Button on:click={() => state_game.set(1)} class="mt-8">
+  začátek
+</Button>
+
+<Button on:click={() => state_game.update(n => (n < 8 ? (n - 1) as 1 | 2 | 3 | 4 | 5 | 6 | 7 : n))} class="mt-8">
+  Zpět
+</Button>
+
+<Button on:click={() => state_game.update(n => (n < 7 ? (n + 1) as 1 | 2 | 3 | 4 | 5 | 6 | 7 : n))} class="mt-8">
     Další levl
  </Button>
 

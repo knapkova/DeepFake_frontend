@@ -3,17 +3,17 @@
 /* Font definitions */
 @font-face {
     font-family: 'Nexa-Black';
-    src: url('../static/fonts/nexa-black.woff2') format('woff2');
+    src: url('fonts/nexa-black.woff2') format('woff2');
 }
 
 @font-face {
     font-family: 'Nexa-XBold';
-    src: url('../static/fonts/nexa-black.woff2') format('woff2');
+    src: url('fonts/nexa-black.woff2') format('woff2');
 }
 
 @font-face {
     font-family: 'Open Sans-SemiBold';
-    src: url('../static/fonts/nexa-black.woff2') format('woff2');
+    src: url('fonts/nexa-black.woff2') format('woff2');
 }
 
 body {

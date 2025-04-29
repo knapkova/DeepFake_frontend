@@ -18,8 +18,5 @@ export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
       }
     }
   }
-  console.log('request', request);
-  console.log('request.url', request.url);
-  console.log('request.headers', request.headers);
   return fetch(request);
 }; 
