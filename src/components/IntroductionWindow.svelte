@@ -1,13 +1,10 @@
-<script>
+<script lang="ts">
     import { Button } from 'flowbite-svelte';
     import { Hr } from 'flowbite-svelte';
     import ProgressBar from "$components/ProgressBar.svelte";
     import { writable } from 'svelte/store';
 
-    export let state_game = writable(1);
-    function incrementState() {
-    state_game.update(n => n + 1);
-  }
+    
 
 import {
 		Timeline,
@@ -18,6 +15,47 @@ import {
 		TimelineContent,
 		TimelineOppositeContent
 	} from 'svelte-vertical-timeline';
+
+  export let state_game = writable(1);
+    function incrementState() {
+    state_game.update(n => n + 1);
+  }
+  let showInput = true;
+
+
+  function persisted(key: string, init: string) {
+    let initial: string;
+    try {
+      const raw = localStorage.getItem(key);
+      initial = raw ? JSON.parse(raw) : init;
+    } catch {
+      initial = init;
+    }
+    const store = writable(initial);
+    store.subscribe((v) => {
+      try {
+        localStorage.setItem(key, JSON.stringify(v));
+      } catch {
+        // ignore errors
+      }
+    });
+    return store;
+  }
+
+  // Create a persistent store for the nickname.
+  export let nickname = persisted('nickname', '');
+
+  // Use a local variable for binding.
+  let localNickname = '';
+
+  // When the component loads, initialize the input if a nickname was already saved.
+  $: localNickname = $nickname;
+
+  function saveNickname() {
+    nickname.set('@' + localNickname);
+    showInput = false; // Hide the input after saving.
+    // Any additional actions can be performed here.
+  }
 
 	const options = [
 		{ title: '🔍 První zpráva', lvl: 'Level 1' },
@@ -35,6 +73,7 @@ import {
     <h3 class="text-sm uppercase font-semibold text-gray-500">Pomoc ohladit pravdu</h3>
     <h1 class="text-5xl font-bold mt-2">MarsGate</h1>
     <div class="flex flex-row items-center gap-4">
+      
         <p class="mt-6 max-w-3xl text-lg text-gray-700">
           Země se ocitla na pokraji ekologického kolapsu a společnost se potácí v nejistotě. Sociální sítě ovládají spekulace, deepfake a konspirační teorie. 
         </p>
@@ -85,25 +124,43 @@ import {
                           progress.set($progress - 20);
         
                         }
-                    }} >Vyzkoušej zde 👈</Button>   
-      </div>
-    </div>
-
-  
-    
-  
-    <!-- Footer button -->
-    <div class="flex justify-end mt-20 items-center gap-4">
-      <div class="text-right">
-        <div class="font-bold text-lg">Jdeme na to</div>
-      </div>
-      <button 
-  class="bg-red-500 rounded-full p-4 text-white cursor-pointer"
-  on:click={incrementState}
-  aria-label="Start the game"
->
-  ▶
-</button>
-    </div>
+                    }} >Vyzkoušej zde 👈</Button>  
+                    {#if showInput}
+                    <div class="mt-8">
+                      <h3 class="font-semibold mb-2">Zvol si <s>info</s> svoji přezdívku</h3>
+                      <input
+                        type="text"
+                        placeholder="Zadej jméno"
+                        class="input w-full mb-4"
+                        bind:value={localNickname}
+                        required
+                      />
+                      <Button
+                        class="btn"
+                        on:click={saveNickname}
+                        disabled={!localNickname}
+                      >
+                        Uložit a pokračovat do hry
+                      </Button>
+                    </div>
+                  {/if}
+            
+                  {#if !showInput}
+                  <div class="flex justify-end mt-20 items-center gap-4">
+                    <div class="text-right">
+                      <div class="font-bold text-lg">Jdeme na to, {$nickname}</div>
+                    </div>
+                    <button
+                      class="bg-red-500 rounded-full p-4 text-white cursor-pointer disabled:opacity-50"
+                      on:click={incrementState}
+                      aria-label="Start the game"
+                      disabled={!$nickname}
+                    >
+                      ▶
+                    </button>
+                  </div>
+                  {/if}
+                </div>
+                
   </main>
   

@@ -2,8 +2,12 @@
   import { onMount } from 'svelte';
   import { writable, get } from 'svelte/store';
   import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+  import LensTutorial from '$components/LensExplanation_popup.svelte'
+	import LensExplanationPopup from '$components/LensExplanation_popup.svelte';
 
   export let onLevelComplete: () => void = () => {};
+  let showTutorial = writable(false);
+
 
   function completeLevel() {
     onLevelComplete();
@@ -28,7 +32,7 @@
   let selectedImageIndex: number | null = null;
   let selectedTitleIndex: number | null = null;
 
-  type GameState = 'start' | 'play' | 'done';
+  type GameState = 'start' | 'explain' | 'play' | 'done';
   let state: GameState = 'start';
 
   onMount(async () => {
@@ -93,15 +97,29 @@
       processPair();
     }
   }
+
 </script>
 
 <div class="container">
   <h2>Najdi zdroj k obrázku (Matching Game)</h2>
 
   {#if state === 'start'}
+  <p>Ivan přidává další materiály – několik fotografií, které podle něj dokazují, že přistání na Marsu už proběhlo. Obrázky jsou velmi přesvědčivé, ale přesto by možná stálo za to se na ty fotky podívat trochu blíž. Dokážeš o nich zjistit víc? </p>
+
+    <button class="start-btn" on:click={() => state = 'explain'}>Jdu na to</button>
+
+  {:else if state == 'explain'}
+
+    <LensExplanationPopup showLensExplanation={true}/>
     <button class="start-btn" on:click={startGame}>Začít hru</button>
+
+  
+  
   
   {:else if state === 'play'}
+    <button class="start-btn" on:click={() => showTutorial.set(true)}>Google Lens návod</button>
+    <LensExplanationPopup bind:showLensExplanation={$showTutorial}/>
+        {$showTutorial}
     <p class="instructions">
       Vyberte obrázek a poté odpovídající text.
     </p>

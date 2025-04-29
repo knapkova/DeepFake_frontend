@@ -102,6 +102,7 @@
 <div class="article">
     {#if $article.length > 0}
       <h2>{$article[0].title}</h2>
+      
       <div class="content">
         {@html $article[0].content}
       </div>
