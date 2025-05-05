@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
+  
     /**
      * @deprecated Use callback props and/or the $host() rune instead — see migration guide
      */
@@ -10,53 +12,40 @@
     interface Step { header: string; text?: string; options?: Option[]; }
   
     const steps: Step[] = [
-      {
-        header: 'Úroveň vlastní tvorby',
-        text: `Někteří lidé šíří dezinformace záměrně s cílem se obohatit nebo získat moc.
+      { header: 'Úroveň vlastní tvorby', text: `Někteří lidé šíří dezinformace záměrně s cílem se obohatit nebo získat moc.
   Jiní se jen nedokáží zorientovat v záplavě informací.
-  Zkusím je teda nějak přesvědčit.`
-      },
-      {
-        header: '1) Jak je ale nejlépe konfrontovat?',
-        options: [
+  Zkusím je teda nějak přesvědčit.` },
+      { header: '1) Jak je ale nejlépe konfrontovat?', options: [
           { value: 'labeling', label: 'Upozornit je, že věří konspiračním teoriím.', correct: false,
             explanation: 'Nálepkování většinou nikam nevede, budeš potřebovat lepší argument.' },
           { value: 'mocking', label: 'Zesměšnit a zpochybnit důvěryhodnost Ivana.', correct: false,
             explanation: 'Útokem na „šiřitele pravdy“ můžeš nechtěně podpořit konspirační teorii o tajném spiknutí.' },
           { value: 'correct', label: 'Dokázat, že Ivan prezentuje nepravdivé informace.', correct: true }
-        ]
-      },
-      {
-        header: '2) Jak příspěvek nejlépe ověřit?',
-        options: [
+        ] },
+      { header: '2) Jak příspěvek nejlépe ověřit?', options: [
           { value: 'search-mission', label: 'Dohledat informace o tajné misi, kterou Ivan zmiňuje.', correct: false,
             explanation: 'Vždycky je těžší dokázat, že něco neexistuje, než naopak. Navíc, pokud je mise opravdu tajná, na internetu o ní žádné informace nenajdeš.' },
           { value: 'context', label: 'Ověřit, jestli náhodou nejsou vytržené z kontextu.', correct: true }
-        ]
-      },
-      {
-        header: '3) Tipni si, odkud Ivan získal fotky z Marsu.',
-        options: [
+        ] },
+      { header: '3) Tipni si, odkud Ivan získal fotky z Marsu.', options: [
           { value: 'contacts', label: 'Má kontakty ve vysoké politice.', correct: false,
             explanation: 'Fotky vůbec nejsou z Marsu – většinou pocházejí z bezplatných galerií nebo simulátorů.' },
           { value: 'hack', label: 'Naboural se do tajných archivů NASA.', correct: false,
             explanation: 'Fotky vůbec nejsou z Marsu – většinou pocházejí z bezplatných galerií nebo simulátorů.' },
           { value: 'correct', label: 'Fotky vůbec nejsou z Marsu.', correct: true }
-        ]
-      },
-      {
-        header: 'Co dál?',
-        text: 'Tak pojď zjistit, jak to teda je…'
-      }
+        ] },
+      { header: 'Co dál?', text: 'Tak pojď zjistit, jak to teda je…' }
     ];
   
     const totalSteps = steps.length;
-    let currentStep: number = 0;
-    let score: number = 0;
-  
+    let currentStep = 0;
+    let score = 0;
     let selected: string | null = null;
-    let feedback: string = '';
-    let explanation: string = '';
+    let feedback = '';
+    let explanation = '';
+  
+    // references to each step element
+    let stepRefs: HTMLElement[] = [];
   
     function resetState() {
       selected = null;
@@ -70,15 +59,12 @@
     }
   
     function checkAnswer() {
-      const step = steps[currentStep];
-      const opt = step.options?.find(o => o.value === selected);
+      const opt = steps[currentStep].options?.find(o => o.value === selected);
       if (!opt) return;
       if (opt.correct) {
         feedback = '🌟 Správně!';
         score += 10;
-        setTimeout(() => {
-          nextStep();
-        }, 1000);
+        setTimeout(() => nextStep(), 1000);
       } else {
         feedback = '❌ Špatně!';
         explanation = opt.explanation || '';
@@ -88,11 +74,16 @@
     function finishQuiz() {
       onComplete();
     }
+  
+    // Runes mode: use $effect to run when currentStep changes
+    $: if (stepRefs[currentStep]) {
+      stepRefs[currentStep].scrollIntoView({ behavior: 'smooth' });
+    }
   </script>
   
-  <div class="map-container">
+  <div class="map-container" style="margin-right: {marginRight};">
     {#each steps as step, idx}
-      <section class="map-step">
+      <section bind:this={stepRefs[idx]} class="map-step" style="--display-after: {idx < totalSteps - 1 ? 'block' : 'none'};">
         <div class="node"></div>
         <h3 class="quiz-header">{step.header}</h3>
         {#if step.text}
@@ -104,53 +95,43 @@
             {#each step.options as o}
               <li>
                 <label>
-                  <input
-                    type="radio"
-                    bind:group={selected}
-                    value={o.value} />
+                  <input type="radio" bind:group={selected} value={o.value} />
                   {o.label}
                 </label>
               </li>
             {/each}
           </ul>
-          <button
-            class="btn"
-            on:click={checkAnswer}
-            disabled={!selected}>
-            Ověřit
-          </button>
-  
+          <button class="btn" on:click={checkAnswer} disabled={!selected}>Ověřit</button>
           {#if feedback}
-            <p class="feedback {feedback === '🌟 Správně!' ? 'success' : 'error'}">
-              {feedback}
-            </p>
+            <p class="feedback {feedback.startsWith('🌟') ? 'success' : 'error'}">{feedback}</p>
             {#if explanation}
               <p class="explanation">{explanation}</p>
             {/if}
           {/if}
+        {:else if idx === steps.length - 1}
+          <button class="btn" on:click={finishQuiz}>Dokončit</button>
         {/if}
       </section>
     {/each}
   </div>
-
+  
   <style>
     .map-container {
-    height: 300px;                /* viewport height for one step */
-    overflow-y: auto;             /* make it scrollable */
-    scroll-snap-type: y mandatory;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .map-step {
-    scroll-snap-align: start;
-    min-height: 300px;            /* same as container height */
-    padding: 20px;
-    box-sizing: border-box;
-    position: relative;
-  }
-   
-   
-    
+      height: 100vh;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox */
+    }
+    .map-container::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+  
+    .map-step {
+      scroll-snap-align: start;
+      height: 100vh;
+      padding: 2rem;
+      box-sizing: border-box;
+      position: relative;
+    }
     .node {
       width: 16px;
       height: 16px;
