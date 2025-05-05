@@ -1,16 +1,20 @@
 <script>
+      import { Hr } from 'flowbite-svelte';
+
 
     import fbLogo from '../assets/fb_logo.png';
     import igLogo from '../assets/ig_logo.png';
     import zvolsiinfoSidebar from '../assets/zvolsiingo_redLogo.png'
     import { goto } from "$app/navigation";
     import {PUBLIC_VITE_API_ROOT} from "$env/static/public";
+    import { fade } from 'svelte/transition';
 
 
     import "../global.css";
     import {isAuthenticated,user} from "../stores/auth";
 
     export let sidebarOpen = false;
+    
     let auth = false;
     let userData = {
         userName: '',
@@ -47,7 +51,7 @@
     <div class="menu">
         <button class="hamburger" on:click={toggleSidebar} aria-label="Toggle sidebar">☰</button>
         {#if sidebarOpen}
-        <header class="sidebar-header">
+        <header class="sidebar-header" in:fade={{ delay: 300, duration: 400 }}>
             {#if auth}
               <div class="user-info">
                 <span class="user-icon">👤</span>
@@ -61,21 +65,29 @@
               <a href="/account/login" class="menu-link button">Login</a>
             {/if}
           </header>
-          <nav class="menu-options">
-            <a href="/" class="menu-link">Hlavní stránka</a>
-            <a href="/about" class="menu-link">Jak hrát</a>
+          
+          <nav class="menu-options" in:fade={{ delay: 300, duration: 400 }}>
+            <a href="/" class="menu-link">
+              <span class="text">Hlavní stránka</span>
+            </a>
+  
+            <a href="/about" class="menu-link">
+              <span class="text">O nás</span>
+            
+            </a>
             <a href="/contact" class="menu-link">O zvolSi.info</a>
-          </nav>
-          {#if auth}
+            
+            {#if auth}
             <div class="auth-links">
               <a href="/admin" class="menu-link">Admin</a>
             </div>
           {:else}
             <div class="auth-links">
-              <a href="/account/login" class="menu-link button">Login</a>
-              <a href="/account/register" class="menu-link button">Registrovat se</a>
+              <a href="/account/register" class="menu-link button">Registr</a>
             </div>
           {/if}
+          </nav>
+          
         {/if}
       </div>
     
@@ -90,159 +102,151 @@
 </div>
 
 <style>
-    .sidebar {
-        width: 25%; 
-        color: var(--background-color);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-        padding: 15px;
-        height: 90%;
-        border-right: 0.5px solid rgba(0, 0, 0, 0.358);
-        transition: width 0.3s ease;
-
-    }
-    .logo{
-        text-align: center;
-        width: auto;
-        width: 100%;
-    }
-    .sidebar.open {
-        width: 120px;  
-        border-right: 0.5px solid rgba(0, 0, 0, 0.358);
- 
-     }
-
-
-    .logo img {
-        width: 80%;
-    }
-
-    .menu {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-    }
-
-    .menu-options {
-        display: none;
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 20px;
-        width: 100%;
-    }
-
-    .sidebar.open .menu-options {
-        display: flex;
-    }
-
-    .menu-options {
+  /* Sidebar container */
+  .sidebar {
+    width: 55%;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-top: 10px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    height: 100%;
+    color: var(--background-color);
+    border-right: 0.5px solid rgba(0, 0, 0, 0.358);
+    transition: width 0.3s ease;
   }
+  .sidebar.open {
+    width: 120px;
+  }
+
+  /* Logo */
+  .logo {
+    width: 100%;
+    text-align: center;
+  }
+  .logo img {
+    width: 80%;
+  }
+
+  /* Hamburger button */
+  .hamburger {
+    font-size: 30px !important;
+    color: var(--my-gray) !important;
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+  }
+
+  /* Shared flex‑column + gap */
+  .menu,
+  .menu-options,
+  .auth-links,
+  .social-icons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    align-items: center;
+
+  }
+
+  /* Menu */
+  .menu {
+    align-items: center;
+  }
+
+  /* Menu options (hidden until open) */
+  .menu-options {
+    margin-top: 20px;
+    display: none;
+  }
+  .sidebar.open .menu-options {
+    display: flex;
+  }
+
+  /* Links styling */
   .menu-link {
     text-decoration: none;
     color: #333;
-    font-size: 0.95rem;
+    font-size: 0.75rem;
     padding: 10px;
     border-radius: 6px;
-    transition: background 0.3s ease, transform 0.3s ease;
     text-align: center;
+    transition: background 0.3s ease, transform 0.3s ease;
   }
-
   .menu-link:hover {
     background: #f0f0f0;
   }
 
-    .social-icons {
-        display: flex;
-        gap: 10px;
-        flex-direction: column;
-    }
-
-    .social-icons img {
-        width: 24px;
-        height: 24px;
-    }
-
-    .hamburger {
-        cursor: pointer !important;
-        color: var(--my-gray) !important;
-        font-size: 30px !important;
-        background: transparent !important; 
-        border: none !important; 
-    }
-
-    .auth-links {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
+  /* Primary button variant */
   .button {
     background: #2575fc;
     color: #fff !important;
+    transition: background 0.3s ease;
   }
   .button:hover {
     background: #1a5acb;
   }
 
+  /* Auth links */
+  .auth-links {
+    margin-top: 20px;
+  }
+
+  /* Social icons */
+  .social-icons img {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Sidebar header */
   .sidebar-header {
-  background: linear-gradient(135deg, #ff020279, #b8bcc2);
-  color: #fff;
-  padding: 10px 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  font-family: sans-serif;
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column; /* change to column layout */
-  align-items: center;
-}
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, #ff020279, #b8bcc2);
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    font-family: sans-serif;
+  }
 
-.user-info {
-  display: flex;
-  flex-direction: column; /* stack icon and details */
-  align-items: center;
-  gap: 5px;
-  margin-bottom: 10px;
-}
-
+  /* User info inside header */
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
   .user-icon {
     font-size: 1rem;
   }
-
   .user-details {
     text-align: center;
-
   }
-
   .user-name {
     font-weight: bold;
   }
-
   .user-role {
     font-size: 0.55rem;
     opacity: 0.8;
   }
 
- .logout-btn {
-  background: #ff4b2b69;
-  color: #fff;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  width: 100%;
-}
+  /* Logout button */
+  .logout-btn {
+    width: 100%;
+    padding: 6px 12px;
+    background: #ff4b2b69;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
   .logout-btn:hover {
     background: #d5d3d3cb;
   }
-  
 </style>

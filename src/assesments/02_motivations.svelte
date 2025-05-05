@@ -13,6 +13,8 @@
 
   const state = writable<'start' | 'emotions' | 'comments' | 'end'>('start');
   let showPostBody = false;
+
+  let answersChecked = false;
   
   const text_id = 32;
   const get_text = "/api/Admin/AssignmentManipulativeText/GetAssignmentManipulativeTextsById/" + text_id;
@@ -40,6 +42,28 @@
       console.error('Error fetching text:', error);
     }
   }
+
+  let selectedSwitches: boolean[]= [];
+
+  // when the text (and its motivations) arrive, init the array
+  $: if ($text) {
+    const len = $text.manipulativeMotivations.length;
+    if (selectedSwitches.length !== len) {
+      selectedSwitches = Array(len).fill(false);
+    }
+  }
+
+  // count how many are on
+  $: selectedCount = selectedSwitches.filter(Boolean).length;
+  // allow proceed only when exactly two are on
+  $: canProceed = selectedCount === 2;
+
+  function toggleSwitch(i: number) {
+    console.log('toggleSwitch', i);
+    if (!selectedSwitches[i] && selectedCount >= 2) return;
+    selectedSwitches[i] = !selectedSwitches[i];
+  }
+
   
   onMount(getText);
   
@@ -50,6 +74,7 @@
   }
   
   function checkAnswers() {
+    answersChecked = true;
     answerResults = $comments.map((comment, i) => {
       const chosen = parseInt(selectedMotivations[i]);
       return { correct: chosen === comment.manipulativeMotivationId, correctAnswer: comment.manipulativeMotivationId };
@@ -82,7 +107,7 @@
       {/if}
     </div>
         <div class="emotion-grid">
-          {#each $text.manipulativeMotivations as motivation}
+          {#each $text.manipulativeMotivations as motivation, i}
             <div class="emotion-card">
               <h4>
                 
@@ -91,14 +116,23 @@
                 </span>
                 {motivation.motivation}
               </h4>
-              <ToggleSwitch />
+              <ToggleSwitch
+                  checked={selectedSwitches[i]}
+                  disabled={!selectedSwitches[i] && selectedCount >= 2}
+                  onChange={() => toggleSwitch(i)}
+/>
             </div>
           {/each}
         </div>
   
-        <button on:click={() => state.set('emotions')} class="btn">
-          Pokračovat
-        </button>
+        {#if canProceed}
+          <div class="continue-wrapper">
+            <button on:click={() => state.set('comments')} class="btn continue-btn">
+              Pokračovat 📸
+            </button>
+          </div>
+        {/if}
+
       {:else}
         <p>Načítání příspěvku...</p>
       {/if}
@@ -113,13 +147,12 @@
     {:else if $state === 'comments'}
       <div class="post">
         <div class="post-header">
-          <h3>💬 Komentáře</h3>
+          <h3>💬 Komentáře: Jaké manipulativní techniky poznáváte?</h3>
           <span class="post-time">📅 Před chvílí</span>
         </div>
       </div>
   
       {#if $comments.length}
-        <h3 class="comments-title">💬 Komentáře: Jaké manipulativní techniky poznáváte?</h3>
         <div class="comments-container">
           {#each $comments as comment, i}
             <div class="comment-card">
@@ -145,31 +178,64 @@
               </div>
               {#if answerResults[i] !== undefined}
                 {#if answerResults[i].correct}
-                  <p class="result correct">Správně! {comment.manipulativeExplanation} </p>
+                  <p class="result correct">Správně!</p>
                 {:else}
                   <p class="result incorrect">
                     Správná odpověď: {getMotivationById(answerResults[i].correctAnswer)}<br />
-                    ?: {comment.manipulativeExplanation}
+                    <i>?</i> {comment.manipulativeExplanation}
                   </p>
                 {/if}
               {/if}
             </div>
           {/each}
-          <button on:click={checkAnswers} disabled={!allSelected} class="btn">
-            Check Answer
+          <button on:click={checkAnswers} disabled={!allSelected} hidden={answersChecked}
+            class="btn">
+            Zkontrolovat odpovědi 📝
           </button>
+          <button
+      on:click={() => completeLevel()}
+      class="btn"
+      hidden={!answersChecked}>
+      Jdu dál
+    </button>
         </div>
       {:else}
         <p>Načítání komentářů...</p>
       {/if}
   
-      <button on:click={() => completeLevel()} class="btn secondary">
-       Jdu dál
-      </button>
+      
+      
     {/if}
   </div>
   
   <style>
+
+    /* center the continue button */
+  .continue-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+  }
+
+  /* make the button larger and more prominent */
+  .btn.continue-btn {
+    padding: 0.75rem 2rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .btn.continue-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+  .btn.continue-btn:disabled {
+    background: #a5b4fc;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
     /* Post Card Styling */
 .post-card {
   background: #ffffff;
@@ -281,28 +347,7 @@
     line-height: 1.6;
     margin: 1rem 0 0;
   }
-  
-  .btn {
-    background: #4f46e5;
-    color: #fff;
-    border: none;
-    border-radius: 9999px;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-    margin: 1rem 0;
-  }
-  .btn:hover:not(:disabled) {
-    background: #4338ca;
-    transform: translateY(-2px);
-  }
-  .btn:disabled {
-    background: #a5b4fc;
-    cursor: not-allowed;
-    transform: none;
-  }
+ 
   
   .secondary {
     background: #6b7280;
@@ -387,16 +432,28 @@
   .motivation-select select {
     padding: 0.5rem;
     font-size: 1rem;
-    border: 1px solid #e5e7eb;
+    border: 1px solid hsl(220, 13%, 91%);
     border-radius: 6px;
-    width: 100%;
+    width: 50%;
+    margin-top: 1rem;
   }
   
   .result {
-    font-weight: bold;
     margin-top: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-weight: normal;
+    line-height: 1.4;
   }
-  .result.correct { color: green; }
-  .result.incorrect { color: rgba(237, 34, 34, 0.855); }
+
+  .result.correct {
+    color: #276749;           /* softer green */
+    background-color: #f0fff4; /* very light mint */
+  }
+
+  .result.incorrect {
+    color: #742a2a;            /* softer red */
+    background-color: #fff5f5; /* very light rose */
+  }
   </style>
   

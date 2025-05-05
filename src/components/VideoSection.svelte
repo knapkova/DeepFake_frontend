@@ -44,13 +44,13 @@
       position: fixed;
       top: 0;
       right: 0;
-      width: 550px;       
-      height: 100vh;      /* Full viewport height */
+      width: 30%;       
+      height: 100vh;      
       background-color: #f1f1f1;
-      overflow-y: auto;   /* Scroll if content exceeds height */
+      overflow-y: auto;   
       display: flex;
       flex-direction: column;
-      gap: 1rem;          /* Spacing between items */
+      gap: 1rem;        
       padding-right: 1rem;
       padding-top: 1rem;
 
@@ -107,6 +107,8 @@
     .video-info p {
       margin: 0;
       font-size: 0.8rem;
+      font-family: 'Courier New', Courier, monospace;
+
     }
   
     .video-info h3 {

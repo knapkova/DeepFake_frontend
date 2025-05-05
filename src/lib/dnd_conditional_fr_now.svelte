@@ -2,6 +2,19 @@
     import { draggable, droppable, dndState, type DragDropState } from '@thisux/sveltednd';
     import { writable, derived } from 'svelte/store';
     import type { StartQuiz } from '$types/interfaces';
+    export let onQuizComplete: () => void = () => {};
+
+    function completeQuiz() {
+      onQuizComplete();
+    }
+
+    let _done = false;
+    $: if ($isSourceEmpty && !_done) {
+    _done = true;
+    completeQuiz();
+  }
+
+
     
     export let quiz = writable<StartQuiz[]>([]);
 
@@ -22,14 +35,6 @@
     // Helper to know if the source is empty
     const isSourceEmpty = derived(sourceItems, $sourceItems => $sourceItems.length === 0);
   
-    // All container IDs remain the same but for sourceItems now
-    const allContainers = derived(
-      sourceItems,
-      $items => [
-        "source",
-        ...quizTerms.map(q => `target-${q.id}`)
-      ]
-    );
 
     function onDragOverTerm(st: DragDropState<StartQuiz>, desc: string) {
     return validateDrop(st, desc);
@@ -72,16 +77,12 @@
     }
 </script>
 {#if quizTerms.length > 0}
-
-<div class="board">
-    <!-- SOURCE ZONE -->
-    <div
-      class="column"
-      use:droppable={{ container: 'source' }}
-    >
-      <h3>Available Descriptions</h3>
+  <div class="board">
+    <!-- LEFT COLUMN: Definitions source -->
+    <div class="source-column" use:droppable={{ container: 'source' }}>
+      <h3>Přiřaď definice ke správným termínům</h3>
       {#if $isSourceEmpty}
-        <div class="placeholder">None left</div>
+        <div class="placeholder">Vše přiřazeno 🙂</div>
       {:else}
         {#each $sourceItems as item (item.id)}
           <div 
@@ -96,60 +97,84 @@
         {/each}
       {/if}
     </div>
-  
-    <!-- ONE COLUMN PER TERM -->
-    {#each quizTerms as q (q.id)}
-      <div
-        class="column 
-          {dndState.isDragging && dndState.targetContainer===`target-${q.id}` 
-            ? dndState.invalidDrop ? 'invalid-drop':'drag-over' 
-            : ''}"
-        use:droppable={{
-          container: `target-${q.id}`,
-          callbacks: {
-            onDragOver: st => onDragOverTerm(st, q.description),
-            onDrop:     st => onDropTerm(st, q.id, q.description),
-            onDragEnd:  () => handleDragEnd()
-          }
-        }}
-      >
-        <h3>{q.term}</h3>
-        {#if $assignments[q.id]}
-          <div class="card">{$assignments[q.id]!.description}</div>
-        {:else}
-          <div class="placeholder">Zde přetáhni správnou definici!</div>
-        {/if}
-      </div>
-    {/each}
-  
 
-</div>
+    <!-- RIGHT COLUMNS: One per term -->
+    <div class="targets">
+      {#each quizTerms as q (q.id)}
+        <div
+          class="column {dndState.isDragging && dndState.targetContainer===`target-${q.id}` 
+            ? dndState.invalidDrop ? 'invalid-drop' : 'drag-over' 
+            : ''}"
+          use:droppable={{
+            container: `target-${q.id}`,
+            callbacks: {
+              onDragOver: st => onDragOverTerm(st, q.description),
+              onDrop:     st => onDropTerm(st, q.id, q.description),
+              onDragEnd:  () => handleDragEnd()
+            }
+          }}
+        >
+          <h3>{q.term}</h3>
+          {#if $assignments[q.id]}
+            <div class="card">{$assignments[q.id]!.description}</div>
+          {:else}
+            <div class="placeholder">Sem přetáhni definici</div>
+          {/if}
+        </div>
+      {/each}
+    </div>
+  </div>
 {:else}
-    <p>No quiz items available.</p>
+  <p>Kvíz se načítá...</p>
 {/if}
   
-  <style>
-    .board { display: flex; gap: 1rem; }
-    .column {
-      flex: 1;
-      padding: 1rem;
-      border: 2px dashed #ccc;
-      min-height: 150px;
-      position: relative;
-    }
-    .column.drag-over { background: #eef; }
-    .column.invalid-drop { background: #fee; }
-    .card {
-      padding: 0.5rem;
-      margin: 0.25rem 0;
-      background: #fff;
-      border: 1px solid #999;
-      cursor: grab;
-    }
-    .placeholder {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%,-50%);
-      color: #999;
-    }
-  </style>
+<style>
+  .board {
+    display: flex;
+    gap: 1rem;
+    margin: 1rem;
+    align-items: flex-start;
+    flex-direction: row;
+  }
+  .source-column {
+    flex: 0 0 240px;
+    padding: 1rem;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+  .targets {
+    flex: 1;
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+  }
+  .column {
+    flex: 1 1 150px;
+    min-width: 150px;
+    padding: 1rem;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    background: #fff;
+    position: relative;
+  }
+  .column.drag-over {
+    background: #e6f7ff;
+  }
+  .column.invalid-drop {
+    background: #e6f7ff;
+  }
+  .card {
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    background: #fff;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    cursor: grab;
+    color: black;
+  }
+  .placeholder {
+    color: #888;
+    font-style: italic;
+  }
+</style>

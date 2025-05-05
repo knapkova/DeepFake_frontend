@@ -1,7 +1,25 @@
+<script lang="ts">
+  // remove createEventDispatcher
+  export let checked = false;
+  export let disabled = false;
+  // accept a callback prop instead of dispatching a CustomEvent
+  export let onChange: (checked: boolean) => void = () => {};
+
+  function handleChange(e: Event) {
+    checked = (e.target as HTMLInputElement).checked;
+    onChange(checked);
+  }
+</script>
+
 <label class="rocker rocker-small">
-    <input type="checkbox">
-    <span class="switch-left">Ano</span>
-    <span class="switch-right">Ne</span>
+  <input
+    type="checkbox"
+    {disabled}
+    bind:checked
+    on:change={handleChange}
+  />
+  <span class="switch-left">Ano</span>
+  <span class="switch-right">Ne</span>
 </label>
 
 <style>

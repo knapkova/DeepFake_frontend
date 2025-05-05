@@ -220,11 +220,7 @@
 </div>
 
 <style>
-  :global(body) {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 2rem;
-  }
+ 
   
   .container {
     max-width: 1200px;
