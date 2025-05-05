@@ -1,5 +1,4 @@
 <script lang="ts">
-  import RangeSlider from 'svelte-range-slider-pips'
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import ToggleSwitch from '$lib/toggle_switch.svelte';
@@ -63,8 +62,9 @@
   {#if $text}
     <div class="post-card">
       <div class="post-header">
-        <h3 class="post-title">{$text.instructions}</h3>
         <span class="post-time">📅 Před chvílí</span>
+
+        <h3 class="post-title">{$text.instructions}</h3>
       </div>
       
       <button 
@@ -85,10 +85,11 @@
           {#each $text.manipulativeMotivations as motivation}
             <div class="emotion-card">
               <h4>
-                {motivation.motivation}
+                
                 <span class="info-button">
                   ℹ️<span class="tooltip">{motivation.definition}</span>
                 </span>
+                {motivation.motivation}
               </h4>
               <ToggleSwitch />
             </div>
@@ -189,16 +190,17 @@
 .post-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
   border-bottom: 2px solid #d1d5db;
   padding-bottom: 0.5rem;
   margin-bottom: 1rem;
+  gap: 0.5rem;
+  flex-direction: column;
 }
 
 .post-title {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: bold;
-  color: #1d4ed8;
   margin: 0;
 }
 
@@ -247,6 +249,10 @@
     background: #f5f7fa;
     color: #333;
     padding: 1rem;
+    max-width: none;
+  width: 95%;
+  padding: 1rem;
+  margin: 2rem auto;
   }
   
   .post, .comment-card, .emotion-card {
@@ -304,9 +310,9 @@
   
   .emotion-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(13%, 1fr));
     gap: 1rem;
-    margin: 1.5rem 0;
+    margin: 1.5rem;
   }
   
   .info-button {
