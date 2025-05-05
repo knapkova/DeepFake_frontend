@@ -23,7 +23,7 @@
 	isAuthenticated.subscribe((a) => (auth = a));
 	user.subscribe((u) => (userData = u));
 
-	let sidebarOpen = true;
+	let sidebarOpen = false;
 
 	function handleToggle(event: any) {
 		console.log('Sidebar toggle event:', event.detail);
@@ -59,11 +59,7 @@
 		overflow-y: auto; /* If sidebar content becomes taller, it can scroll */
 	}
 
-	.sidebar-container.closed {
-		width: 0;
-		padding: 0;
-		overflow: hidden; /* Hide content */
-	}
+	
 
 	.content {
 		flex: 1;

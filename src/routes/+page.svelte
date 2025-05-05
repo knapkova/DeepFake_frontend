@@ -5,7 +5,7 @@
 </script>
 
 <div class="container">
-        <MainContent marginRight="550px"/>
+        <MainContent marginRight="30%"/>
 
         <VideoSection />
 
