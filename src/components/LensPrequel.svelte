@@ -1,166 +1,199 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    // each section can be plain text (content) or a quiz (question/options/answer)
+    type Section = {
+      content?: string;
+      question?: string;
+      options?: Options[];
+      answer?: string;
+    };
+    type Options = {
+        answer: string;
+        isCorrect: boolean;
+        explanation: string;
+    }
   
-    /**
-     * @deprecated Use callback props and/or the $host() rune instead — see migration guide
-     */
-    export let marginRight: string = '0';
-    /** Callback for when quiz completes */
-    export let onComplete: () => void = () => {};
-  
-    interface Option { value: string; label: string; correct: boolean; explanation?: string; }
-    interface Step { header: string; text?: string; options?: Option[]; }
-  
-    const steps: Step[] = [
-      { header: 'Úroveň vlastní tvorby', text: `Někteří lidé šíří dezinformace záměrně s cílem se obohatit nebo získat moc.
-  Jiní se jen nedokáží zorientovat v záplavě informací.
-  Zkusím je teda nějak přesvědčit.` },
-      { header: '1) Jak je ale nejlépe konfrontovat?', options: [
-          { value: 'labeling', label: 'Upozornit je, že věří konspiračním teoriím.', correct: false,
-            explanation: 'Nálepkování většinou nikam nevede, budeš potřebovat lepší argument.' },
-          { value: 'mocking', label: 'Zesměšnit a zpochybnit důvěryhodnost Ivana.', correct: false,
-            explanation: 'Útokem na „šiřitele pravdy“ můžeš nechtěně podpořit konspirační teorii o tajném spiknutí.' },
-          { value: 'correct', label: 'Dokázat, že Ivan prezentuje nepravdivé informace.', correct: true }
-        ] },
-      { header: '2) Jak příspěvek nejlépe ověřit?', options: [
-          { value: 'search-mission', label: 'Dohledat informace o tajné misi, kterou Ivan zmiňuje.', correct: false,
-            explanation: 'Vždycky je těžší dokázat, že něco neexistuje, než naopak. Navíc, pokud je mise opravdu tajná, na internetu o ní žádné informace nenajdeš.' },
-          { value: 'context', label: 'Ověřit, jestli náhodou nejsou vytržené z kontextu.', correct: true }
-        ] },
-      { header: '3) Tipni si, odkud Ivan získal fotky z Marsu.', options: [
-          { value: 'contacts', label: 'Má kontakty ve vysoké politice.', correct: false,
-            explanation: 'Fotky vůbec nejsou z Marsu – většinou pocházejí z bezplatných galerií nebo simulátorů.' },
-          { value: 'hack', label: 'Naboural se do tajných archivů NASA.', correct: false,
-            explanation: 'Fotky vůbec nejsou z Marsu – většinou pocházejí z bezplatných galerií nebo simulátorů.' },
-          { value: 'correct', label: 'Fotky vůbec nejsou z Marsu.', correct: true }
-        ] },
-      { header: 'Co dál?', text: 'Tak pojď zjistit, jak to teda je…' }
+    let sections: Section[] = [
+      {
+        content: `Někteří lidé šíří dezinformace záměrně s cílem se obohatit nebo získat moc.
+  Jiní se jen nedokáží zorientovat v záplavě informací.`
+      },
+      {
+        question: `Zkusím je teda nějak přesvědčit. Jak je ale nejlépe konfrontovat?`,
+        options: [
+            {
+              answer: `Upozornit je, že věří konspiračním teoriím..`,
+              isCorrect: false,
+              explanation: `Nálepkování většinou nikam nevede, budeš potřebovat lepší argument`
+            },
+            {
+              answer: `Zesměšnit a zpochybnit důvěryhodnost Ivana.
+`,
+              isCorrect: false,
+              explanation: `Útokem na “šiřitele pravdy” můžeš nechtěně podpořit konspirační teorii o tajném spiknutí.`
+            },
+            {
+              answer: `Dokázat, že Ivan prezentuje nepravdivé informace.`,
+              isCorrect: true,
+              explanation: `Nejlepší způsob, jak konfrontovat dezinformace, je poskytnout důkazy a fakta.`
+            }
+        ],
+      },
+      {
+        question: `Jak příspěvek nejlépe ověřit?`,
+        options: [
+          {
+            answer:'Dohledat informace o tajné misi, kterou Ivan zmiňuje.',
+            isCorrect: false,
+            explanation: `Vždycky je těžší dokázat, že něco neexistuje, než naopak. Navíc, pokud je mise opravdu tajná, na internetu o ní žádné informace nenajdeš.`
+          },
+          {
+            answer:'Ověřit, jestli náhodou nejsou vytržené z kontextu.',
+            isCorrect: true,
+            explanation: ``
+          }
+
+        ],
+      },
+      {
+        question: `Tipni si odkud Ivan získal fotky z Marsu.`,
+        options: [
+          {
+            answer: `Má kontakty ve vysoké politice.`,
+            isCorrect: false,
+            explanation: ``
+          },
+          {
+            answer: `Naboural se do tajných archivů NASA.`,
+            isCorrect: false,
+            explanation: ``
+          },
+          {
+            answer: `Fotky vůbec nejsou z Marsu.`,
+            isCorrect: true,
+            explanation: `` }
+
+        ],
+    },
+      {
+        content: `Tak pojď zjistit, jak to teda je…`
+      }
     ];
   
-    const totalSteps = steps.length;
-    let currentStep = 0;
-    let score = 0;
-    let selected: string | null = null;
-    let feedback = '';
-    let explanation = '';
-  
-    // references to each step element
-    let stepRefs: HTMLElement[] = [];
-  
-    function resetState() {
-      selected = null;
-      feedback = '';
-      explanation = '';
+    let selected: Array<Options|null> = Array(sections.length).fill(null);
+  let feedback: Array<string>       = Array(sections.length).fill('');
+
+  function checkAnswer(i: number) {
+    const opt = selected[i];
+    if (!opt) return;
+    if (opt.isCorrect) {
+      feedback[i] = 'Správně!';
+    } else {
+      feedback[i] = opt.explanation;
+      // allow retry: keep selected[i] as null so they must re-choose
+      selected[i] = null;
     }
-  
-    function nextStep() {
-      resetState();
-      currentStep += 1;
-    }
-  
-    function checkAnswer() {
-      const opt = steps[currentStep].options?.find(o => o.value === selected);
-      if (!opt) return;
-      if (opt.correct) {
-        feedback = '🌟 Správně!';
-        score += 10;
-        setTimeout(() => nextStep(), 1000);
-      } else {
-        feedback = '❌ Špatně!';
-        explanation = opt.explanation || '';
-      }
-    }
-  
-    function finishQuiz() {
-      onComplete();
-    }
-  
-    // Runes mode: use $effect to run when currentStep changes
-    $: if (stepRefs[currentStep]) {
-      stepRefs[currentStep].scrollIntoView({ behavior: 'smooth' });
-    }
+  }
   </script>
   
-  <div class="map-container" style="margin-right: {marginRight};">
-    {#each steps as step, idx}
-      <section bind:this={stepRefs[idx]} class="map-step" style="--display-after: {idx < totalSteps - 1 ? 'block' : 'none'};">
-        <div class="node"></div>
-        <h3 class="quiz-header">{step.header}</h3>
-        {#if step.text}
-          <p class="quiz-text">{step.text}</p>
-        {/if}
-  
-        {#if step.options}
-          <ul class="options">
-            {#each step.options as o}
-              <li>
-                <label>
-                  <input type="radio" bind:group={selected} value={o.value} />
-                  {o.label}
-                </label>
-              </li>
+  <main class="scroll-container">
+    {#each sections as sec, i}
+      <section class="snap-section">
+        {#if sec.content}
+               <div class="content">
+                 {#each sec.content.split('\n') as line}
+                   <p>{line}</p>
+                 {/each}
+               </div>
+             {/if}  
+        {#if sec.question}
+          <div class="quiz">
+            <p class="question">{sec.question}</p>
+            {#each sec.options as opt}
+              <label>
+                <input
+                  type="radio"
+                  bind:group={selected[i]}
+                  value={opt}
+                  disabled={feedback[i] === 'Správně!'}
+                />
+                {opt.answer}
+              </label>
             {/each}
-          </ul>
-          <button class="btn" on:click={checkAnswer} disabled={!selected}>Ověřit</button>
-          {#if feedback}
-            <p class="feedback {feedback.startsWith('🌟') ? 'success' : 'error'}">{feedback}</p>
-            {#if explanation}
-              <p class="explanation">{explanation}</p>
+  
+            <button
+              on:click={() => checkAnswer(i)}
+              disabled={!selected[i] || feedback[i] === 'Správně!'}
+            >
+              Odeslat
+            </button>
+  
+            {#if feedback[i]}
+              <p class={feedback[i] === 'Správně!' ? 'correct' : 'incorrect'}>
+                {feedback[i]}
+              </p>
             {/if}
-          {/if}
-        {:else if idx === steps.length - 1}
-          <button class="btn" on:click={finishQuiz}>Dokončit</button>
+          </div>
         {/if}
       </section>
     {/each}
-  </div>
+  </main>
   
   <style>
-    .map-container {
+    .scroll-container {
       height: 100vh;
       overflow-y: auto;
       scroll-snap-type: y mandatory;
       -webkit-overflow-scrolling: touch;
-      scrollbar-width: none; /* Firefox */
+      margin: 0;
     }
-    .map-container::-webkit-scrollbar { display: none; } /* Chrome/Safari */
-  
-    .map-step {
+    .snap-section {
       scroll-snap-align: start;
       height: 100vh;
       padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       box-sizing: border-box;
-      position: relative;
+      color: #333;
+      background: #f9f9f9;
     }
-    .node {
-      width: 16px;
-      height: 16px;
-      background: #4a90e2;
-      border-radius: 50%;
-      position: absolute;
-      left: 20px;
-      top: 20px;
+    .content p {
+      margin-bottom: 1rem;
+      line-height: 1.5;
     }
-    .map-step::after {
-      content: '';
-      position: absolute;
-      left: 27px;
-      top: 36px;
-      width: 2px;
-      height: calc(100% - 36px);
-      background: #ccc;
+    .quiz {
+      margin-top: 1rem;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 1rem;
+      border-radius: 8px;
     }
-    .quiz-header { margin-top: 0; margin-left: 50px; }
-    .quiz-text { margin-left: 50px; white-space: pre-line; }
-    .options { list-style: none; padding: 0; margin-left: 50px; margin-bottom: 20px; }
-    .options li { margin-bottom: 10px; }
-    .options label { display: block; background: #f9f9f9; padding: 10px 15px; border-radius: 5px; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
-    .options input[type="radio"] { display: none; }
-    .btn { margin-left: 50px; padding: 10px 20px; background: #4a90e2; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    .btn:disabled { background: #aaa; cursor: default; }
-    .feedback { margin-top: 10px; margin-left: 50px; font-style: italic; }
-    .feedback.success { color: #2a9d8f; }
-    .feedback.error { color: #e76f51; }
-    .explanation { margin-top: 5px; margin-left: 50px; color: #888; font-size: 0.9rem; }
+    .quiz .question {
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    .quiz label {
+      display: block;
+      margin: 0.5rem 0;
+    }
+    .quiz button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: #0070f3;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .quiz button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .correct {
+      margin-top: 0.75rem;
+      color: #276749;
+    }
+    .incorrect {
+      margin-top: 0.75rem;
+      color: #742a2a;
+    }
   </style>
-  
