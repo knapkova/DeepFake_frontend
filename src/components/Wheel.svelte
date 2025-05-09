@@ -2,12 +2,12 @@
 
 let rotation = 0;
 $: fill = `${(rotation/360*100).toFixed(1)}%`;
-
+export let wheelSelected: boolean = false;
 
 
 const emotions = [
-    '😡 hněv', // hněv
-    '😢 smutek', // smutek
+    '😡 hněv',
+    '😢 smutek', 
     '😱 strach', // strach
     '😮 překvapení', // překvapení
     '😄 radost', // radost
@@ -25,12 +25,17 @@ const emotions = [
   function toggleSelect(i: number) {
     const pos = selectedIndices.indexOf(i);
     if (pos > -1) {
-      // odznačit
       selectedIndices.splice(pos, 1);
       selectedIndices = [...selectedIndices];
     } else if (selectedIndices.length < 3) {
-      // přidat, pokud je méně než tři
       selectedIndices = [...selectedIndices, i];
+    }
+
+    if(selectedIndices.length >= 3){
+        wheelSelected = true;
+    }
+    else{
+        wheelSelected = false;
     }
   }
 
@@ -72,8 +77,8 @@ const emotions = [
 <style>
 
 .wheel-wrapper {
-    width: 45rem;      /* upravte podle potřeby */
-    height: 45rem;     /* musí být stejné jako šířka */
+    width: 35rem;      /* upravte podle potřeby */
+    height: 35rem;     /* musí být stejné jako šířka */
     margin: 0 auto;    /* vycentruje kolo */
   }
 
@@ -152,11 +157,11 @@ button{
      &:nth-of-type(11) { --_idx: 11; }
      &:nth-of-type(12) { --_idx: 12; }
      margin-left: -10%;
-     padding-left: 70px ;
+     padding-left: 4rem ;
 
 
      background: #3B82F6;
-     font-size: 25px;
+     font-size: 22px;
  rotate: calc(360deg / var(--_items) * calc(var(--_idx) - 1));
 
 height: calc((2 * pi *  50cqi) / var(--_items));

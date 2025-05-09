@@ -82,7 +82,7 @@
     <div class="quiz-start">
       <h2>Závěrečný kvíz</h2>
       <p>Jste připraveni zopakovat si, co jste se naučili?</p>
-      <button class="start-btn" on:click={startQuiz}>Začít kvíz</button>
+      <button on:click={startQuiz}>Začít kvíz</button>
     </div>
   {:else if state === 'quiz'}
     <div class="quiz-container">
@@ -133,7 +133,7 @@
       {#if !quizEvaluated}
         <!-- Evaluate button is disabled unless all questions answered -->
         <button
-          class="evaluate-btn"
+          
           on:click={evaluateQuiz}
           disabled={$progress < 100}
         >
@@ -145,7 +145,7 @@
           <p>
             Dosáhli jste <strong>{score}</strong> bodů z <strong>{$questions.length}</strong>.
           </p>
-          <button class="restart-btn" on:click={() =>completeLevel()}>Zkusit znovu</button>
+          <button on:click={() =>completeLevel()}>Dokončit </button>
         </div>
       {/if}
     </div>

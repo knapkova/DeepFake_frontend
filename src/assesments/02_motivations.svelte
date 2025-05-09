@@ -94,7 +94,7 @@
       
       <button 
         on:click={() => showPostBody = !showPostBody} 
-        class="toggle-btn" 
+        
         type="button">
         {showPostBody ? 'Skrýt příspěvek' : 'Zobrazit příspěvek'}
       </button>
@@ -127,7 +127,7 @@
   
         {#if canProceed}
           <div class="continue-wrapper">
-            <button on:click={() => state.set('comments')} class="btn continue-btn">
+            <button on:click={() => state.set('comments')} >
               Pokračovat 📸
             </button>
           </div>
@@ -139,7 +139,7 @@
   
     {:else if $state === 'emotions'}
       <div class="emotion-section">
-        <button on:click={() => state.set('comments')} class="btn">
+        <button on:click={() => state.set('comments')} >
           Pokračovat
         </button>
       </div>
@@ -182,19 +182,20 @@
                 {:else}
                   <p class="result incorrect">
                     Správná odpověď: {getMotivationById(answerResults[i].correctAnswer)}<br />
-                    <i>?</i> {comment.manipulativeExplanation}
-                  </p>
+                    {#if comment.manipulativeExplanation}
+                      <strong>Vysvětlení:</strong> {comment.manipulativeExplanation}
+                    {/if}
+                    </p>
                 {/if}
               {/if}
             </div>
           {/each}
           <button on:click={checkAnswers} disabled={!allSelected} hidden={answersChecked}
-            class="btn">
+            >
             Zkontrolovat odpovědi 📝
           </button>
           <button
       on:click={() => completeLevel()}
-      class="btn"
       hidden={!answersChecked}>
       Jdu dál
     </button>

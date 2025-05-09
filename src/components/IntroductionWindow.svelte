@@ -115,7 +115,7 @@ import {
             <p>Tento ukazatel znázorňuje, kolik lidí je stále ztraceno v informačním chaosu a nevěří už vůbec ničemu.
             S každým splněným levelem pomáháš více a více lidem orientovat se ve světě dezinformací a obnovovat důvěru ve fakta.
                      </p>
-                     <Button onclick={() => { 
+                     <button onclick={() => { 
                         if ($progress < 20) {
                             progress.set(97);
         
@@ -124,7 +124,7 @@ import {
                           progress.set($progress - 20);
         
                         }
-                    }} >Vyzkoušej zde 👈</Button>  
+                    }} >Vyzkoušej zde 👈</button>  
                     {#if showInput}
                     <div class="mt-8">
                       <h3 class="font-semibold mb-2">Zvol si <s>info</s> svoji přezdívku</h3>
@@ -135,13 +135,12 @@ import {
                         bind:value={localNickname}
                         required
                       />
-                      <Button
-                        class="btn"
-                        on:click={saveNickname}
+                      <button
+                        onclick={saveNickname}
                         disabled={!localNickname}
                       >
                         Uložit a pokračovat do hry
-                      </Button>
+                    </button>
                     </div>
                   {/if}
             
@@ -151,8 +150,7 @@ import {
                       <div class="font-bold text-lg">Jdeme na to, {$nickname}</div>
                     </div>
                     <button
-                      class="bg-red-500 rounded-full p-4 text-white cursor-pointer disabled:opacity-50"
-                      on:click={incrementState}
+                      onclick={incrementState}
                       aria-label="Start the game"
                       disabled={!$nickname}
                     >

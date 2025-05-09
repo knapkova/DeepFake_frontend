@@ -38,7 +38,8 @@
           <p class="text-gray-700">
             Zjistit původ jakékoli fotky nebo obrázku je lehčí, než si možná myslíš. Nemusíš být žádný ajťák! Vše, co potřebuješ, je Google – přesněji: Google Lens.
           </p>
-          <img src="lens_tutorial/lens_0.webp" alt="Úvodní ukázka Google Lens" class="mx-auto w-full max-w-md rounded-lg object-contain" />
+          <img src="lens_tutorial/lens_0.webp" alt="Úvodní ukázka Google Lens" class="mx-auto w-full max-w-md rounded-lg object-contain"   style="max-width: 200px;"
+          />
           <div class="flex justify-end">
             <Button on:click={nextStep} class="mt-4">Pokračovat</Button>
           </div>

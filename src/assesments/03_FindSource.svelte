@@ -1,12 +1,21 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import { writable, get } from 'svelte/store';
   import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
-  import LensTutorial from '$components/LensExplanation_popup.svelte'
 	import LensExplanationPopup from '$components/LensExplanation_popup.svelte';
+  import LensPrequel from "$components/LensPrequel.svelte"
+  import SortableList from '$components/sortable_list_lens.svelte'
 
   export let onLevelComplete: () => void = () => {};
   let showTutorial = writable(false);
+
+  let sortFinished = false;
+  function handleSortFinish(correct: boolean) {
+    if (correct) {
+      sortFinished = true;
+      // tady dál reagujete na dokončení
+    }
+  }
 
 
   function completeLevel() {
@@ -32,8 +41,18 @@
   let selectedImageIndex: number | null = null;
   let selectedTitleIndex: number | null = null;
 
-  type GameState = 'start' | 'explain' | 'play' | 'done';
+  type GameState = 'start' | 'explain' | 'play' | 'done' | 'sorting';
   let state: GameState = 'start';
+
+  let lensIntroComplete = false;
+
+  async function handleLensIntroComplete() {
+    await tick();
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    lensIntroComplete = true;
+  }
+
 
   onMount(async () => {
     const response = await fetch(`${PUBLIC_VITE_API_ROOT}${api_get_by_category}${category_id}`);
@@ -100,24 +119,39 @@
 
 </script>
 
+
+
 <div class="container">
   <h2>Najdi zdroj k obrázku (Matching Game)</h2>
+  <button  on:click={() => state = 'sorting'}>
+    sorting
+  </button>
+  
 
   {#if state === 'start'}
-  <p>Ivan přidává další materiály – několik fotografií, které podle něj dokazují, že přistání na Marsu už proběhlo. Obrázky jsou velmi přesvědčivé, ale přesto by možná stálo za to se na ty fotky podívat trochu blíž. Dokážeš o nich zjistit víc? </p>
+ {#if lensIntroComplete}
+     <p>
+       Ivan přidává další materiály – několik fotografií, které podle něj
+       dokazují, že přistání na Marsu už proběhlo. … Dokážeš o nich zjistit víc?
+     </p>
+     <button  on:click={() => state = 'explain'}>
+      Jdu na to
+    </button>
+  {:else}
+  <LensPrequel onComplete={handleLensIntroComplete}/>
 
-    <button class="start-btn" on:click={() => state = 'explain'}>Jdu na to</button>
+  {/if}
 
   {:else if state == 'explain'}
 
     <LensExplanationPopup showLensExplanation={true}/>
-    <button class="start-btn" on:click={startGame}>Začít hru</button>
+    <button  on:click={startGame}>Začít hru</button>
 
   
   
   
   {:else if state === 'play'}
-    <button class="start-btn" on:click={() => showTutorial.set(true)}>Google Lens návod</button>
+    <button  on:click={() => showTutorial.set(true)}>Google Lens návod</button>
     <LensExplanationPopup bind:showLensExplanation={$showTutorial}/>
         {$showTutorial}
     <p class="instructions">
@@ -161,7 +195,7 @@
       <div class="completed-column">
         <h3>
           Vybraný pár 
-          <button class="refresh-btn" on:click={startGame}>🔁</button>
+          <button on:click={startGame}>🔁</button>
         </h3>
         {#each completedPairs as pair}
           <div class="completed-pair">
@@ -200,6 +234,7 @@
         {/if}
       {/each}
     </div>
+    
 
     <h2>Správné odpovědi:</h2>
     <div class="row">
@@ -215,7 +250,20 @@
         </div>
       {/each}
     </div>
-    <button class="start-btn" on:click={() => completeLevel()}>Další pls</button>
+    <button  on:click={() => state = 'sorting'}>
+      sorting
+    </button>
+  
+  
+  {:else if state== "sorting"}
+  <h2>Zpětné vyhledávání obrázků přes vyhledávač máš za sebou. Nebylo to tak těžké, co? Škoda, že tohle neví každý, pak by si mohl informace snadno ověřit… Tak co, kdybychom je to naučili!</h2>
+      <p>Sestav správné pořadí jednotlivých kroků pro vyhledání obrázku přes Google Lens:
+      </p>
+    <SortableList onComplete={handleSortFinish}/>  
+    {#if sortFinished}
+      <p>Skvěle! </p>
+    <button on:click={() => completeLevel()}>Další pls</button>
+    {/if}
   {/if}
 </div>
 
@@ -267,21 +315,7 @@
     width: 260px;
   }
 
-  .start-btn, .refresh-btn, .good-job button {
-    padding: 0.6rem 1.2rem;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-    font-size: 1rem;
-  }
-
-  .start-btn:hover, .good-job button:hover, .refresh-btn:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-  }
+ 
 
   .card-wrapper {
     position: relative;
@@ -303,6 +337,8 @@
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     position: relative;
+    color: black;
+
   }
   
   button.card:hover {

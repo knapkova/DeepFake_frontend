@@ -7,23 +7,37 @@
 }
 
 @font-face {
+    font-family: 'Alpha-echo';
+    src: url('/fonts/alpha_echo.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
+@font-face {
     font-family: 'Nexa-XBold';
     src: url('fonts/nexa-black.woff2') format('woff2');
 }
+
+
+@font-face {
+    font-family: 'yourgone';
+    src: url('fonts/youregone.ttf') format('truetype');
+}
+
 
 @font-face {
     font-family: 'Open Sans-SemiBold';
     src: url('fonts/nexa-black.woff2') format('woff2');
 }
 
-body {
-    font-family: 'Open Sans-SemiBold', sans-serif; /* Replace with your desired font */
-    font-size: 16px; /* Set a default font size */
-    color: var(--font-color); /* Set a default font color */
-    background-color: var(--background-color); /* Set a default background color */
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+
+h1, h2 {
+    font-family: 'yourgone';
+  }
+
+body,div,p {
+    font-family: Verdana, Geneva, Tahoma, sans-serif; /* Replace with your desired font */
+    
 }
 
 /* Typography */
@@ -91,12 +105,12 @@ body {
 }
 
 h1 {
-    font-size: 86px;
+    font-size: 80px;
     font-weight: bold;
 }
 
 h2{
-    font-size: 50px;
+    font-size: 45px;
     font-weight: bold;
 }
 
@@ -111,4 +125,53 @@ h3 .gray {
 
 .info div {
     width: 45%;
+}
+
+.button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  align-self: center;
+  background-color: #fff;
+  background-image: none;
+  background-position: 0 90%;
+  background-repeat: repeat no-repeat;
+  background-size: 4px 3px;
+  border-radius: 15px 225px 255px 15px 15px 255px 225px 15px;
+  border-style: solid;
+  border-width: 2px;
+  box-shadow: rgba(0, 0, 0, .2) 15px 28px 25px -18px;
+  box-sizing: border-box;
+  color: #41403e;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Neucha, sans-serif;
+  font-size: 1rem;
+  line-height: 23px;
+  outline: none;
+  padding: .75rem;
+  text-decoration: none;
+  transition: all 235ms ease-in-out;
+  border-bottom-left-radius: 15px 255px;
+  border-bottom-right-radius: 225px 15px;
+  border-top-left-radius: 255px 15px;
+  border-top-right-radius: 15px 225px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button:hover,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  box-shadow: rgba(0, 0, 0, .3) 2px 8px 8px -5px;
+  transform: translate3d(0, 2px, 0);
+}
+
+.button:focus,
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
 }

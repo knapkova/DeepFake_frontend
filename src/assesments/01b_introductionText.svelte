@@ -8,9 +8,20 @@
     import { fly, fade, scale } from "svelte/transition";
     import { cubicOut, backOut } from "svelte/easing";
     import FunFact from "../components/FunFact.svelte"
+    import Wheel, {} from "$components/Wheel.svelte"
+
+    let loading = true;
+    let progress = 0;
+    const DURATION = 10000; 
     
 
-     export let onLevelComplete: () => void = () => {};
+    export let onLevelComplete: () => void = () => {};
+
+    function clamp(val: number, min: number, max: number) {
+        return Math.min(Math.max(val, min), max);
+      }
+    let boxEl: HTMLElement;
+
 
     // Call this function when the level is ready to complete.
     function completeLevel() {
@@ -22,15 +33,8 @@
     let quizCompleted = false;
 
   // Example emoji positions (left and top in pixels)
-  const baseEmoji = { emoji: "𖨆", moved: false };
-  let emojiPositions = [
-  { x: 600, y: 60, ...baseEmoji },
-  { x: 660, y: 60, ...baseEmoji },
-  { x: 720, y: 60, ...baseEmoji }
-];
 
-  let allMoved = false;
-  $: allMoved = emojiPositions.every(e => e.moved);
+  let wheelSelected = false;
 
   
 
@@ -52,7 +56,21 @@
         quiz.set(data[0].questions);
       }
     });
+
+    
+    const start = performance.now();
+    function tick(now: number) {
+      const elapsed = now - start;
+      progress = Math.min(100, (elapsed / DURATION) * 100);
+      if (elapsed < DURATION) {
+        requestAnimationFrame(tick);
+      } else {
+        loading = false;
+      }
+    }
+    requestAnimationFrame(tick);
   });
+
 
     async function fetchArticle() {
       const response = await fetch(PUBLIC_VITE_API_ROOT + get_req, {
@@ -69,115 +87,87 @@
       return fetchedArticle;
   }
 
-    function draggable(node: HTMLElement, emoji: { x: number; y: number; emoji: string; moved: boolean }) {
-    let startX: number, startY: number;
-
-    function handlePointerDown(event: PointerEvent) {
-      startX = event.clientX - emoji.x;
-      startY = event.clientY - emoji.y;
-      node.setPointerCapture(event.pointerId);
-      node.addEventListener("pointermove", handlePointerMove);
-      node.addEventListener("pointerup", handlePointerUp);
-    }
-
-    function handlePointerMove(event: PointerEvent) {
-      emoji.x = event.clientX - startX;
-      emoji.y = event.clientY - startY;
-      node.style.left = emoji.x + "px";
-      node.style.top = emoji.y + "px";
-    }
-
-    function handlePointerUp(event: PointerEvent) {
-      node.releasePointerCapture(event.pointerId);
-      node.removeEventListener("pointermove", handlePointerMove);
-      node.removeEventListener("pointerup", handlePointerUp);
-
-      if (!emoji.moved) {
-        emoji.moved = true;
-        // re-assign to trigger Svelte’s reactivity
-        emojiPositions = emojiPositions.slice();
-      }
-    }
-
-    node.addEventListener("pointerdown", handlePointerDown);
-
-    return {
-      destroy() {
-        node.removeEventListener("pointerdown", handlePointerDown);
-      }
-    };
-  }
     
 </script>
 
 
-
 {#if $state === 'start'}
-<div class="article" in:fly={{x:300,duration:400}} out:fly={{x:-300}}>
-    {#if $article.length > 0}
-      <h2>{$article[0].title}</h2>
-      
-      <div class="content">
-        {@html $article[0].content}
-      </div>
-      <img src={$article[0].imgSrc} alt="" class="article-image" />
-      <p>{$article[0].Instructions}</p>
-    {:else}
-      <p>Načítám článek...</p>
+<div
+  class="fb-post"
+  in:fly={{ x: 300, duration: 400 }}
+  out:fly={{ x: -300, duration: 400 }}
+>
+  <!-- post header -->
+  
+
+  {#if $article.length > 0}
+  <div class="fb-header">
+    <img
+      class="fb-avatar"
+      src="/path/to/avatar.jpg"
+      alt="User avatar"
+    />
+    <div class="fb-user-info">
+      <span class="fb-name">{$article[0].title}</span>
+      <span class="fb-time">před minutou</span>
+    </div>
+    <div class="fb-options">⋯</div>
+  </div>
+    <div class="fb-content">
+      {@html $article[0].content}
+    </div>
+    {#if $article[0].imgSrc}
+      <img
+        src={$article[0].imgSrc}
+        alt=""
+        class="fb-media"
+      />
     {/if}
-    <button on:click={() => state.set('emotions')} class="btn btn-primary">
-        Pokračovat </button>
+    <p class="fb-instructions">
+      {$article[0].Instructions}
+    </p>
+  {:else}
+    <p>Načítám článek…</p>
+  {/if}
+
+ 
+
+  <button
+      class="fb-button"
+      on:click={() => state.set('emotions')}
+      disabled={loading}
+    >
+      {#if loading}
+        <!-- fill bar behind the text -->
+        <div
+          class="fill-bar"
+          style="width: {progress}%"
+        ></div>
+        <span class="btn-text">Načítám…</span>
+      {:else}
+        <span class="btn-text">Pokračovat</span>
+      {/if}
+    </button>
 </div>
-
-
 {/if}
 
 {#if $state === 'emotions'}
+
+
   <div class="emotions-layout" in:fly={{x:300,duration:400}} out:fly={{x:-300}}>
     <div class="emoji-box">
-      <p class="emoji-box-title">Příspěvek strhl vlnu emocí. Jaké emoce myslíš, že takový příspěvek v lidech nejspíš vyvolá? <b>Vyber tři nejsilnější a přesuň na ně panáčka.</b> Můžeš si také udělat screen ze své odpovědi.</p>
+      <p class="emoji-box-title">Příspěvek strhl vlnu emocí. Jaké emoce myslíš, že takový příspěvek v lidech nejspíš vyvolá? <b>Kliknutím na kolo vyber 3 nejsilnější emoce.</b> Můžeš si také udělat screen ze své odpovědi.</p>
 
-      <div class="emoji-container">
-        {#each emojiPositions as emoji (emoji.emoji + '-' + emoji.x + '-' + emoji.y)}
-          <span
-            use:draggable={emoji}
-            class="emoji"
-            style="left: {emoji.x}px; top: {emoji.y}px;"
-          >
-            {emoji.emoji}
-          </span>
-        {/each}
-      </div>
-    </div>
+      <Wheel bind:wheelSelected={wheelSelected}  />
 
-    <!-- Wheel image on the right -->
-    <div class="image-container">
-      <img
-        src="/wheeel.png"
-        alt="Otáčející se panáček"
-        class="article-image"
-        style="transform: rotate({rotation}deg);"
-      />
-      {#each emojiPositions as emoji (emoji.emoji + '-' + emoji.x + '-' + emoji.y)}
-        <!-- you may keep your overlays here if desired -->
-      {/each}
-      <div class="slider-container">
-        <input type="range" min="0" max="360" step="1" bind:value={rotation} />
-        <div class="controls">
-          <div class="angle">Otoč 🔄</div>
-          
-        </div>
-      </div>
-
-      {#if allMoved}
-      <button class="btn btn-primary" on:click={() => state.set('quiz')}>
+      {#if wheelSelected}
+      <button  on:click={() => state.set('quiz')}>
         Pokračovat
       </button>
   {/if}
     </div>
 
   </div>
-
   
   
 {/if}
@@ -191,7 +181,7 @@
   {#if quizCompleted}
     <div class="quiz-completed">
       <h2>Vše přiřazeno!</h2>
-      <button class="btn" on:click={() => state.set('end')}>Jdeme dál! ✅</button>
+      <button on:click={() => state.set('end')}>Jdeme dál! ✅</button>
     </div>
   {:else}
     <div class="quiz-in-progress">
@@ -206,7 +196,7 @@
       
       <h2>🎉 gratulace!</h2>
       <p>Hotovson</p>
-      <button class="btn" on:click={() => completeLevel()}>Jsem ready jít dál</button>
+      <button  on:click={() => completeLevel()}>Jsem ready jít dál</button>
     </div>
   {/if}
 
@@ -215,6 +205,105 @@
 
 
   <style>
+    .fb-post {
+    max-width: 500px;
+    margin: 1rem auto;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    font-family: Helvetica, Arial, sans-serif;
+    color: #1c1e21;
+    overflow: hidden;
+  }
+
+  .fb-header {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+  }
+  .fb-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+  }
+  .fb-user-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+  .fb-name {
+    font-weight: bold;
+    font-size: 14px;
+  }
+  .fb-time {
+    font-size: 12px;
+    color: #65676b;
+  }
+  .fb-options {
+    font-size: 20px;
+    color: #65676b;
+    cursor: pointer;
+  }
+
+  
+  .fb-content {
+    margin: 8px 12px;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .fb-media {
+    width: 100%;
+    display: block;
+    margin-top: 8px;
+  }
+  .fb-instructions {
+    margin: 8px 12px 0;
+    font-size: 13px;
+    color: #65676b;
+  }
+
+  .fb-button {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% - 24px);
+    margin: 12px;
+    padding: 8px 0;
+    background: #1877f2;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .fb-button:disabled {
+    opacity: 0.7;
+    cursor: default;
+  }
+
+  .fill-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.3);
+    z-index: 1;
+    /* width driven by inline style */
+  }
+
+  .btn-text {
+    position: relative;
+    z-index: 2;
+  }
     /* Basic article styling */
     .article {
       max-width: 800px;

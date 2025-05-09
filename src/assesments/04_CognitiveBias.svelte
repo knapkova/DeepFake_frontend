@@ -188,15 +188,14 @@ let selected = writable<number[]>([]);
     {/if}
 
     {#if state === 'start'}
-        <button class="btn btn-primary" on:click={() => state = 'definition'}>Začít</button>
         <p>
             Pod tvým posledním komentářem s návodem, jak na ověření obrázků, se rozproudila diskuze.
 Jenže místo vděku přišla vlna hejtu.
 Někteří lidé nechtějí znát pravdu. Chtějí jen potvrzení toho, čemu už věří. A jakmile něco naruší jejich představu, brání se – silně, emotivně, někdy i útočně.
         </p>
-        <Button on:click={() => comments_visible = !comments_visible}>
+        <button on:click={() => comments_visible = !comments_visible}>
             {comments_visible ? 'Skrýt komentáře' : '👉 Chci se podívat na reakce'}
-          </Button>
+        </button>
         {#if comments_visible}
         <div class="comments-container">
             {#each $comments as comment}
@@ -235,13 +234,13 @@ Někteří lidé nechtějí znát pravdu. Chtějí jen potvrzení toho, čemu u�
                 </div>
               {/each}
             </div>
-            <button class="check-btn" on:click={checkAnswers}>
+            <button  on:click={checkAnswers}>
               Zkontrolovat odpovědi
             </button>
             {#if resultMessage}
               <p class="result">{resultMessage}</p>
               {#if resultMessage === "Správně!"}
-    <button class="btn btn-primary" on:click={() => state = 'definition'}>
+    <button on:click={() => state = 'definition'}>
       Začít
     </button>
   {/if}
@@ -254,16 +253,7 @@ Někteří lidé nechtějí znát pravdu. Chtějí jen potvrzení toho, čemu u�
         
     
 {#if state == 'definition'}
-{#if message_correct}
-        <div class ="alert alert-success" role="alert">
-            {message_correct}
-            <button class="btn btn-primary" on:click={() => {
-                state = 'examples';
-                message_correct = '';
-                message_bad = '';
-            }}>Pokračovat</button>
-        </div>
-    {/if}
+
     {#each $bias as bia}
         <div class="card">
             <div class="card-header">
@@ -284,7 +274,19 @@ Někteří lidé nechtějí znát pravdu. Chtějí jen potvrzení toho, čemu u�
             </div>
         </div>
     {/each}
-    <button class="check-btn" on:click={checkDefinitions}>Zkontrolovat definice</button>
+    {#if message_correct}
+        <div class ="alert alert-success" role="alert">
+            {message_correct}
+            <button on:click={() => {
+                state = 'examples';
+                message_correct = '';
+                message_bad = '';
+            }}>Pokračovat</button>
+        </div>
+    {:else}
+    <button on:click={checkDefinitions}>Zkontrolovat definice</button>
+
+    {/if}
     {/if}
 
     {#if state=='examples'}
@@ -292,7 +294,7 @@ Někteří lidé nechtějí znát pravdu. Chtějí jen potvrzení toho, čemu u�
     {#if message_correct}
         <div class ="alert alert-success" role="alert">
             {message_correct}
-            <button class="btn btn-primary" on:click={() => {
+            <button  on:click={() => {
                 state = 'end';
                 message_correct = '';
                 message_bad = '';
@@ -304,7 +306,7 @@ Někteří lidé nechtějí znát pravdu. Chtějí jen potvrzení toho, čemu u�
     {#if state == 'end'}
         <div class="alert alert-success" role="alert">
             mega nejvesi borec!
-            <button class="btn btn-primary" on:click={() => completeLevel()}>Daal</button>
+            <button  on:click={() => completeLevel()}>Daal</button>
 
         </div>
     {/if}
@@ -315,29 +317,6 @@ Někteří lidé nechtějí znát pravdu. Chtějí jen potvrzení toho, čemu u�
 
 </div>
 <style>
-
-  
-  .btn {
-    background: #4f46e5;
-    color: #fff;
-    border: none;
-    border-radius: 9999px;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s;
-    margin: 1rem 0;
-  }
-  .btn:hover:not(:disabled) {
-    background: #4338ca;
-    transform: translateY(-2px);
-  }
-  .btn:disabled {
-    background: #a5b4fc;
-    cursor: not-allowed;
-    transform: none;
-  }
   
   
   .comments-container {
@@ -398,19 +377,7 @@ Někteří lidé nechtějí znát pravdu. Chtějí jen potvrzení toho, čemu u�
     font-size: 1rem;
     color: #444;
   }
-  .check-btn {
-    padding: 0.5rem 1rem;
-    background-color: #4f46e5;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s;
-  }
-  .check-btn:hover {
-    background-color: #4338ca;
-  }
+
   .result {
     margin-top: 1rem;
     font-size: 1.1rem;
