@@ -3,7 +3,6 @@
     import { writable, get } from 'svelte/store';
     import type { QuestionEndQuiz, answersEndQuiz } from '$types/interfaces';
     import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
-    import "../styles/quiz.css";
     export let onLevelComplete: () => void = () => {};
 
   function completeLevel() {
@@ -15,7 +14,7 @@
   
     let questions = writable<QuestionEndQuiz[]>([]);
     let selectedAnswers = writable<number[]>([]);
-    let state: 'start' | 'quiz' = 'start'; 
+    let state: 'quiz'; 
     let quizEvaluated = false; 
     let score = 0;
     let progress = writable(0);
@@ -35,6 +34,7 @@
   
       // Initialize selectedAnswers to -1 for each question
       selectedAnswers.set(questionsData.map(() => -1));
+      startQuiz();
     });
   
     function startQuiz() {
@@ -68,7 +68,6 @@
   
     // Restart the quiz from the start screen
     function restartQuiz() {
-      state = 'start';
       quizEvaluated = false;
       score = 0;
       progress.set(0);
@@ -78,18 +77,17 @@
     }
   </script>
   
-  {#if state === 'start'}
-    <div class="quiz-start">
+  {#if state === 'quiz'}
+    
+    <div class="quiz-container">
+
       <h2>Závěrečný kvíz</h2>
       <p>Jste připraveni zopakovat si, co jste se naučili?</p>
-      <button on:click={startQuiz}>Začít kvíz</button>
-    </div>
-  {:else if state === 'quiz'}
-    <div class="quiz-container">
       <!-- Progress bar -->
       <div class="progress-bar">
         <div class="progress" style="width: {$progress}%"></div>
       </div>
+
   
       <!-- Questions and answers -->
       {#each $questions as question, qIndex (question.id)}
@@ -150,4 +148,99 @@
       {/if}
     </div>
   {/if}
+
+  <style>
+  /* Quiz container */
+  .quiz-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+  .quiz-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+  .quiz-container p {
+    text-align: center;
+    color: #555;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+  }
+  .progress {
+    height: 100%;
+    background: linear-gradient(90deg, #4f46e5, #3b82f6);
+    transition: width 0.3s ease;
+  }
+
+  /* Questions */
+  .question-card {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+  }
+  .question-text {
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  /* Answers */
+  .answer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .answer-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .answer-item:not(.correct-answer):not(.wrong-answer):hover {
+    background: #f3f4f6;
+  }
+  .answer-item.correct-answer {
+    background: #d1fae5;
+    border: 1px solid #10b981;
+  }
+  .answer-item.wrong-answer {
+    background: #fee2e2;
+    border: 1px solid #ef4444;
+    opacity: 0.8;
+  }
+  .answer-item input {
+    accent-color: #3b82f6;
+    cursor: pointer;
+  }
+
+
+
+  /* Result screen */
+  .quiz-result {
+    text-align: center;
+    margin-top: 2rem;
+  }
+  .quiz-result h2 {
+    color: #10b981;
+    margin-bottom: 0.5rem;
+  }
+</style>
   

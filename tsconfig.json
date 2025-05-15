@@ -10,7 +10,17 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
-		"moduleResolution": "bundler"
+		"moduleResolution": "bundler",
+		"baseUrl": "src",
+		"paths": {
+			"$components/*": ["lib/components/*"],
+			"$assesments/*": ["lib/assesments/*"],
+			"$lib/*": ["lib/*"],
+			"$types/*": ["types/*"],
+			"$styles/*": ["styles/*"],
+			"$stores/*": ["stores/*"],
+
+    }
 	}
 	// Path aliases are handled by https://svelte.dev/docs/kit/configuration#alias
 	// except $lib which is handled by https://svelte.dev/docs/kit/configuration#files

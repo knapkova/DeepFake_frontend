@@ -34,7 +34,7 @@
       const response = await fetch(`${PUBLIC_VITE_API_ROOT}/api/Security/Account/Logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include' // Ensure cookies are sent
+        credentials: 'include' 
       });
       console.log("Logout response:", response);
     } catch (error) {
@@ -129,7 +129,7 @@
   }
 
   /* Hamburger button */
-  .hamburger {
+  button.hamburger {
     font-size: 30px !important;
     color: var(--my-gray) !important;
     background: transparent !important;

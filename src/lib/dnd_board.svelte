@@ -78,9 +78,9 @@
           {column.name}
           {#if column.definition}
             <p class="definition-tooltip"><strong>💡 zobrazit definici</strong></p>
-            <select class="form-select" id="hidden">
-              <option>{column.definition}</option>
-            </select>
+            <p class="form-select" id="hidden">
+              {column.definition}
+            </p>
           {/if}
         </div>
         <div class="card-body">
@@ -100,8 +100,17 @@
       </div>
     {/each}
     <button class="check-btn" on:click={checkDropZones}>
-      Zkontrolovat definice
+      Zkontrolovat
     </button>
   </section>
+
+  <style>
+    .form-select{
+      font-size: small;
+    padding-left: 25px;
+    font-style: italic;
+    color: gray;
+    }
+  </style>
  
   

@@ -63,6 +63,7 @@
     }
   
     .play-btn {
+      align-self: flex-end;
       background-color: #ff0000;
       color: #fff;
       border: none;

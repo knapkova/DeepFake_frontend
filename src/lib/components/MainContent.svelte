@@ -1,7 +1,6 @@
 <script>
     import { onMount } from "svelte";
     import zvolsiinfoSidebar from '../assets/zvolsiingo_redLogo.png'
-    import '../global.css';
     export let marginRight = '30%';
 
 </script>
@@ -24,14 +23,20 @@
 
 <style>
     .main-content {
-        background-image: url("../assets/zvolsiinfo_QLogoTransparent.png");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
+        background-image: url("/zvolsiinfo_QLogoTransparent.png") !important;
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
         align-items: start;
         margin-right: 18px;
-
+        color: black;
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+   
     }
+
     .funfact {
         border-radius: 10px;
         padding: 20px;
@@ -47,5 +52,28 @@
         font-weight: lighter;
         font-family: 'Courier New', Courier, monospace;
     }
+
+    @media screen and (max-width: 768px) {
+    .main-content {
+      margin-right: 0;
+      padding: 0.75rem;
+      background-position: top center;
+    }
+    .main-content h1 {
+      font-size: 1.8rem;
+    }
+    .main-content .gray {
+      font-size: 1rem;
+    }
+    .info {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .funfact {
+      flex: 1 1 auto;
+      width: 100%;
+      box-shadow: none;
+    }
+  }
 
 </style>

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import 'drag-drop-touch';
+
 	import { draggable, droppable, dndState, type DragDropState } from '@thisux/sveltednd';
 	import { writable, derived } from 'svelte/store';
 	import type { StartQuiz } from '$types/interfaces';
@@ -77,24 +79,20 @@
 	<div class="board">
 		<!-- LEFT COLUMN: Definitions source -->
 		<div class="source-column" use:droppable={{ container: 'source' }}>
-			<h4>Přiřaď definice ke správným termínům</h4>
-			{#if $isSourceEmpty}
-				<div class="placeholder">Vše přiřazeno 🙂</div>
-			{:else}
-				{#each $sourceItems as item (item.id)}
-					<div
-						class="card"
-						use:draggable={{
-							container: 'source',
-							dragData: item,
-							callbacks: { onDragEnd: handleDragEnd }
-						}}
-					>
-						{item.description}
-					</div>
-				{/each}
-			{/if}
-		</div>
+  {#each $sourceItems as item (item.id)}
+    <div
+      class="card "
+      use:draggable={{
+        container: 'source',
+        dragData: item,
+        callbacks: { onDragEnd: handleDragEnd }
+      }}
+    >
+      {item.description}
+    </div>
+  {/each}
+</div>
+
 
 		<!-- RIGHT COLUMNS: One per term -->
 		<div class="targets">
@@ -166,6 +164,9 @@
 	}
 	.card {
 		padding: 0.5rem;
+    touch-action: none;
+    user-select: none;
+
 		margin: 0.5rem 0;
 		background: #fff;
 		border: 1px solid #aaa;

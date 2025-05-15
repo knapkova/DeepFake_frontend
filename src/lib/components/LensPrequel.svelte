@@ -40,9 +40,9 @@
       {
         question: `Tipni si, odkud Ivan získal fotky z Marsu.`,
         options: [
-          { answer: `Má kontakty ve vysoké politice.`, isCorrect: true,
+          { answer: `Má kontakty ve vysoké politice.`, isCorrect: false,
             explanation: `Tak pojď zjistit, jak to teda je…` },
-          { answer: `Naboural se do tajných archivů NASA.`, isCorrect: true,
+          { answer: `Naboural se do tajných archivů NASA.`, isCorrect: false,
             explanation: `Tak pojď zjistit, jak to teda je…` },
           { answer: `Fotky vůbec nejsou z Marsu.`, isCorrect: true,
             explanation: `Ivan přidává další materiály – několik fotografií, které podle něj dokazují, že přistání na Marsu už proběhlo. Obrázky jsou velmi přesvědčivé, ale přesto by možná stálo za to se na ty fotky podívat trochu blíž. Dokážeš o nich zjistit víc?
@@ -88,6 +88,13 @@
       threshold: 0
     });
 
+    function blockKeyScroll(e: KeyboardEvent) {
+    const keys = ['ArrowUp','ArrowDown','PageUp','PageDown',' '];
+    if (keys.includes(e.key)) {
+      e.preventDefault();
+    }
+  }
+
     // observe all pages
     container
       .querySelectorAll<HTMLElement>('.snap-section')
@@ -123,6 +130,14 @@
         container.scrollTo({ top: currentStep * window.innerHeight });
       }
   }
+  function goNext() {
+    if (currentStep >= sections.length - 1 || !canAdvance) return;
+    currentStep += 1;
+    container.scrollTo({
+      top: currentStep * container.clientHeight,
+      behavior: 'smooth'
+    });
+  }
   
     
   </script>
@@ -130,16 +145,15 @@
   <main
     bind:this={container}
     class="scroll-container"
-    on:wheel={blockScroll}
-    on:touchmove={blockScroll}
+    on:wheel|preventDefault
+    on:touchmove|preventDefault
+
   >
   <div class="page-indicator">
   </div>
     {#each sections as sec, i}
 
       <section class="snap-section">
-        Stránka {currentStep + 1} z {sections.length} i {i}
-
         {#if sec.content}
           <div class="content">
             {#each sec.content.split('\n') as line}
@@ -175,7 +189,11 @@
             {/if}
           </div>
         {/if}
+        <button on:click={goNext} class="next-btn">
+          ⬇️
+        </button>
       </section>
+
     {/each}
   </main>
   
@@ -183,23 +201,17 @@
   /* Import a clean, modern font */
   @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
 
-  :global(body) {
-    margin: 0;
-    background: #eceff4;
-    font-family: 'Open Sans', sans-serif;
-    color: #333;
-  }
 
   .scroll-container {
     height: 75vh;
-    overflow-y: auto;
-    /* change to mandatory so it always snaps to one section */
-    scroll-snap-type: y mandatory;
-    overscroll-behavior: contain;
-    scroll-behavior: auto;
-    padding: 1rem 0;
-    box-sizing: border-box;
-    background: #eceff4;
+      overflow-y: auto;      /* allow scrolling when content overflows */
+
+  overflow: hidden;              
+  scroll-snap-type: y mandatory; 
+  overscroll-behavior: contain;
+  padding: 1rem 0;
+  box-sizing: border-box;
+  background: #eceff4;              
   }
 
   .snap-section {
