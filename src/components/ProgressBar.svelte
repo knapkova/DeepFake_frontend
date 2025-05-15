@@ -1,8 +1,8 @@
 <!-- src/components/ProgressIndicator.svelte -->
 <script lang="ts">
-    import { tweened } from 'svelte/motion';
     import { cubicOut } from 'svelte/easing';
     import { writable } from 'svelte/store';
+    import { tweened } from 'svelte/motion';
   
     export let progress = writable(100);
   

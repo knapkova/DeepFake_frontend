@@ -1,11 +1,3 @@
-export interface Category {
-    id: number;
-    name: string;
-    description: string;
-    visible: boolean;
-    duration: number;
-    imgSrc: string;
-}
 
 export interface Headline {
     id: number;
@@ -35,17 +27,24 @@ export interface AssignmentIntroductionArticle{
     imgae:File;
     visible:boolean;
     categoryId:number;
+    questions:StartQuiz[];
 }
 
 // manipulative text
 
 export interface AssignmentManipulativeText{
     id:number;
+    instructions:string;
+    assignmentIntroductionArticleId:number;
+    assignmentIntroductionArticle:AssignmentIntroductionArticle;
     text:string;
     header:string;
     manipulativeParts:JSON;
+    userFeedback:string;
     visible:boolean;
     categoryId:number;
+    manipulativeComments:ManipulativeTextComments[];
+    manipulativeMotivations:ManipulativeMotivation[];
 }
 
 export interface ManipulativePart {
@@ -118,4 +117,38 @@ export interface FunFact{
     title: string;
     text: string;
     categoryId: number;
+}
+
+export interface FeedbackMeme{
+    id:number;
+    description:string;
+    imgSrc:string;
+}
+
+export interface ManipulativeTextComments{
+    id:number;
+    comment:string;
+    username:string;
+    manipulativeMotivationId:number;
+    manipulativeMotivation: ManipulativeMotivation;
+    manipulativeExplanation:string;
+    manipulativeTextId:number;
+}
+
+export interface ManipulativeMotivation{
+    id:number;
+    motivation:string;
+    definition:string;
+    manipulativeTextId:number;
+}
+export interface Category{
+     id : number,
+     name : string,
+     description : string,
+     visible : boolean,
+     duration : number,
+     imgSrc : string,
+     image : string,
+     funFacts : FunFact[],
+     feedbackMemes : FeedbackMeme[], 
 }

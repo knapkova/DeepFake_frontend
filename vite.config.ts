@@ -8,12 +8,12 @@ export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	resolve: {
 		alias: {
-		  $assesments: path.resolve('./src/lib/assesments'),
-		  $components: path.resolve('./src/lib/components'),
-		  $types: path.resolve('./src/types'),
-		  $lib: path.resolve('./src/lib'),
-		  $styles: path.resolve('./src/styles'),
-		  $stores: path.resolve('./src/stores'),
+		  $assesments: path.resolve('src/assesments'),
+		  $components: path.resolve('src/components'),
+		  $types: path.resolve('src/types'),
+		  $lib: path.resolve('src/lib'),
+		  $styles: path.resolve('src/styles'),
+		  $stores: path.resolve('src/stores'),
 		}
 	  }
 });

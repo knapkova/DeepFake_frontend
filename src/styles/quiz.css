@@ -1,25 +1,9 @@
 .quiz-container {
-  max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   background: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Progress bar at the top */
-.progress-bar {
-  width: 100%;
-  background-color: #e0e0e0;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  overflow: hidden;
-  height: 20px;
-}
-.progress {
-  height: 20px;
-  background-color: #007bff;
-  transition: width 0.3s ease;
 }
 
 .question-card {

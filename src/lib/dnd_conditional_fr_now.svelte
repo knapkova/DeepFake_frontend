@@ -1,10 +1,10 @@
 <script lang="ts">
-  import 'drag-drop-touch';
-
+  import { onMount } from 'svelte';
 	import { draggable, droppable, dndState, type DragDropState } from '@thisux/sveltednd';
 	import { writable, derived } from 'svelte/store';
 	import type { StartQuiz } from '$types/interfaces';
 	export let onQuizComplete: () => void = () => {};
+
 
 	function completeQuiz() {
 		onQuizComplete();

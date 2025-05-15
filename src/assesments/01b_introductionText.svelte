@@ -169,7 +169,6 @@
 	</div>
 {/if}
 
-<!-- <GlowButton/> -->
 
 <style>
 	.continue-container {

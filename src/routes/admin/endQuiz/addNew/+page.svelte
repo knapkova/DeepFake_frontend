@@ -82,7 +82,7 @@
                 class="form-control answer-input"
                 placeholder="Zadejte odpověď"
                 />
-                <label for="correct-{index}" class="correct-label">Správná odpověď?</label>
+                <label for="correct-{index}" class="correct-label">Správně?</label>
                 <input type="checkbox" id="correct-{index}" name="correct" bind:checked={ans.correct} 
                 class="correct-checkbox" on:change={() => handleCorrectAnswerChange(index)}
                 />
@@ -160,6 +160,7 @@
     .correct-checkbox {
         width: auto;
         margin-right: 10px;
+        padding: 7px;
     }
 
     .btn-remove {

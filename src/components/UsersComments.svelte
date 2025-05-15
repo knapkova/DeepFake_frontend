@@ -1,7 +1,7 @@
 <script lang="ts">
   import { writable } from 'svelte/store';
 	import ToggleSwitch from '$lib/toggle_switch.svelte';
-	import type { ManipulativeTextComments, AssignmentManipulativeText } from '../types/interfaces';
+	import type { ManipulativeTextComments, AssignmentManipulativeText } from '$types/interfaces';
 	
     export 	let comments = writable<ManipulativeTextComments[]>([]);
   

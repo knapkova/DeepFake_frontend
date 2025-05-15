@@ -3,7 +3,7 @@
 	import { fly } from 'svelte/transition';
 	import { writable } from 'svelte/store';
 	import ToggleSwitch from '$lib/toggle_switch.svelte';
-	import type { ManipulativeTextComments, AssignmentManipulativeText } from '../types/interfaces';
+	import type { ManipulativeTextComments, AssignmentManipulativeText } from '$types/interfaces';
 	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
 	import FbPost from '$components/FbPost.svelte';
 

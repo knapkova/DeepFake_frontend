@@ -35,10 +35,6 @@ export const load: PageServerLoad = async ({ fetch }) => {
     }
 
     const roles = await response.json();
-    console.log('roles', roles);
-    console.log('data_users', data_users);
-
-
 
     return { users: data_users, roles: roles };
 };

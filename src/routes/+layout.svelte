@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
-	import Sidebar from '../components/Sidebar.svelte';
+	import Sidebar from "$components/Sidebar.svelte"
 	import { isAuthenticated, user } from '../stores/auth';
 
 	export let data;
@@ -46,6 +46,8 @@
 		display: flex;
 		height: 100vh;
 		overflow: hidden;
+		    background-color: var(--background-color);
+
 	}
 
 	.sidebar-container {
@@ -63,7 +65,17 @@
 
 	.content {
 		flex: 1;
-		padding: 20px;
 		overflow-y: auto; /* Allow main content to scroll if it exceeds viewport height */
 	}
+
+	 @media screen and (max-width: 768px) {
+    /* hide sidebar on mobile */
+    .sidebar-container {
+      display: none;
+    }
+    /* let content take full width */
+    .content {
+      width: 100%;
+    }
+  }
 </style>

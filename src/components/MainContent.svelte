@@ -1,12 +1,9 @@
 <script>
-    import { onMount } from "svelte";
-    import zvolsiinfoSidebar from '../assets/zvolsiingo_redLogo.png'
     export let marginRight = '30%';
 
 </script>
 
 <div class="main-content" style="margin-right: {marginRight};">
-    <h3 class="gray">Quiz</h3>
     <h1>Klamárium</h1>
     <div class="info" >
         <div class="funfact">

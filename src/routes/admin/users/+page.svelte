@@ -8,7 +8,6 @@
         roles: { id: number; name: string; normalizedName: string; concurrencyStamp: string | null }[] 
     };
   
-    console.log('Roles:', data.roles);
   
     // Map each user's role (received as string) to its corresponding id.
     let editedRoles: Record<string, string> = {};
@@ -26,8 +25,6 @@
       const selectedRoleId = +editedRoles[user.email];
       const selectedRole = data.roles.find(r => r.id === selectedRoleId);
   
-      console.log('Selected role:', selectedRole);
-      console.log('Selected role ID:', selectedRoleId);
   
       if (!selectedRole) {
         alert(`Role not found for ${user.email}`);

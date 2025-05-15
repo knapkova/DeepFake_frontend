@@ -35,6 +35,7 @@ export const actions: Actions = {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify(form.data),
             });
             console.log("Response from server:");

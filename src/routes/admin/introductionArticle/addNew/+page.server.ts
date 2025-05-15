@@ -56,7 +56,7 @@ export const actions: Actions = {
             });
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error('API error:', errorText);
+                console.error('API error:', response);
                 return fail(500, { message: 'Failed to save data.' });
               }
               else{

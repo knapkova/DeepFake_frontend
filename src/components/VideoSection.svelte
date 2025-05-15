@@ -18,6 +18,7 @@
 }
   </script>
   
+  
   <div class="scrollable-container">
     {#each $categories as video (video.id)}
       <div class="selection">

@@ -132,7 +132,6 @@
 		justify-content: flex-end;
 		margin-bottom: 1rem;
 	}
-	.task-message-to .chat-message-to,
 	.task-message-to p {
 		background: #e1ffc7;
 		padding: 0.75rem 1rem;
@@ -232,11 +231,7 @@
 		border-radius: 20%;
 		border-bottom-left-radius: 0%;
 	}
-	.arrow-indicator {
-		text-align: center;
-		margin: 0.5rem 0;
-		color: #6b7280;
-	}
+
 	.task-message {
 		background: #f3f4f6;
 		padding: 0.5rem;
@@ -245,77 +240,5 @@
 		font-size: 0.9rem;
 	}
 
-	/* Drag & drop */
-	.drag-container {
-		display: flex;
-		gap: 0.5rem;
-		margin-bottom: 0.75rem;
-	}
-	.drop-zone {
-		flex: 1;
-		padding: 0.5rem;
-		background: #fff;
-		border: 1px solid #d1d5db;
-		border-radius: 6px;
-		min-height: 6rem;
-		font-size: 0.8rem;
-	}
-	.drop-zone h4 {
-		margin: 0 0 0.25rem;
-		font-size: 0.85rem;
-	}
-	.available-zone {
-		margin-bottom: 0.75rem;
-	}
-	.tip-item {
-		margin: 0.25rem 0;
-		padding: 0.25rem;
-		background: #e5e7eb;
-		border-radius: 4px;
-		cursor: move;
-		font-size: 0.85rem;
-	}
-
-	/* Footer & feedback */
-	.footer {
-		padding: 0.5rem;
-		border-top: 1px solid #e5e7eb;
-	}
-	.submit-button {
-		width: 100%;
-		padding: 0.5rem;
-		background: #2563eb;
-		color: white;
-		border: none;
-		border-radius: 6px;
-		cursor: pointer;
-		font-size: 0.9rem;
-	}
-	.submit-button:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-	.retry-button {
-		margin-top: 0.5rem;
-		width: 100%;
-		padding: 0.5rem;
-		background: #2563eb;
-		color: white;
-		border: none;
-		border-radius: 6px;
-		cursor: pointer;
-		font-size: 0.9rem;
-	}
-	.feedback-success {
-		background: #daf5e4;
-		padding: 0.5rem;
-		border-radius: 6px;
-		font-size: 0.9rem;
-	}
-	.feedback-error {
-		background: #ffe3e3;
-		padding: 0.5rem;
-		border-radius: 6px;
-		font-size: 0.9rem;
-	}
+	
 </style>

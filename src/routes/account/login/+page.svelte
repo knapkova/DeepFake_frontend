@@ -3,11 +3,11 @@ import { enhance as svelteKitEnhance } from '$app/forms';
 import type { PageData } from './$types';
 import { superForm } from 'sveltekit-superforms';
 import { onMount } from 'svelte';
-import { user, isAuthenticated } from '../../../stores/auth';
-import spinner from '../../../assets/bouncing-ball.svg';
+import { user, isAuthenticated } from '$stores/auth';
+import spinner from '/assets/bouncing-ball.svg';
 
 
-import '../../../styles/form.css'
+import '$styles/form.css'
 
 let response_srvr = '';
 let auth = false;

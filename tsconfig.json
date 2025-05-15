@@ -13,8 +13,8 @@
 		"moduleResolution": "bundler",
 		"baseUrl": "src",
 		"paths": {
-			"$components/*": ["lib/components/*"],
-			"$assesments/*": ["lib/assesments/*"],
+			"$components/*": ["components/*"],
+			"$assesments/*": ["assesments/*"],
 			"$lib/*": ["lib/*"],
 			"$types/*": ["types/*"],
 			"$styles/*": ["styles/*"],

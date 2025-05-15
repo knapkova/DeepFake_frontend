@@ -2,13 +2,13 @@
 	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
-	import type { ManipulativeTextComments, ManipulativeMotivation } from '../types/interfaces';
+	import type { ManipulativeTextComments, ManipulativeMotivation } from '$types/interfaces';
 
 	import { writable, get } from 'svelte/store';
 	import type { AssignmentCognitiveBias } from '$types/interfaces';
 	import Board from '$lib/dnd_board.svelte';
 	import StoryEnd from '$components/Storyend.svelte';
-	import '../styles/04_dnd.css';
+	import '$styles/04_dnd.css'
 	import ChatComponent from '$components/ChatComponent.svelte';
 	import CommentsComponent from '$components/UsersComments.svelte';
 

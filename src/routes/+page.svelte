@@ -1,22 +1,19 @@
 <script>
-    import MainContent from "../components/MainContent.svelte";
-    import VideoSection from "../components/VideoSection.svelte";
-    import "../global.css";
+	import MainContent from '$components/MainContent.svelte';
+	import VideoSection from '$components/VideoSection.svelte';
+	import '../global.css';
 </script>
 
 <div class="container">
-        <MainContent marginRight="30%"/>
-
-        <VideoSection />
-
+	<MainContent marginRight="30%" />
+    <VideoSection/>
 </div>
 
 <style>
-    .container {
-        display: flex;
-        justify-content: space-between;
-        height: 100vh;
-        background-color: var(--background-color);
-    }
-
+	.container {
+		display: flex;
+		justify-content: space-between;
+		height: 100vh;
+		background-color: var(--background-color);
+	}
 </style>

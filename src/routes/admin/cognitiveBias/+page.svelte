@@ -1,47 +1,51 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
-    import type {Category, AssignmentCognitiveBias} from '$types/interfaces';
+    import type { Category, AssignmentCognitiveBias } from '$types/interfaces';
     import '../../../styles/admin.css';
-    import type {  } from '$types/interfaces';
-	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+    import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+    import type { PageData } from './$types';
+
     
 
-    function navigate(){
-    window.location.href = "/admin/cognitiveBias/addNew";
+    function navigate() {
+        window.location.href = "/admin/cognitiveBias/addNew";
     }
 
     let updateMessage: string = '';
-    const request_get="/api/Admin/AssignmentCognitiveBias/GetAssignmentCognitiveBiases"
+    const request_get = "/api/Admin/AssignmentCognitiveBias/GetAssignmentCognitiveBiases";
     const request_get_categories = '/api/Admin/Categories/GetCategories';
-
-    const request_delete="/api/Admin/AssignmentCognitiveBias/Delete/"
-    const request_update="/api/Admin/AssignmentCognitiveBias/Update"
+    const request_delete = "/api/Admin/AssignmentCognitiveBias/Delete";
+    const request_update = "/api/Admin/AssignmentCognitiveBias/Update";
 
     let categories = writable<Category[]>([]);
     let cognitiveBiases = writable<AssignmentCognitiveBias[]>([]);
+    // Track loading state per cognitive bias (keyed by its id)
+    let loadingUpdate: Record<number, boolean> = {};
+    let loadingDelete: Record<number, boolean> = {};
 
     onMount(async () => {
-      let response_cat = await fetch(PUBLIC_VITE_API_ROOT + request_get_categories); 
-      let data_cat = await response_cat.json();
-      categories.set(data_cat);
+        let response_cat = await fetch(PUBLIC_VITE_API_ROOT + request_get_categories);
+        let data_cat = await response_cat.json();
+        categories.set(data_cat);
 
-    const response = await fetch(PUBLIC_VITE_API_ROOT + request_get); 
-    const data = await response.json();
-    console.log(data);
-    cognitiveBiases.set(data);
-    console.log(cognitiveBiases);
-
+        const response = await fetch(PUBLIC_VITE_API_ROOT + request_get);
+        const data = await response.json();
+        console.log(data);
+        cognitiveBiases.set(data);
     });
 
-    async function updateCognitive(cognitiveBias: AssignmentCognitiveBias){
+    async function updateCognitive(cognitiveBias: AssignmentCognitiveBias) {
+        loadingUpdate[cognitiveBias.id] = true;
         const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_update}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify(cognitiveBias)
         });
+
         console.log(response);
         if (response.ok) {
             updateMessage = `Úkol ${cognitiveBias.id} úspěšně upraven!`;
@@ -49,23 +53,28 @@
             updateMessage = `Nepodařilo se upravit: ${cognitiveBias.id}.`;
             console.error('Update failed', response);
         }
+        loadingUpdate[cognitiveBias.id] = false;
     }
 
-    async function deleteCognitive(id: number){
+    async function deleteCognitive(id: number) {
+        loadingDelete[id] = true;
         const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_delete}/${id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            credentials: 'include'
         });
         if (response.ok) {
-            categories.update(cats => cats.filter(cat => cat.id !== id));
+            cognitiveBiases.update(biases => biases.filter(b => b.id !== id));
+            updateMessage = `Úkol ${id} úspěšně smazán.`;
         } else {
-            console.error('Failed to delete category');
+            updateMessage = `Nepodařilo se smazat úkol: ${id}.`;
+            console.error('Failed to delete cognitive bias', response);
         }
+        loadingDelete[id] = false;
     }
-  
 </script>
 
 {#if updateMessage}
-<div class="update-message">{updateMessage}</div>
+  <div class="update-message">{updateMessage}</div>
 {/if}
 
 <button onclick={navigate}>+ Přidat nové</button>
@@ -85,7 +94,7 @@
             </tr>
         </thead>
         <tbody>
-            {#each $cognitiveBiases as biases(biases.id)}
+            {#each $cognitiveBiases as biases (biases.id)}
             <tr>
                 <td>{biases.id}</td>
                 <td>
@@ -108,8 +117,24 @@
                     </select>
                 </td>
                 <td>
-                    <button onclick={() => updateCognitive(biases)}>Uložit</button>
-                    <button onclick={() => deleteCognitive(biases.id)}>Smazat</button>
+                    <button 
+                        onclick={() => updateCognitive(biases)}
+                        disabled={loadingUpdate[biases.id]}>
+                        {#if loadingUpdate[biases.id]}
+                            Updating...
+                        {:else}
+                            Uložit
+                        {/if}
+                    </button>
+                    <button 
+                        onclick={() => deleteCognitive(biases.id)}
+                        disabled={loadingDelete[biases.id]}>
+                        {#if loadingDelete[biases.id]}
+                            Deleting...
+                        {:else}
+                            Smazat
+                        {/if}
+                    </button>
                 </td>
             </tr>
             {/each}

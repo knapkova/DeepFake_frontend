@@ -438,9 +438,6 @@
 		right: 5px;
 	}
 
-	.download-link a:hover {
-	}
-
 	/* Completed pair styling */
 	.completed-pair {
 		display: flex;
