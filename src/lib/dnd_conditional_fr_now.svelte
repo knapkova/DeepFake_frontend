@@ -80,7 +80,7 @@
   <div class="board">
     <!-- LEFT COLUMN: Definitions source -->
     <div class="source-column" use:droppable={{ container: 'source' }}>
-      <h3>Přiřaď definice ke správným termínům</h3>
+      <h4>Přiřaď definice ke správným termínům</h4>
       {#if $isSourceEmpty}
         <div class="placeholder">Vše přiřazeno 🙂</div>
       {:else}
@@ -114,7 +114,7 @@
             }
           }}
         >
-          <h3>{q.term}</h3>
+          <h4>{q.term}</h4>
           {#if $assignments[q.id]}
             <div class="card">{$assignments[q.id]!.description}</div>
           {:else}
@@ -137,7 +137,7 @@
     flex-direction: row;
   }
   .source-column {
-    flex: 0 0 240px;
+    flex: 0 0 350px;
     padding: 1rem;
     border: 2px dashed #ccc;
     border-radius: 8px;
@@ -172,6 +172,7 @@
     border-radius: 4px;
     cursor: grab;
     color: black;
+    font-style: italic;
   }
   .placeholder {
     color: #888;
