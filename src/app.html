@@ -1,12 +1,23 @@
 <!doctype html>
 <html lang="en">
+	<link rel='stylesheet' href='%sveltekit.assets%/global.css' />
+
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
 		<div style="display: contents">%sveltekit.body%</div>
+		<script src="https://unpkg.com/drag-drop-touch@latest/DragDropTouch.min.js"></script>
+		<script type="module" src="https://drag-drop-touch-js.github.io/dragdroptouch/dist/drag-drop-touch.esm.min.js?autoload"></script>
+
+
+		<!-- optional easing lib -->
+		<script src="/ola.min.js" defer></script>
+		<!-- scroll-btween must come last -->
+		<script src="/scroll-btween.js" defer></script>
 	</body>
 </html>

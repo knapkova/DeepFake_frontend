@@ -1,113 +1,132 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import '../../../styles/admin.css'
-    import type {Category} from '$types/interfaces'
-
-
-
-    let categories: Category[] = [];
-
+    import { writable } from 'svelte/store';
+    import '../../../styles/admin.css';
+    import type { Category } from '$types/interfaces';
+    import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+  
+    let updateMessage: string = '';
+  
+    const request_get = '/api/Admin/Categories/GetCategories';
+    const request_update = '/api/Admin/Categories/Update'; 
+    const request_delete = '/api/Admin/Categories/Delete';
+  
+    let categories = writable<Category[]>([]);
+  
     onMount(async () => {
-        try {
-            const apiRoot = import.meta.env.VITE_API_ROOT;
-            const response = await fetch(`${apiRoot}/api/Admin/Categories/GetCategories`);
-            if (response.ok) {
-                categories = await response.json();
-            } else {
-                console.error('Failed to fetch categories:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error fetching categories:', error);
-        }
+      const response = await fetch(PUBLIC_VITE_API_ROOT + request_get); 
+      const data = await response.json();
+      categories.set(data);
+      console.log(data);
     });
+  
+    // Called when a user clicks "Save" for a row.
+    async function updateCategory(category: Category, imageFile: File) {
+        const formData = new FormData();
+        formData.append('id', category.id.toString());
+        formData.append('name', category.name);
+        formData.append('description', category.description);
+        formData.append('duration', category.duration.toString());
+        formData.append('visible', category.visible.toString());
+        formData.append('imgSrc', category.imgSrc);
+        if (imageFile) {
+            formData.append('image', imageFile);
+        }
 
-    async function addCategory(){}
+        const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_update}`, {
+            method: 'POST',
 
-    async function updateCategory(category: Category) {
-        try {
-            const apiRoot = import.meta.env.VITE_API_ROOT;
-            const response = await fetch(`${apiRoot}/api/Admin/Categories/Update`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(category)
-            });
-            if (!response.ok) {
-                console.error('Failed to update category:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error updating category:', error);
+            body: formData
+        });
+
+        if (response.ok) {
+            updateMessage = `Category ${category.id} updated successfully!`;
+        } else {
+            updateMessage = `Failed to update category ${category.id}.`;
+            console.error('Update failed', response);
         }
     }
 
-    function editCategory(id: number, field: keyof Category, value: any) {
-        const category = categories.find(category => category.id === id);
-        if (category) {
-            (category[field] as any) = value;
-            updateCategory(category);
-        }
-        
+  
+    // Delete function (unchanged from before)
+    async function deleteCategory(id: number) {
+      const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_delete}/${id}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        categories.update(cats => cats.filter(cat => cat.id !== id));
+      } else {
+        console.error('Failed to delete category');
+      }
     }
-
-    function deleteCategory(id: number) {
-        categories = categories.filter(category => category.id !== id);
+  
+    // For adding a new category (redirect)
+    function navigate() {
+      window.location.href = "/admin/categories/addNew";
     }
-</script>
-
-<h1>Úprava kategorií</h1>
-
-<div class="admin-section">
-    <!-- <button on:click={addCategory}>Přidat kategorii</button> -->
+  </script>
+  
+  <h2>Úprava kategorií</h2>
+  
+  {#if updateMessage}
+    <div class="update-message">{updateMessage}</div>
+  {/if}
+  
+  <button on:click={navigate}>+ Přidat nové</button>
+  <div class="admin-section">
     <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Název</th>
-                <th>Popis</th>
-                <th>Viditelnost</th>
-                <th>Délka</th>
-                <th>Obrázek</th>
-                <th>Akce</th>
-            </tr>
-        </thead>
-        <tbody>
-            {#each categories as category}
-            <tr>
-                <td>{category.id}</td>
-                <td>
-                    <input type="text" value={category.name} on:input={(e) => { 
-                        const target = e.target as HTMLInputElement;
-                        editCategory(category.id, 'name', target.value); 
-                    }} />
-                </td>
-                <td>
-                    <input type="text" value={category.description} on:input={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        editCategory(category.id, 'description', target.value);
-                    }} />
-                </td>
-                <td>
-                    <input type="checkbox" checked={category.visible} on:change={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        editCategory(category.id, 'visible', target.checked);
-                    }} />
-                </td>
-                <td>
-                    <input type="number" value={category.duration} on:input={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        editCategory(category.id, 'duration', parseInt(target.value, 10));
-                    }} /> min
-                </td>
-                <td>
-                    <input type="text" value={category.coverPhoto} on:input={(e) => {
-                        const target = e.target as HTMLInputElement;
-                        editCategory(category.id, 'coverPhoto', target.value);
-                    }} />
-                </td>
-            </tr>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Název</th>
+          <th>Popis</th>
+          <th>Délka</th>
+          <th>Zobrazit</th>
+          <th>Úvodní obrázek</th>
+          <th>Akce</th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each $categories as category (category.id)}
+          <tr>
+            <td>{category.id}</td>
+            <td>
+              <input
+                type="text"
+                bind:value={category.name}
+                placeholder="Název"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                bind:value={category.description}
+                placeholder="Popis"
+              />
+            </td>
+            <td>
+              <input
+                type="number"
+                bind:value={category.duration}
+                placeholder="Délka"
+              />
+            </td>
+            <td>
+              <input
+                type="checkbox"
+                bind:checked={category.visible}
+              />
+            </td>
+            <td>
+              <a href="{category.imgSrc}" target="_blank">Otevřít</a>
+            </td>
+            <td>
+              <button on:click={() => updateCategory(category)}>Uložit</button>
+              <button on:click={() => deleteCategory(category.id)}>Smazat</button>
+            </td>
+          </tr>
         {/each}
-        </tbody>
+      </tbody>
     </table>
-</div>
-
+  </div>
+  

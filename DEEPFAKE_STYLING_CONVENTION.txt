@@ -1,0 +1,30 @@
+Large Title
+Nexa-Black 86pt
+
+Title
+Nexa-XBold 50pt
+
+Headline
+Open Sans-SemiBold 21pt
+
+Description
+Open Sans-SemiBold 15pt
+
+
+COLORS
+Brand color
+red
+FF262C
+
+Font color
+blue-cyan
+FF262C
+
+Font secondary color
+dark gray
+FF262C
+03
+
+Background color
+gray89
+FF262C
