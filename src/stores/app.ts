@@ -14,7 +14,6 @@ function persisted<T>(key: string, init: T): Writable<T> {
       try {
         localStorage.setItem(key, JSON.stringify(v));
       } catch {
-        /* ignore */
       }
     });
     return store;

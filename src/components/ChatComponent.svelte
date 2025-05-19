@@ -185,6 +185,8 @@
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 		cursor: pointer;
 		z-index: 11;
+		    animation: bounce 4s infinite;
+
 	}
 	.unread-dot {
 		position: absolute;
@@ -239,6 +241,17 @@
 		margin-bottom: 0.75rem;
 		font-size: 0.9rem;
 	}
+	@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-10px);
+    }
+    60% {
+      transform: translateY(-5px);
+    }
+  }
 
 	
 </style>

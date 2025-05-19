@@ -1,171 +1,171 @@
 <script lang="ts">
-  import { Button, Modal, Label, Input, Checkbox } from 'flowbite-svelte';
-  
-  // Control modal visibility from parent via binding.
-  export let showNewsletter: boolean;
-  
-  // Multistep form state
-  let step = 1;
-  let userType: "educator" | "student" | "" = "";
-  let name = "";
-  let age = "";
-  let gender = "";
-  let email = "";
+	import { Button, Modal, Label, Input, Checkbox } from 'flowbite-svelte';
+	import StarRating from '$lib/star-rating.svelte';
+	import { onMount } from 'svelte';
+	import type { Feedback } from '$types/interfaces';
+	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+	export let showNewsletter: boolean;
 
-  // Moves to the next step.
-  function nextStep() {
-    step = step + 1;
-  }
-  
-  // Moves to the previous step.
-  function previousStep() {
-    step = step - 1;
+	const post_feedback_api = '/api/Admin/Feedback/Create';
+ let currentFeedback: Feedback = {
+    typeOfUser: '',
+    name: '',
+    age: 0,
+    email: '',
+    gender: '',
+    newsletterApproved: false,
+    stars: 0,
+    id: 0,
+    date: new Date(),
+    feedbackFurther: ''
+  };
+
+
+	onMount(() => {
+		
+	});
+
+  async function sendFeedback() {
+    currentFeedback.date = new Date();
+    const res = await fetch(
+      `${PUBLIC_VITE_API_ROOT}${post_feedback_api}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(currentFeedback)
+      }
+    );
+    if (!res.ok) console.error('Feedback error:', await res.text());
   }
 
-  // Process the educator subscription form submission.
-  function subscribe(e: Event) {
-    e.preventDefault();
-    console.log("User type:", userType);
-    console.log("Name:", name);
-    console.log("Age:", age);
-    console.log("Gender:", gender);
-    console.log("Email:", email);
-    // Process subscription data here then close modal.
-    closeForm();
-  }
-  
-  // Closes the modal and resets the form.
-  function closeForm() {
-    showNewsletter = false;
-    step = 1;
-    userType = "";
-    name = "";
-    age = "";
-    gender = "";
-    email = "";
-  }
+	// Multistep form state
+	let step = 0;
+	
+
+	// Moves to the next step.
+	function nextStep() {
+		step = step + 1;
+	}
+
+	// Moves to the previous step.
+	function previousStep() {
+		step = step - 1;
+	}
+
+	// Process the educator subscription form submission.
+	function subscribe(e: Event) {
+		e.preventDefault();
+		
+		closeForm();
+	}
+
+	// Closes the modal and resets the form.
+	function closeForm() {
+		showNewsletter = false;
+		step = 1;
+		
+	}
 </script>
 
-<Modal bind:open={showNewsletter} size="xs" autoclose={false} class="w-full">
-  {#if step === 1}
-    <!-- Step 1: Select user type -->
-    <div class="flex flex-col space-y-6 p-4">
-      <h3 class="text-xl font-medium text-gray-900 dark:text-white">Kdo jste?</h3>
-      <p class="text-gray-700">Vyberte jednu možnost:</p>
-      <div class="flex space-x-4">
-        <Button on:click={() => { userType = "educator"; nextStep(); }} class="w-full">
-          Vzdělavatel
-        </Button>
-        <Button on:click={() => { userType = "student"; nextStep(); }} class="w-full">
-          Student
-        </Button>
+<Modal bind:open={showNewsletter} size="xs" autoclose={false}>
+  {#if step === 0}
+    <div class="p-4 space-y-4">
+      <h3>Jak se Vám hra líbila?</h3>
+      <StarRating bind:rating={currentFeedback.stars} />
+      <Input
+        type="text"
+        bind:value={currentFeedback.feedbackFurther}
+        placeholder="Co můžeme zlepšit?"
+        required
+      />
+    </div>
+    <Button on:click={nextStep} class="w-full">Pokračovat</Button>
+
+  {:else if step === 1}
+    <div class="p-4 space-y-4">
+      <h3>Kdo jste?</h3>
+      <div class="flex gap-4">
+        <Button on:click={() => { currentFeedback.typeOfUser = 'educator'; nextStep(); }} class="w-full">Vzdělavatel</Button>
+        <Button on:click={() => { currentFeedback.typeOfUser = 'student'; nextStep(); }} class="w-full">Student</Button>
       </div>
     </div>
+
   {:else if step === 2}
-    <!-- Step 2: Ask for Name -->
-    <div class="flex flex-col space-y-6 p-4">
-      <h3 class="text-xl font-medium text-gray-900 dark:text-white">Jak se jmenujete?</h3>
-      <Label class="space-y-2">
-        <span>Jméno</span>
-        <Input type="text" bind:value={name} placeholder="Zadejte své jméno" required />
+    <div class="p-4 space-y-4">
+      <h3>Jak se jmenujete?</h3>
+      <Label>
+        <Input
+          type="text"
+          bind:value={currentFeedback.name}
+          placeholder="Vaše jméno"
+          required
+        />
       </Label>
-      <div class="flex justify-between">
-        <Button on:click={previousStep} type="button" class="w-full bg-gray-300 hover:bg-gray-400">
-          Zpět
-        </Button>
-        <Button on:click={nextStep} type="button" class="w-full">
-          Pokračovat
-        </Button>
+      <div class="flex gap-4">
+        <Button on:click={previousStep} class="w-full bg-gray-300">Zpět</Button>
+        <Button on:click={nextStep} class="w-full">Pokračovat</Button>
       </div>
     </div>
+
   {:else if step === 3}
-    <!-- Step 3: Ask for Age -->
-    <div class="flex flex-col space-y-6 p-4">
-      <h3 class="text-xl font-medium text-gray-900 dark:text-white">Kolik je vám let?</h3>
-      <Label class="space-y-2">
-        <span>Věk</span>
-        <Input type="number" bind:value={age} placeholder="Zadejte svůj věk" required />
+    <div class="p-4 space-y-4">
+      <h3>Kolik je vám let?</h3>
+      <Label>
+        <Input
+          type="number"
+          bind:value={currentFeedback.age}
+          placeholder="Věk"
+          required
+        />
       </Label>
-      <div class="flex justify-between">
-        <Button on:click={previousStep} type="button" class="w-full bg-gray-300 hover:bg-gray-400">
-          Zpět
-        </Button>
-        <Button on:click={nextStep} type="button" class="w-full">
-          Pokračovat
-        </Button>
+      <div class="flex gap-4">
+        <Button on:click={previousStep} class="w-full bg-gray-300">Zpět</Button>
+        <Button on:click={nextStep} class="w-full">Pokračovat</Button>
       </div>
     </div>
+
   {:else if step === 4}
-    <!-- Step 4: Ask for Gender using Radio Buttons-->
-    <div class="flex flex-col space-y-6 p-4">
-      <h3 class="text-xl font-medium text-gray-900 dark:text-white">Jaké je vaše pohlaví?</h3>
-      <Label class="space-y-2">
-        <span>Pohlaví</span>
-        <div class="flex space-x-4">
-          <label class="flex items-center space-x-1">
-            <input type="radio" bind:group={gender} value="Muž" required />
-            <span>Muž</span>
-          </label>
-          <label class="flex items-center space-x-1">
-            <input type="radio" bind:group={gender} value="Žena" required />
-            <span>Žena</span>
-          </label>
-          <label class="flex items-center space-x-1">
-            <input type="radio" bind:group={gender} value="Jiné" required />
-            <span>Jiné</span>
-          </label>
-        </div>
-      </Label>
-      <div class="flex justify-between">
-        <Button on:click={previousStep} type="button" class="w-full bg-gray-300 hover:bg-gray-400">
-          Zpět
-        </Button>
-        <Button on:click={nextStep} type="button" class="w-full">
-          Pokračovat
-        </Button>
+    <div class="p-4 space-y-4">
+      <h3>Pohlaví</h3>
+      <div class="flex gap-4">
+        <label><input type="radio" bind:group={currentFeedback.gender} value="Muž" required /> Muž</label>
+        <label><input type="radio" bind:group={currentFeedback.gender} value="Žena" required /> Žena</label>
+        <label><input type="radio" bind:group={currentFeedback.gender} value="Jiné" required /> Jiné</label>
+      </div>
+      <div class="flex gap-4">
+        <Button on:click={previousStep} class="w-full bg-gray-300">Zpět</Button>
+        <Button on:click={() => { sendFeedback(); nextStep(); }} class="w-full">Odeslat zpětnou vazbu</Button>
+
       </div>
     </div>
+
   {:else if step === 5}
-    <!-- Step 5: Final step – show content based on user type -->
-    {#if userType === 'educator'}
-      <form class="flex flex-col space-y-6 p-4" on:submit={subscribe}>
-        <h3 class="text-xl font-medium text-gray-900 dark:text-white">Zůstaňte s námi v kontaktu</h3>
-        <Label class="space-y-2">
+    {#if currentFeedback.typeOfUser === 'educator'}
+      <form class="p-4 space-y-4" on:submit={subscribe}>
+        <h3>Zůstaňte v kontaktu</h3>
+        <Label>
           <span>Email</span>
-          <Input type="email" name="email" placeholder="vas@email.cz" bind:value={email} required />
+          <Input
+            type="email"
+            bind:value={currentFeedback.email}
+            placeholder="email@domena.cz"
+            required
+          />
         </Label>
-        <div class="flex items-start">
-          <Checkbox>
-            <div class="label text-sm">
-              Souhlasím se zpracováním své emailové adresy v souladu se 
-              <a href="https://zvolsi.info/legal/zasady-ochrany-osobnich-udaju-a-cookies" target="_blank" class="text-blue-500">
-                zásadami ochrany osobních údajů
-              </a>
-            </div>
-          </Checkbox>
+        <div>
+          <Checkbox bind:checked={currentFeedback.newsletterApproved} />
+          Souhlasím se zpracováním emailu
         </div>
-        <div class="flex justify-between">
-          <Button on:click={previousStep} type="button" class="w-full bg-gray-300 hover:bg-gray-400">
-            Zpět
-          </Button>
-          <Button type="submit" class="w-full">Chci zůstat v kontaktu</Button>
+        <div class="flex gap-4">
+          <Button on:click={previousStep} class="w-full bg-gray-300">Zpět</Button>
+          <Button on:click={sendFeedback} type="submit" class="w-full">Odeslat</Button>
         </div>
       </form>
-    {:else if userType === 'student'}
-      <div class="flex flex-col space-y-6 p-4">
-        <h3 class="text-xl font-medium text-gray-900 dark:text-white">Sleduj nás na Instagramu!</h3>
-        <p class="text-gray-700">
-          Děkujeme! Pro více informací a novinky sleduj náš profil na 
-          <a href="https://www.instagram.com/yourprofile" target="_blank" class="text-blue-500 underline">
-            Instagramu
-          </a>.
-        </p>
-        <div class="flex justify-between">
-          <Button on:click={previousStep} type="button" class="w-full bg-gray-300 hover:bg-gray-400">
-            Zpět
-          </Button>
-          <Button on:click={closeForm} class="w-full">Zavřít</Button>
-        </div>
+    {:else}
+      <div class="p-4 space-y-4">
+        <h3>Sleduj nás na Instagramu!</h3>
+        <p>Díky! Pro novinky navštiv <a href="https://instagram.com" target="_blank">Instagram</a>.</p>
+        <Button on:click={closeForm} class="w-full">Zavřít</Button>
       </div>
     {/if}
   {/if}

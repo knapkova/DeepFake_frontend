@@ -45,16 +45,20 @@
 	let progress = writable(97);
 </script>
 
-<main class="min-h-screen bg-gray-100 p-10 font-sans text-gray-900">
-	<h3 class="text-sm font-semibold text-gray-500 uppercase">Pomož odhalit pravdu</h3>
-	<h1 class="mt-2 text-5xl font-bold">MarsGate</h1>
-	<div class="flex flex-row items-center gap-4">
-		<p class="mt-6 max-w-3xl text-lg text-gray-700">
-			Země se ocitla na pokraji ekologického kolapsu a společnost se potácí v nejistotě. Sociální
-			sítě ovládají spekulace, deepfake a konspirační teorie.
-		</p>
-		<img src="/mars-earth.jpg" alt="Mars and Earth" width="40%" />
-	</div>
+<main class="introduction-window">
+  <div class="intro-container">
+    <div class="intro-text">
+      <h3>Pomož odhalit pravdu</h3>
+      <h1>MarsGate</h1>
+      <p>
+        Země se ocitla na pokraji ekologického kolapsu a společnost se potácí v nejistotě.
+        Sociální sítě ovládají spekulace, deepfake a konspirační teorie.
+      </p>
+    </div>
+    <div class="intro-image">
+      <img src="/mars-earth.jpg" alt="Mars and Earth" />
+    </div>
+  </div>
 	<Hr classHr="my-8" />
 
 	<div class="mt-10 grid grid-cols-1 gap-10 text-sm md:grid-cols-2">
@@ -135,6 +139,47 @@
 </main>
 
 <style>
+	.introduction-window {
+    min-height: 100vh;
+    padding: 2.5rem;              /* formerly p-10 */
+    font-family: system-ui, sans-serif;
+    color: #1a202c;               /* formerly text-gray-900 */
+  }
+
+  .intro-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .intro-text {
+    flex: 1;
+  }
+
+  .intro-text h3 {
+    font-size: 0.875rem;          /* text-sm */
+    font-weight: 600;             /* font-semibold */
+    text-transform: uppercase;
+    color: #718096;               /* text-gray-500 */
+    margin: 0;
+  }
+
+  
+
+  .intro-text p {
+    margin-top: 1.5rem;           /* mt-6 */
+    max-width: 48rem;             /* max-w-3xl */
+    font-size: 1.125rem;          /* text-lg */
+    color: #4a5568;               /* text-gray-700 */
+    line-height: 1.6;
+  }
+
+  .intro-image img {
+    max-width: 80%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
 	.intro-part {
 		padding: 20px;
     margin: 10px;

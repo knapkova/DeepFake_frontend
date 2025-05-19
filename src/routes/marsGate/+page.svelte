@@ -74,7 +74,7 @@
 	}
 
 	async function handleLevelComplete() {
-		if ($state_game !== 7) {
+		if ($state_game !== 7 && $state_game !== 6) {
 			getRandomFunFact();
 		}
 		state_game.update((n) => (n < 7 ? ((n + 1) as 1 | 2 | 3 | 4 | 5 | 6 | 7) : n));

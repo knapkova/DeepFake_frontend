@@ -10,7 +10,7 @@
 
 	let loading = true;
 	let progress = 0;
-	const DURATION = 200;
+	const DURATION = 20000;
 
 	export let onLevelComplete: () => void = () => {};
 
@@ -76,7 +76,7 @@
 
 		{#if $article.length > 0}
 			<div class="fb-header">
-				<img class="fb-avatar" src="/path/to/avatar.jpg" alt="User avatar" />
+				<img class="fb-avatar" src="/profile_pic_ivan.png" alt="User avatar" />
 				<div class="fb-user-info">
 					<span class="fb-name">{$article[0].title}</span>
 					<span class="fb-time">před minutou</span>

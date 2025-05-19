@@ -4,7 +4,8 @@ import type { PageData } from './$types';
 import { superForm } from 'sveltekit-superforms';
 import { onMount } from 'svelte';
 import { user, isAuthenticated } from '$stores/auth';
-import spinner from '/assets/bouncing-ball.svg';
+
+const spinner = '/bouncing-ball.svg'
 
 
 import '$styles/form.css'
@@ -87,7 +88,7 @@ const { form, errors, enhance, delayed } = superForm(data.form, {
         {#if $delayed}
           <img src={spinner} alt="loading spinner" class="spinner" />
         {:else}
-          <button type="submit" class="btn-submit">Přihlásit se</button>
+          <button type="submit" >Přihlásit se</button>
         {/if}
         
     </form>

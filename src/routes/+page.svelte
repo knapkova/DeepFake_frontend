@@ -16,4 +16,16 @@
 		height: 100vh;
 		background-color: var(--background-color);
 	}
+
+	@media screen and (max-width: 768px) {
+    .container {
+      flex-direction: column;
+      height: auto;
+      padding: 1rem;
+    }
+    /* give a little gap between the two sections */
+    .container > :global(*) + :global(*) {
+      margin-top: 1rem;
+    }
+  }
 </style>

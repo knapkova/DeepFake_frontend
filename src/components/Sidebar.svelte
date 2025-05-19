@@ -242,4 +242,65 @@
 	.logout-btn:hover {
 		background: #d5d3d3cb;
 	}
+	@media screen and (max-width: 768px) {
+  /* Hide the wrapper so only this fixed sidebar shows */
+  .sidebar-container {
+    display: none !important;
+  }
+
+  /* Base sidebar: off-canvas to the right when closed */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: auto;
+    width: 240px;              /* or whatever width you prefer */
+    max-width: 80vw;
+    background: var(--background-color);
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+  }
+  /* Slide into view when “open” */
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Always-visible hamburger trigger */
+  button.hamburger {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    font-size: 24px;
+    background: transparent;
+    border: none;
+    z-index: 1001;
+  }
+
+  /* Make sure your header & menu have a solid bg */
+  .sidebar-header,
+  .menu-options {
+    background: var(--background-color);
+  }
+
+  /* Stack menuItems in the drawer */
+  .menu-options {
+    display: flex !important;
+    flex-direction: column;
+    padding: 70px 16px 16px;  /* leave room for hamburger */
+    gap: 12px;
+  }
+
+  /* Hide the tiny social row down here */
+  .social-icons {
+    display: none;
+  }
+
+  /* Scale your logo down a bit */
+  .logo img {
+    width: 60%;
+  }
+}
 </style>

@@ -220,8 +220,7 @@
 						<span class="arrow">➡️</span>
 						<div class="pair-title">{source.imgTitle}</div>
 					</div>
-					<p class="description">Proč tomu tak je? ⬇️</p>
-					<p class="img-description">{source.imgDescription}</p>
+				
 				</div>
 			{/each}
 		</div>

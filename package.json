@@ -17,6 +17,7 @@
 		"@eslint/compat": "^1.2.5",
 		"@eslint/js": "^9.18.0",
 		"@sveltejs/adapter-auto": "^4.0.0",
+		"@sveltejs/adapter-static": "^3.0.8",
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@tailwindcss/vite": "^4.0.0",
@@ -27,6 +28,7 @@
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-svelte": "^2.46.1",
 		"flowbite-svelte-icons": "^2.1.1",
+		"gh-pages": "^6.3.0",
 		"globals": "^15.14.0",
 		"postcss": "^8.5.3",
 		"prettier": "^3.4.2",
@@ -57,7 +59,6 @@
 		"jwt-decode": "^4.0.0",
 		"react-simplemde-editor": "^5.2.0",
 		"simplemde": "^1.11.2",
-		"svelte-sortable-list": "^1.1.0",
 		"svelte-vertical-timeline": "^2.0.0"
 	}
 }

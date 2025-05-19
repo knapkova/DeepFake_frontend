@@ -141,6 +141,7 @@ export interface ManipulativeMotivation{
     definition:string;
     manipulativeTextId:number;
 }
+
 export interface Category{
      id : number,
      name : string,
@@ -151,4 +152,17 @@ export interface Category{
      image : string,
      funFacts : FunFact[],
      feedbackMemes : FeedbackMeme[], 
+}
+
+export interface Feedback{
+    id: number,
+  typeOfUser: string,
+  name: string,
+  age: number,
+  email: string,
+  gender: string,
+  newsletterApproved: boolean,
+  date: Date,
+  stars: number,
+  feedbackFurther: string
 }

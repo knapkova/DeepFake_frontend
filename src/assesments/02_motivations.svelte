@@ -218,26 +218,27 @@
 									</p>
 								</div>
 								<div class="motivation-select">
-									<select bind:value={selectedMotivations[i]}>
-										<option value="" disabled selected>-- Vyberte z motivací --</option>
-										{#each $text?.manipulativeMotivations ?? [] as motivation}
-											<option value={motivation.id}>{motivation.motivation}</option>
-										{/each}
-									</select>
-								</div>
-								{#if answerResults[i] !== undefined}
-									{#if answerResults[i].correct}
-										<p class="result correct">Správně!</p>
-									{:else}
-										<p class="result incorrect">
-											{getMotivationById(answerResults[i].correctAnswer)}<br />
-											{#if comment.manipulativeExplanation}
-												{comment.manipulativeExplanation}
-											{/if}
-										</p>
-									{/if}
-								{/if}
+								<select bind:value={selectedMotivations[i]}>
+									<option value="" disabled selected>-- Vyberte z motivací --</option>
+									{#each $text?.manipulativeMotivations ?? [] as motivation}
+										<option value={motivation.id}>{motivation.motivation}</option>
+									{/each}
+								</select>
 							</div>
+							{#if answerResults[i] !== undefined}
+								{#if answerResults[i].correct}
+									<p class="result correct">Správně!</p>
+								{:else}
+									<p class="result incorrect">
+										{getMotivationById(answerResults[i].correctAnswer)}<br />
+										{#if comment.manipulativeExplanation}
+											{comment.manipulativeExplanation}
+										{/if}
+									</p>
+								{/if}
+							{/if}
+							</div>
+							
 						</div>
 					{/each}
 				</div>
@@ -422,7 +423,6 @@
 
 	.comment-container .user .user-info span {
 		font-weight: 700;
-		font-size: 16px;
 		color: #47484b;
 	}
 
@@ -570,13 +570,19 @@
 	.info-button:hover .tooltip {
 		display: block;
 	}
+	.motivation-select {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		margin-top: 1rem;
+	}
 
 	.motivation-select select {
 		padding: 0.5rem;
 		font-size: 1rem;
 		border: 1px solid hsl(220, 13%, 91%);
 		border-radius: 6px;
-		width: 50%;
+		width: 100%;
 		margin-top: 1rem;
 	}
 
@@ -599,5 +605,24 @@
 		color: #742a2a; /* softer red */
 		background-color: #fff5f5; /* very light rose */
 		animation: popCorrect 0.4s ease-out both;
+	}
+	@media (max-width: 768px) {
+		.card {
+			width: 100%;
+			align-self: center;
+		}
+		.emotion-grid {
+			display: flow;
+		}
+		.motivation-select select {
+			width: 100%;
+			        font-size: small;
+		}
+		.comment-container {
+			    font-size: small;
+		}
+		.comment-card {
+			gap: 10px;
+		}
 	}
 </style>
