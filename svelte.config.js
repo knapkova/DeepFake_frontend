@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-node';
 import { sveltePreprocess } from 'svelte-preprocess';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -14,14 +14,8 @@ const config = {
       '$assesments/*': 'src/assesments/*',
       '$styles/*': 'src/styles/*'
     },
+    adapter: adapter({ out: 'build' }),
 
-    adapter: adapter({
-      pages: 'build',
-			assets: 'build',
-			fallback: undefined,
-			precompress: false,
-			strict: true
-    }),
 
     // if you serve from a GitHub Pages sub-path:
     paths: {
