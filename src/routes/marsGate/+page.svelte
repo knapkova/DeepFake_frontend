@@ -189,24 +189,26 @@
 {/if}
 
 {#if $state_game === 7}
-  <section class="end-screen">
-    <div class="message-container">
-      <h1 class="title">Gratulujeme k úspěšnému dokončení hry!</h1>
-      <p class="subtitle">jupii!!</p>
-      <p class="message">Progress bar nedosáhl nuly, ale i to je realita dnešní doby. Není v našich silách přesvědčit všechny.</p>
-      <p class="note">Důležité je, se o to alespoň pokusit</p>
-    </div>
+	<section class="end-screen">
+		<div class="message-container">
+			<h1 class="title">Gratulujeme k úspěšnému dokončení hry!</h1>
+			<p class="message">
+				Každý ověřený obrázek, každé pochybování a každé zastavení před neuváženým sdílením pomáhá
+				snižovat informační chaos. Díky tobě začali někteří lidé přemýšlet jinak, a to je skvělý
+				úspěch. 
+			</p>
+			<p class="message">Možná sis ale všiml/a, že progress bar přesto neklesl na nulu. Jak to? Protože cesta
+				za 100% mediálně gramotnou společností nemá cíl. Některé lidi nepřesvědčíme a někteří se
+				mění pomalu. S oběma skupinami je třeba počítat, když se do takové mise pouštíme. Přestože
+				hra končí, ty už víš, jak na to, a můžeš chránit společnost před informačním chaosem i v
+				reálném světě.</p>
+			<p class="note">Důležité je, se o to alespoň pokusit</p>
+		</div>
 
-    <button
-      onclick={handleRestart}
-    >
-      Vrátit se na hlavní obrazovku
-    </button>
+		<button onclick={handleRestart}> Vrátit se na hlavní obrazovku </button>
 
-    <NewsletterPopUp
-      showNewsletter={$showNewsletter}
-    />
-  </section>
+		<NewsletterPopUp showNewsletter={$showNewsletter} />
+	</section>
 {/if}
 
 <Button on:click={handleRestart} class="mt-8">Restart</Button>
@@ -243,67 +245,65 @@
 		margin-bottom: 0.5rem; /* space before bar */
 	}
 	.end-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem 1rem;
-    background: linear-gradient(135deg, #eef2f7, #dfe7ed);
-    min-height: 80vh;
-    box-sizing: border-box;
-  }
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 3rem 1rem;
+		background: linear-gradient(135deg, #eef2f7, #dfe7ed);
+		min-height: 80vh;
+		box-sizing: border-box;
+	}
 
-  /* Card holding the messages */
-  .message-container {
-    background: #ffffff;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    max-width: 600px;
-    width: 100%;
-    text-align: center;
-    margin-bottom: 2rem;
-    animation: fadeInUp 0.5s ease-out both;
-  }
+	/* Card holding the messages */
+	.message-container {
+		background: #ffffff;
+		padding: 2rem;
+		border-radius: 12px;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+		max-width: 600px;
+		width: 100%;
+		text-align: center;
+		margin-bottom: 2rem;
+		animation: fadeInUp 0.5s ease-out both;
+	}
 
-  .message-container .title {
-    font-size: 2.5rem;
-    color: #1f2a37;
-    margin-bottom: 1rem;
-    letter-spacing: 1px;
-  }
+	.message-container .title {
+		font-size: 2.5rem;
+		color: #1f2a37;
+		margin-bottom: 1rem;
+		letter-spacing: 1px;
+	}
 
-  .message-container .subtitle {
-    font-size: 1.25rem;
-    color: #334e68;
-    margin-bottom: 0.75rem;
-  }
+	.message-container .subtitle {
+		font-size: 1.25rem;
+		color: #334e68;
+		margin-bottom: 0.75rem;
+	}
 
-  .message-container .message {
-    font-size: 1rem;
-    color: #486581;
-    margin: 0.5rem 0;
-    line-height: 1.6;
-  }
+	.message-container .message {
+		font-size: 1rem;
+		color: #486581;
+		margin: 0.5rem 0;
+		line-height: 1.6;
+	}
 
-  .message-container .note {
-    font-size: 0.9rem;
-    color: #829ab1;
-    margin-top: 1rem;
-    font-style: italic;
-  }
+	.message-container .note {
+		font-size: 0.9rem;
+		color: #829ab1;
+		margin-top: 1rem;
+		font-style: italic;
+	}
 
-
-  /* Keyframes for fadeInUp */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+	/* Keyframes for fadeInUp */
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
 </style>
-

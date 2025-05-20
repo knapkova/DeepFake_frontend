@@ -16,6 +16,7 @@
 	const state = writable<'start' | 'emotions' | 'comments' | 'end'>('start');
 	let showPostBody = false;
 
+
 	let answersChecked = false;
 	let error_message = '';
 
@@ -60,12 +61,32 @@
 	// count how many are on
 	$: selectedCount = selectedSwitches.filter(Boolean).length;
 	// allow proceed only when exactly two are on
-	$: canProceed = selectedCount === 2;
+	$: twoSelected = selectedCount === 2;
+	let canProceed = false;
+
+	  $: if (twoSelected) {
+	checkMotivations();
+  }
+
+
+  function checkMotivations() {
+    error_message = '';
+
+    // only positions 1 and 2 must be true
+    if (selectedSwitches[1] && selectedSwitches[0]) {
+      canProceed = true;
+    } else {
+      canProceed = false;
+      error_message = 'Ne všechny motivace jsou správně – zkuste to prosím znovu.';
+    }
+  }
+
 
 	function toggleSwitch(i: number) {
 		console.log('toggleSwitch', i);
 		if (!selectedSwitches[i] && selectedCount >= 2) return;
 		selectedSwitches[i] = !selectedSwitches[i];
+		console.log('selectedSwitches', selectedSwitches);
 	}
 
 	onMount(getText);
@@ -133,11 +154,17 @@
 				{/each}
 			</div>
 
-			{#if canProceed}
+			{#if canProceed && error_message == ''}
 				<div class="continue-wrapper">
 					<button on:click={() => state.set('comments')}> Pokračovat 📸 </button>
 				</div>
 			{/if}
+			{#if twoSelected && !canProceed }
+				<p class="error-message">
+					{error_message}
+				</p>
+			{/if}
+
 		{:else}
 			<p>Načítání příspěvku...</p>
 		{/if}
@@ -230,7 +257,6 @@
 									<p class="result correct">Správně!</p>
 								{:else}
 									<p class="result incorrect">
-										{getMotivationById(answerResults[i].correctAnswer)}<br />
 										{#if comment.manipulativeExplanation}
 											{comment.manipulativeExplanation}
 										{/if}

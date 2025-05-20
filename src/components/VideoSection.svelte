@@ -10,6 +10,7 @@
 	onMount(async () => {
 		const response = await fetch(PUBLIC_VITE_API_ROOT + request_get);
 		const data = await response.json();
+		console.log(data);
 		categories.set(data);
 	});
 

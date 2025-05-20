@@ -127,8 +127,10 @@ body {
 /* Main content */
 
 .info{
-    display: flex;
+        display: flex
+;
     justify-content: space-between;
+    flex-direction: column;
 }
 .funfact{
     width: 45%;

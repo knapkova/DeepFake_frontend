@@ -4,19 +4,19 @@
 	export let wheelSelected: boolean = false;
 
 	const emotions = [
-		'😡 hněv',
-		'😢 smutek',
-		'😱 strach', // strach
-		'😮 překvapení', // překvapení
-		'😄 radost', // radost
-		'😂 smích', // smích
-		'😞 zklamání', // zklamání
-		'😟 úzkost', // úzkost
-		'😍 láska', // láska
-		'😤 frustrace', // frustrace
-		'😩 vyčerpání', // vyčerpání
-		'😇 nevinnost' // nevinnost
-	];
+  '🤬 vztek',
+  '😣 frustrace',
+  '🤨 podezření',
+  '🤢 znechucení',
+  '😢 smutek',
+  '😲 překvapení',
+  '😵‍💫 zmatek',
+  '😨 strach',
+  '🧐 opatrnost',
+  '😊 důvěra',
+  '🤗 naděje',
+  '🤔 zaujatost'
+];
 
 	let selectedIndices: number[] = [];
 

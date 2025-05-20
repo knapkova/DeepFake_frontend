@@ -27,7 +27,7 @@
 		imgDescription: string;
 	}
 
-	let category_id = 10;
+	let category_id = 11;
 	const api_get_by_category =
 		'/api/Admin/AssignmentFindPictureSource/GetAssignmentFindPictureSourcesByCategoryId/';
 

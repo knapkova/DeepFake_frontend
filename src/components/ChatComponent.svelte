@@ -99,7 +99,7 @@
 				{#if visibleCount < beginMessages.length}
 					<button on:click={showNext}>→</button>
 				{:else}
-					<button on:click={beginGame}>👉 Začít úkol</button>
+					<button on:click={beginGame}>👉 Odpovědět Janovi </button>
 				{/if}
 			{:else}
 				{#each endMessages.slice(0, endVisibleCount) as msg}

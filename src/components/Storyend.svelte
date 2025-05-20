@@ -83,21 +83,21 @@ function allowDrop(e: DragEvent) {
 		success = false;
 	}
 </script>
-	<h3 class="task"> Vyber tipy, které pomáhají budovat kritické myšlení. Správné přesuň do reakčního příspěvku, špatné odhoď do koše.</h3>
+	<h3 class="task"> Vyber tipy, které pomáhají rozvíjet kritické myšlení, a přesuň je doleva, do své odpovědi  💬  . Ty, které by mohly být zavádějící nebo škodlivé, odhoď doprava, do koše 🗑️.</h3>
 
 <div class="drag-container">
 
-    <div class="drop-zone" on:dragover={allowDrop} on:drop={(e) => onDropZone(e, 'reaction')}>
-        <h4>Reakční příspěvek</h4>
-		<p><i>Co pomáhá</i></p>
+    <div class="drop-zone" role="region" aria-label="Odpověd Janovi" on:dragover={allowDrop} on:drop={(e) => onDropZone(e, 'reaction')}>
+        <h4>💬 Odpověd Janovi</h4>
+        <p><i>Co pomáhá</i></p>
 
         {#each reaction as tip}
             <div class="tip-item">{tip.text}</div>
         {/each}
     </div>
-    <div class="drop-zone" on:dragover={allowDrop} on:drop={(e) => onDropZone(e, 'trash')}>
-        <h4>Koš 🚮</h4>
-		<p><i>Čemu se vyvarovat</i></p>
+    <div class="drop-zone" role="region" aria-label="Koš" on:dragover={allowDrop} on:drop={(e) => onDropZone(e, 'trash')}>
+        <h4>🚮 Koš</h4>
+        <p><i>Čemu se vyvarovat</i></p>
         {#each trash as tip}
             <div class="tip-item">{tip.text}</div>
         {/each}
