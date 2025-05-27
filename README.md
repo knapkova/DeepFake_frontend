@@ -1,4 +1,9 @@
-# sv
+# Bakalářská práce 
+
+Aktuálně je možné aplikaci lokálně spustit (viz níže). Data se budou automaticky tahat ze serveru. 
+Pokud se data nenačítají, zkontrolujte si, že svelte aplikace běží na http://localhost:5173 z důvodu CORS. 
+
+Pokud to pořád nefunguje, můžete mě kontaktovat :)
 
 Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
@@ -36,3 +41,4 @@ npm run build
 You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+

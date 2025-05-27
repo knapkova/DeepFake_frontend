@@ -496,6 +496,7 @@
 		font-size: 1.2rem;
 		margin-bottom: 1rem;
 		color: #333;
+		text-align: center;
 	}
 	.options {
 		margin-bottom: 1rem;

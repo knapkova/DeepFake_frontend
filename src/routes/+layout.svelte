@@ -38,12 +38,13 @@
 
 	<main class="content">
 		<slot />
-
+<!--
 		<footer>
 			<div class="footer">
 				<p>© 2025 Vytvořeno v rámci bakalářské práce Terezou Knápkovou.</p>
 			</div>
 		</footer>
+-->
 	</main>
 </div>
 

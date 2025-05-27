@@ -88,7 +88,7 @@ const { form, errors, message } = superForm(data.form);
                 {#if $errors.repeatedPassword}
                 <div class="error-message">{$errors.repeatedPassword}</div>
                 {/if}
-                <button type="submit" class="btn-submit">Registrovat se</button>
+                <button type="submit">Registrovat se</button>
         </form>
     </div>
 

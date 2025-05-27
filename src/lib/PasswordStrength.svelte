@@ -20,6 +20,7 @@
 	span.valid:nth-child(4) { background-color: green }
 	
 	li.valid {color: green;}
+	li:not(.valid) {color: red;}
 </style>
 
 <div id="color-indicators">

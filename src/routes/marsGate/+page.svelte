@@ -195,13 +195,15 @@
 			<p class="message">
 				Každý ověřený obrázek, každé pochybování a každé zastavení před neuváženým sdílením pomáhá
 				snižovat informační chaos. Díky tobě začali někteří lidé přemýšlet jinak, a to je skvělý
-				úspěch. 
+				úspěch.
 			</p>
-			<p class="message">Možná sis ale všiml/a, že progress bar přesto neklesl na nulu. Jak to? Protože cesta
-				za 100% mediálně gramotnou společností nemá cíl. Některé lidi nepřesvědčíme a někteří se
-				mění pomalu. S oběma skupinami je třeba počítat, když se do takové mise pouštíme. Přestože
-				hra končí, ty už víš, jak na to, a můžeš chránit společnost před informačním chaosem i v
-				reálném světě.</p>
+			<p class="message">
+				Možná sis ale všiml/a, že progress bar přesto neklesl na nulu. Jak to? Protože cesta za 100%
+				mediálně gramotnou společností nemá cíl. Některé lidi nepřesvědčíme a někteří se mění
+				pomalu. S oběma skupinami je třeba počítat, když se do takové mise pouštíme. Přestože hra
+				končí, ty už víš, jak na to, a můžeš chránit společnost před informačním chaosem i v reálném
+				světě.
+			</p>
 			<p class="note">Důležité je, se o to alespoň pokusit</p>
 		</div>
 
@@ -213,6 +215,7 @@
 
 <Button on:click={handleRestart} class="mt-8">Restart</Button>
 
+<!--
 <Button on:click={() => state_game.set(1)} class="mt-8">začátek</Button>
 
 <Button
@@ -224,11 +227,10 @@
 
 <Button
 	on:click={() => state_game.update((n) => (n < 7 ? ((n + 1) as 1 | 2 | 3 | 4 | 5 | 6 | 7) : n))}
-	class="mt-8"
->
+	class="mt-8">
 	Další levl
 </Button>
-
+-->
 <style>
 	.container {
 		max-width: none;
