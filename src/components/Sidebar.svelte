@@ -90,10 +90,10 @@
 	</div>
 
 	<div class="social-icons">
-		<a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
+		<a href="https://www.facebook.com/zvolsiinfo" target="_blank" rel="noopener noreferrer">
 			<img src={fbLogo} alt="Facebook" />
 		</a>
-		<a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
+		<a href="https://www.instagram.com/zvol_si_info/" target="_blank" rel="noopener noreferrer">
 			<img src={igLogo} alt="Instagram" />
 		</a>
 	</div>

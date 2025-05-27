@@ -154,7 +154,8 @@
         </Label>
         <div>
           <Checkbox bind:checked={currentFeedback.newsletterApproved} />
-          Souhlasím se zpracováním emailu
+          <p>
+          Chci dostávat informace o nových materiálech a dalších novinkách od Zvol si info a souhlasím se zpracováním své emailové adresy za tímto účelem v souladu se <u><a href="https://zvolsi.info/legal/zasady-ochrany-osobnich-udaju-a-cookies" target="_blank">zásadami ochrany osobních údajů</a></u> </p>
         </div>
         <div class="flex gap-4">
           <Button on:click={previousStep} class="w-full bg-gray-300">Zpět</Button>
@@ -170,3 +171,15 @@
     {/if}
   {/if}
 </Modal>
+
+<style>
+  a {
+    color: var(--primary-color);
+    text-decoration: none;
+
+  }
+  p{
+    font-size: smaller;
+  }
+
+ </style>
