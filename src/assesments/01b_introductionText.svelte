@@ -3,7 +3,9 @@
 	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
 	import { writable } from 'svelte/store';
 	import type { AssignmentIntroductionArticle, StartQuiz } from '$types/interfaces';
-	import DndConditional from '$lib/dnd_conditional_fr_now.svelte';
+	//import DndConditional from '$lib/dnd_conditional_fr_now.svelte';
+	import DndConditional from '$lib/dnd_intro.svelte';
+
 	import { fly, fade, scale } from 'svelte/transition';
 	import { cubicOut, backOut } from 'svelte/easing';
 	import Wheel from '$components/Wheel.svelte';
@@ -25,7 +27,7 @@
 
 	let wheelSelected = false;
 
-	const state = writable<'start' | 'emotions' | 'quiz' | 'end'>('start');
+	const state = writable<'start' | 'emotions' | 'quiz' | 'end'>('quiz');
 
 	const article_id = 6;
 	let article = writable<AssignmentIntroductionArticle[]>([]);

@@ -215,7 +215,7 @@
 
 <Button on:click={handleRestart} class="mt-8">Restart</Button>
 
-<!--
+
 <Button on:click={() => state_game.set(1)} class="mt-8">začátek</Button>
 
 <Button
@@ -230,7 +230,7 @@
 	class="mt-8">
 	Další levl
 </Button>
--->
+
 <style>
 	.container {
 		max-width: none;

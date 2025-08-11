@@ -3,9 +3,6 @@
 /* Font definitions */
 
 @import 'tailwindcss';
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 @import 'flowbite';
 
@@ -58,9 +55,6 @@ input[type="reset"] {
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
 }
 
-button:disabled{
-  
-}
 
 @font-face {
     font-family: 'Alpha-echo';
@@ -151,17 +145,17 @@ body {
 }
 
 h1 {
-    font-size: 80px;
+    font-size: 4rem;
     font-weight: bold;
 }
 
 h2{
-    font-size: 45px;
+    font-size: 1.4rem;
     font-weight: bold;
 }
 
 h3 {
-    font-size: 20px;
+    font-size: 1rem;
 }
 
 h3 .gray {
@@ -220,4 +214,20 @@ input[type="button"],
 input[type="submit"],
 input[type="reset"] {
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
+}
+
+@media screen and (max-width: 768px) {
+h1 {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+h2{
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 1rem;
+}
 }
