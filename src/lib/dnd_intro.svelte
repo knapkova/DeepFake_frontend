@@ -89,7 +89,7 @@ function checkDropZones() {
       animate:flip={{ duration: flipDurationMs }}
     >
       <div class="card-header">
-        {item.term}
+        {item.description}
       </div>
       <div class="card-body">
         <div class="dropzone"
@@ -98,7 +98,7 @@ function checkDropZones() {
     on:finalize={(e) => handleDndFinalizeCards(item.id, e)}>
             {#each $sourceItems as item (item.id)}
               <div class="dropzone-item" data-id={item.id}>
-                {item.description}
+                {item.term}
               </div>
             {/each}
         </div>
@@ -132,7 +132,7 @@ function checkDropZones() {
 
 	/* Card header & body styling */
 	.card-header {
-		font-size: 1.3rem;
+		font-size: 1rem;
 		font-weight: bold;
 		color: #333;
 		margin-bottom: 0.5rem;
