@@ -93,9 +93,11 @@
 	}
 
 	.content {
-      margin: 0;
-      width: 100%;
-    }
+		margin: 0;
+		width: 100%;
+		flex: 1;
+		overflow-y: auto; /* enable scroll on desktop */
+	}
 
 	@media screen and (max-width: 768px) {
     .layout {
