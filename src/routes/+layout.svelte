@@ -82,7 +82,7 @@
 	}
 
 	.sidebar-container {
-		background: var(--background-color);
+		 background: var(--background-color);
 		padding: 10px;
 		width: 150px;
 		height: 100%;
@@ -93,7 +93,6 @@
 	}
 
 	.content {
-		margin: 0;
 		width: 100%;
 		flex: 1;
 		overflow-y: auto; /* enable scroll on desktop */
@@ -143,6 +142,7 @@
      margin-top: 3rem; /* push below mobile header */
      overflow-y: auto;
      max-height: calc(100vh - 3rem);
+	 padding: 5px;
    }
   }
   
