@@ -44,7 +44,6 @@
 		right: 0;
 		width: 30%;
 		height: 100vh;
-		background-color: #f1f1f1;
 		overflow-y: auto;
 		display: flex;
 		flex-direction: column;

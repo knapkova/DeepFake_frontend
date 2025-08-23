@@ -85,6 +85,13 @@ function allowDrop(e: DragEvent) {
 </script>
 	<h3 class="task"> Vyber tipy, které pomáhají rozvíjet kritické myšlení, a přesuň je doleva, do své odpovědi  💬  . Ty, které by mohly být zavádějící nebo škodlivé, odhoď doprava, do koše 🗑️.</h3>
 
+    <div class="available-zone">
+    {#each available as tip}
+        <div class="tip-item" draggable="true" on:dragstart={(e) => onDragStart(e, tip)}>
+            {tip.text}
+        </div>
+    {/each}
+</div>
 <div class="drag-container">
 
     <div class="drop-zone" role="region" aria-label="Odpověd Janovi" on:dragover={allowDrop} on:drop={(e) => onDropZone(e, 'reaction')}>
@@ -104,13 +111,7 @@ function allowDrop(e: DragEvent) {
     </div>
 </div>
 
-<div class="available-zone">
-    {#each available as tip}
-        <div class="tip-item" draggable="true" on:dragstart={(e) => onDragStart(e, tip)}>
-            {tip.text}
-        </div>
-    {/each}
-</div>
+
 
 <div class="footer">
 {#if !submitted}

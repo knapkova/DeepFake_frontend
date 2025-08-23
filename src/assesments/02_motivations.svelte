@@ -483,6 +483,18 @@
 		margin: 2rem 0;
 	}
 
+	.emotion-card {
+	max-width: 180px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between; /* spaces top and bottom evenly */
+	text-align: center;
+	margin: 0 auto;
+	padding: 1.25rem;
+}
+
 	.post-card {
 		background: #ffffff;
 		border: 1px solid #e5e7eb;
@@ -526,7 +538,6 @@
 
 	.container {
 		font-family: 'Inter', sans-serif;
-		background: #f5f7fa;
 		color: #333;
 		padding: 1rem;
 		max-width: none;
@@ -555,10 +566,16 @@
 
 	.emotion-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(13%, 1fr));
-		gap: 1rem;
-		margin: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem;
+  align-items: stretch;   
 	}
+
+	.emotion-card h4 {
+	margin-top: auto;
+	margin-bottom: auto;
+}
 
 	.info-button {
 		position: relative;
@@ -638,7 +655,12 @@
 			align-self: center;
 		}
 		.emotion-grid {
-			display: flow;
+		grid-template-columns: repeat(2, 1fr); /* exactly 2 columns */
+		margin: 0%;
+	}
+
+		.emotion-card {
+			max-width: none;  /* let cards stretch full column width */
 		}
 		.motivation-select select {
 			width: 100%;

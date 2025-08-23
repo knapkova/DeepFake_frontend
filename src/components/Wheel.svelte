@@ -19,21 +19,21 @@
 ];
 
 	let selectedIndices: number[] = [];
+	let lastToggle = 0; // debounce rapid multi-touch taps
 
 	function toggleSelect(i: number) {
-		const pos = selectedIndices.indexOf(i);
-		if (pos > -1) {
-			selectedIndices.splice(pos, 1);
-			selectedIndices = [...selectedIndices];
-		} else if (selectedIndices.length < 3) {
+		const now = Date.now();
+		if (now - lastToggle < 120) return; // ignore very fast double taps (mobile)
+		lastToggle = now;
+
+		const already = selectedIndices.includes(i);
+		if (already) {
+			selectedIndices = selectedIndices.filter((idx) => idx !== i);
+		} else {
+			if (selectedIndices.length >= 3) return; // hard cap
 			selectedIndices = [...selectedIndices, i];
 		}
-
-		if (selectedIndices.length >= 3) {
-			wheelSelected = true;
-		} else {
-			wheelSelected = false;
-		}
+		wheelSelected = selectedIndices.length === 3;
 	}
 </script>
 
@@ -205,5 +205,11 @@
 	button:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
+		pointer-events: none; /* ensure no extra click processing on mobile */
+	}
+
+	/* Slight visual cue when limit reached */
+	.wheel-of-fortune.limit-reached button:not(.selected):not(:disabled) {
+		filter: grayscale(0.4) brightness(0.95);
 	}
 </style>

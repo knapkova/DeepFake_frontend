@@ -248,8 +248,9 @@
 
 			<div class="quiz-container">
 				<p class="question">
-					❓Proč se ostatní lidé nepřidali na tvou stranu, i když jsi poskytl/a jasné důkazy? Vyber
-					dva důvody:
+					<span class="q-icon" aria-hidden="true">❓</span>
+					<span class="q-title">Proč se ostatní lidé nepřidali na tvou stranu, i když jsi poskytl/a jasné důkazy?</span>
+					<span class="q-sub">Vyber dva důvody</span>
 				</p>
 				<div class="options">
 					{#each options as option, index}
@@ -493,10 +494,29 @@
 		animation: fadeInUp 0.4s 0.2s ease-out both;
 	}
 	.question {
-		font-size: 1.2rem;
-		margin-bottom: 1rem;
-		color: #333;
+		font-size: 1.15rem;
+		margin: 0 auto 1rem;
+		color: #1f2937;
 		text-align: center;
+		line-height: 1.5;
+		max-width: 42rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.q-icon {
+		font-size: 1.35rem;
+		opacity: 0.9;
+	}
+
+	.q-title {
+		font-weight: 600;
+	}
+
+	.q-sub {
+		font-size: 0.95rem;
+		color: #6b7280;
 	}
 	.options {
 		margin-bottom: 1rem;
@@ -508,7 +528,10 @@
 	}
 	.option label {
 		cursor: pointer;
+		display: flex;
+		gap: 0.3rem;
 	}
+
 	.option input {
 		margin-top: 0.2rem;
 		cursor: pointer;

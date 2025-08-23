@@ -1,8 +1,7 @@
 <script lang="ts">
 	import '../app.css';
+	import '../global.css';
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
-	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
 	import Sidebar from '$components/Sidebar.svelte';
 	import { isAuthenticated, user } from '../stores/auth';
 
@@ -29,11 +28,20 @@
 		console.log('Sidebar toggle event:', event.detail);
 		sidebarOpen = event.detail;
 	}
+
+	function toggleSidebar() {
+    sidebarOpen = !sidebarOpen;
+  }
 </script>
+
+<div class="mobile-header">
+  <button class="hamburger" on:click={toggleSidebar}>☰</button>
+</div>
+
 
 <div class="layout">
 	<aside class="sidebar-container {sidebarOpen ? '' : 'closed'}">
-		<Sidebar on:toggle={handleToggle} {sidebarOpen} />
+		<Sidebar/>
 	</aside>
 
 	<main class="content">
@@ -49,6 +57,9 @@
 </div>
 
 <style>
+	  .mobile-header {
+    display: none;
+  }
 	.footer {
 		background-color: #e9e9e9;
 		color: var(--text-color);
@@ -71,7 +82,7 @@
 	}
 
 	.sidebar-container {
-		background: var(--background-color);
+		 background: var(--background-color);
 		padding: 10px;
 		width: 150px;
 		height: 100%;
@@ -82,18 +93,39 @@
 	}
 
 	.content {
+		width: 100%;
 		flex: 1;
-		overflow-y: auto; /* Allow main content to scroll if it exceeds viewport height */
+		overflow-y: auto; /* enable scroll on desktop */
 	}
 
 	@media screen and (max-width: 768px) {
     .layout {
       display: flex;
-      flex-direction: row-reverse;
-
+      flex-direction: column;
+      /* enable overflow to allow scrolling */
+      overflow: visible;
     }
 
-    .sidebar-container {
+    .mobile-header {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3rem;
+      background: var(--background-color);
+      z-index: 1001;
+      padding: 0.5rem;
+    }
+
+    .hamburger {
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+    }
+
+
+   .sidebar-container {
       position: fixed;
       top: 0;
       right: 0;
@@ -105,9 +137,15 @@
       z-index: 1000;
     }
 
-    /* push the page content down so it’s not hidden under the top-bar */
-    .content {
-      width: 100%;
-    }
+   .content {
+     width: 100%;
+     margin-top: 3rem; /* push below mobile header */
+     overflow-y: auto;
+     max-height: calc(100vh - 3rem);
+	 padding: 5px;
+   }
   }
+  
 </style>
+
+

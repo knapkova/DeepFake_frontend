@@ -2,7 +2,7 @@
 	export let marginRight = '30%';
 </script>
 
-<div class="main-content" style="margin-right: {marginRight};">
+<div class="main-content">
 	<h1>Klamárium</h1>
 	<div class="info">
 		<div class="funfact">
@@ -29,7 +29,7 @@
 		background-repeat: no-repeat !important;
 		background-position: center !important;
 		align-items: start;
-		margin-right: 18px;
+		margin-right: 30%;
 		color: black;
 		flex: 2;
 		display: flex;
@@ -46,7 +46,7 @@
 	}
 
 	.funfact p {
-		font-size: 16px;
+		font-size: 0.9rem;
 		color: #333;
 		font-weight: lighter;
 		font-family: 'Courier New', Courier, monospace;
@@ -58,15 +58,15 @@
 			padding: 0.75rem;
 			background-position: top center;
 		}
-		.main-content h1 {
-			font-size: 1.8rem;
-		}
-		.main-content .gray {
-			font-size: 1rem;
-		}
+		
+		
 		.info {
 			flex-direction: column;
 			gap: 0.75rem;
 		}
+		.funfact {
+		
+		width: 100%;
+	}
 	}
 </style>

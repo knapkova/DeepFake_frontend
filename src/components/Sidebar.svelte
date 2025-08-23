@@ -177,16 +177,7 @@
 		background: #f0f0f0;
 	}
 
-	/* Primary button variant */
-	.button {
-		background: #2575fc;
-		color: #fff !important;
-		transition: background 0.3s ease;
-	}
-	.button:hover {
-		background: #1a5acb;
-	}
-
+	
 	/* Auth links */
 	.auth-links {
 		margin-top: 20px;

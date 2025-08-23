@@ -3,7 +3,9 @@
 	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
 	import { writable } from 'svelte/store';
 	import type { AssignmentIntroductionArticle, StartQuiz } from '$types/interfaces';
-	import DndConditional from '$lib/dnd_conditional_fr_now.svelte';
+	//import DndConditional from '$lib/dnd_conditional_fr_now.svelte';
+	import DndConditional from '$lib/dnd_intro.svelte';
+
 	import { fly, fade, scale } from 'svelte/transition';
 	import { cubicOut, backOut } from 'svelte/easing';
 	import Wheel from '$components/Wheel.svelte';
@@ -137,9 +139,10 @@
 
 {#if $state === 'quiz'}
 	<div class="quiz-container" in:fly={{ x: 300, duration: 400 }} out:fly={{ x: -300 }}>
-		<h2>Slovník</h2>
-		<p>Ještě než se ponoříme do příběhu, přiřaď správné definice k pojmům z článku:</p>
-
+		<div class="quiz-header">
+			<h2>Slovník</h2>
+			<p>Ještě než se ponoříme do příběhu, přiřaď správné definice k pojmům z článku.</p>
+		</div>
 		<DndConditional
 			{quiz}
 			onQuizComplete={() => {
@@ -169,15 +172,23 @@
 	</div>
 {/if}
 
-
 <style>
+	.quiz-container p {
+		font-size: 0.9rem;
+	}
+
+	.quiz-header{
+		padding: 12px 16px;
+		background: #f7f7f7;
+		border-bottom: 1px solid #eee;
+	}
 	.continue-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 1.5rem;
-    flex-direction: column;
-    flex-wrap: wrap;
-    align-items: center;
+		display: flex;
+		justify-content: center;
+		margin-top: 1.5rem;
+		flex-direction: column;
+		flex-wrap: wrap;
+		align-items: center;
 	}
 	.fb-actions {
 		display: flex;
@@ -188,7 +199,7 @@
 		background: #fafafa;
 		flex-direction: column;
 	}
-	
+
 	.fb-action-buttons {
 		display: flex;
 		flex: 1;
@@ -200,7 +211,7 @@
 		margin: 0 0.5rem;
 		background: rgba(0, 0, 0, 0.026);
 		color: #65676b;
-		font-size: 14px;
+		font-size: 0.8rem;
 		display: flex;
 		align-items: center;
 		padding: 6px 8px;
@@ -258,7 +269,7 @@
 
 	.fb-content {
 		margin: 8px 12px;
-		font-size: 14px;
+		font-size: 0.7rem;
 		line-height: 1.4;
 	}
 	.fb-media {
@@ -281,7 +292,7 @@
 		width: calc(100% - 24px);
 		margin: 12px;
 		padding: 8px 0;
-		background: #1877f2;
+		background: #8b513e;
 		color: #fff;
 		font-size: 14px;
 		font-weight: bold;
@@ -333,7 +344,7 @@
 		justify-content: center;
 		gap: 2rem;
 		flex-wrap: wrap; /* ensures responsiveness on small screens */
-		margin: 2rem 14rem;
+		margin: 2rem 1rem;
 	}
 
 	.quiz-container {
