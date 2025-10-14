@@ -4,6 +4,7 @@
 @tailwind utilities;
 
 @import 'flowbite';
+@import './styles/font.css';
 
 button,
 input[type="button"],
