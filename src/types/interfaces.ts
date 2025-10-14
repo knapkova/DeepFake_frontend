@@ -54,16 +54,6 @@ export interface ManipulativePart {
 }
 
 
-export interface AssignmentFindPictureSource{
-    id:number;
-    imgSrc:string;
-    image:File;
-    imgTitle:string;
-    imgDescription:string;
-    imgAlt:string;
-    visible:boolean;
-    categoryId:number;
-}
 
 export interface CategoryAssignment{
     categoryId: number,
@@ -165,4 +155,12 @@ export interface Feedback{
   date: Date,
   stars: number,
   feedbackFurther: string
+}
+
+export interface AssignmentFindPictureSource {
+	id: number,
+    imgSrc: string,
+    categoryId: number,
+    correctAnswer : string,
+    image : string
 }

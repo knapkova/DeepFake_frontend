@@ -287,7 +287,8 @@
 			Ano! Ivan využil známé prostředí filmu (film Marťan je populární, spousta lidí jej viděla) a
 			spoléhal na to, že lidé si tyto vizuály snadno spojí s realitou, což se také stalo. Navíc,
 			jakmile jednou uvěřili, že na Marsu opravdu někdo je, vše další (např. fotky) jim připadalo
-			důvěryhodnější. Těmto myšlenkovým zkratkám se říká KONFIRMAČNÍ ZKRESLENÍ. To znamená, že
+			důvěryhodnější. <br>
+			🚀 Těmto myšlenkovým zkratkám se říká <b>KONFIRMAČNÍ ZKRESLENÍ</b>. To znamená, že
 			vyhledáváme a pamatujeme si hlavně to, co podporuje naše přesvědčení.
 		</p>
 		{#each $bias as bia}

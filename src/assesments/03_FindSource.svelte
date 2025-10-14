@@ -5,6 +5,9 @@
 	import LensExplanationPopup from '$components/LensExplanation_popup.svelte';
 	import LensPrequel from '$components/LensPrequel.svelte';
 	import SortableList from '$components/sortable_list_lens.svelte';
+	import { Input } from 'flowbite-svelte';
+	import type { AssignmentFindPictureSource } from '$types/interfaces';
+	import { user } from '$stores/auth';
 
 	export let onLevelComplete: () => void = () => {};
 	let showTutorial = writable(false);
@@ -20,31 +23,136 @@
 		onLevelComplete();
 	}
 
-	interface AssignmentFindPictureSource {
-		id: number;
-		imgSrc: string;
-		imgTitle: string;
-		imgDescription: string;
-	}
 
 	let category_id = 11;
-	const api_get_by_category =
-		'/api/Admin/AssignmentFindPictureSource/GetAssignmentFindPictureSourcesByCategoryId/';
+	// Per-image user answers; initialize after fetch
+	let userAnswers: string[] = [];
 
-	let originalSources = writable<AssignmentFindPictureSource[]>([]);
-	let imageItems: AssignmentFindPictureSource[] = [];
-	let titleItems: AssignmentFindPictureSource[] = [];
-	let completedPairs: { image: AssignmentFindPictureSource; title: AssignmentFindPictureSource }[] =
-		[];
+// Per-image feedback: 'correct' | 'wrong' | 'error' | ''
+let userFeedback: string[] = [];
+// Per-image loading state
+let userLoading: boolean[] = [];
+// Per-image attempts counter
+let userAttempts: number[] = [];
+// Per-image revealed correct answer (fetched after attempts exhausted)
+// Flag that becomes true when all items are finished (correct or revealed)
+let allFinished = false;
 
-	// Using indices to track the selection per column
-	let selectedImageIndex: number | null = null;
-	let selectedTitleIndex: number | null = null;
+
+	const api_get_pictures = '/api/Admin/AssignmentGoogleLens/GetPhotosByCategory/'
+	const api_check_answers = '/api/Admin/AssignmentGoogleLens/CheckCorrectAnswer'
+
+
+	let imageItems = writable<AssignmentFindPictureSource[]>([]);
+
+	async function assertAnswer(photoId: number, userAnswer: string) {
+		let url = `${PUBLIC_VITE_API_ROOT}${api_check_answers}?photoId=${photoId}&userAnswer=${encodeURIComponent(
+			userAnswer
+		)}`;
+		console.log('Asserting answer with URL:', url);
+		try {
+			const response = await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			// Backend contract:
+			// - returns 200 OK with message for correct answer
+			// - returns 404 NotFound for incorrect answer
+			if (response.ok) {
+				// correct
+				return { ok: true, isCorrect: true };
+			} else if (response.status === 404) {
+				// incorrect answer
+				return { ok: true, isCorrect: false };
+			} else {
+				console.warn('Server returned unexpected status', response.status);
+				return { ok: false, isCorrect: false };
+			}
+		} catch (error) {
+			console.error('Error while asserting answer', error);
+			return { ok: false, isCorrect: false };
+		}
+	}
+
+	// previously we fetched acceptable source from the API; backend now includes it in img.correctAnswer
+
+	// wrapper to call assertAnswer and set per-image feedback
+	async function checkAnswer(photoId: number, userAnswer: string, index: number) {
+		// ensure feedback array has same length
+		if (!userFeedback || userFeedback.length < userAnswers.length) {
+			userFeedback = userAnswers.map(() => '');
+		}
+
+		// ensure loading array
+		if (!userLoading || userLoading.length < userAnswers.length) {
+			userLoading = userAnswers.map(() => false);
+		}
+
+		// prevent duplicate checks for the same item
+		if (userLoading[index]) return false;
+
+		// set loading
+		userLoading[index] = true;
+		userLoading = [...userLoading];
+
+		const result = await assertAnswer(photoId, userAnswer);
+
+		if (!result.ok) {
+			userFeedback[index] = 'error';
+			userFeedback = [...userFeedback];
+			userLoading[index] = false;
+			userLoading = [...userLoading];
+			return false;
+		}
+
+		// increment attempts only when the server answered (correct or incorrect)
+		userAttempts[index] = (userAttempts[index] || 0) + 1;
+		userAttempts = [...userAttempts];
+
+		if (result.isCorrect) {
+			userFeedback[index] = 'correct';
+			userFeedback = [...userFeedback];
+		} else {
+			// wrong answer
+			if (userAttempts[index] >= 3) {
+				// reveal correct answer from the already-fetched items (backend now provides correctAnswer)
+				const items = get(imageItems);
+				const correct = items[index]?.correctAnswer ?? '';
+				// store it in the feedback state for display
+				userFeedback[index] = 'revealed';
+				userFeedback = [...userFeedback];
+				// also store answer into userAnswers so it can be shown in UI if needed
+				userAnswers[index] = correct;
+				userAnswers = [...userAnswers];
+			} else {
+				userFeedback[index] = 'wrong';
+				userFeedback = [...userFeedback];
+			}
+		}
+
+		userLoading[index] = false;
+		userLoading = [...userLoading];
+
+		// If all items are finished (either correct or revealed after attempts), move to done
+		const allDone = get(imageItems).every((_it, idx) => {
+			return userFeedback[idx] === 'correct' || userFeedback[idx] === 'revealed';
+		});
+		if (allDone) {
+			// mark finished and show the 'Pokračovat' button instead of auto-switching
+			allFinished = true;
+		}
+
+		return result.isCorrect;
+	}
+	
 
 	type GameState = 'start' | 'explain' | 'play' | 'done' | 'sorting';
-	let state: GameState = 'start';
+	let state: GameState = 'start'; // TODO set to 'start' for intro
 
-	let lensIntroComplete = false;
+	let lensIntroComplete = true;
 
 	async function handleLensIntroComplete() {
 		await tick();
@@ -54,74 +162,36 @@
 	}
 
 	onMount(async () => {
-		const response = await fetch(`${PUBLIC_VITE_API_ROOT}${api_get_by_category}${category_id}`);
+		const response = await fetch(`${PUBLIC_VITE_API_ROOT}${api_get_pictures}${category_id}`);
 		const data = await response.json();
-		originalSources.set(data);
+		imageItems.set(data);
+		userAnswers = data.map(() => '');
+		userFeedback = data.map(() => '');
+		userLoading = data.map(() => false);
+		userAttempts = data.map(() => 0);
+
+		console.log('Fetched image items:', data);
 	});
 
 	function startGame() {
 		state = 'play';
-		const sources = [...get(originalSources)];
-		imageItems = shuffle([...sources]);
-		titleItems = shuffle([...sources]);
-		completedPairs = [];
-		selectedImageIndex = null;
-		selectedTitleIndex = null;
-	}
-
-	function shuffle<T>(arr: T[]): T[] {
-		for (let i = arr.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[arr[i], arr[j]] = [arr[j], arr[i]];
-		}
-		return arr;
 	}
 
 	function submitResults() {
-		state = 'done';
+		state = 'sorting';
 	}
 
-	// When both an image and title are selected, move them to the completedPairs
-	function processPair() {
-		if (selectedImageIndex == null || selectedTitleIndex == null) return;
 
-		const selectedImage = imageItems[selectedImageIndex];
-		const selectedTitle = titleItems[selectedTitleIndex];
 
-		// Remove the selected items from the active arrays
-		imageItems = imageItems.filter((_, i) => i !== selectedImageIndex);
-		titleItems = titleItems.filter((_, i) => i !== selectedTitleIndex);
-
-		// Add the selected pair to the completed list
-		completedPairs = [...completedPairs, { image: selectedImage, title: selectedTitle }];
-
-		// Reset selections so the user can choose a new pair
-		selectedImageIndex = null;
-		selectedTitleIndex = null;
-	}
-
-	// Only one image can be selected at a time.
-	function toggleImage(index: number) {
-		selectedImageIndex = selectedImageIndex === index ? null : index;
-		if (selectedImageIndex != null && selectedTitleIndex != null) {
-			processPair();
-		}
-	}
-
-	// Only one title can be selected at a time.
-	function toggleTitle(index: number) {
-		selectedTitleIndex = selectedTitleIndex === index ? null : index;
-		if (selectedImageIndex != null && selectedTitleIndex != null) {
-			processPair();
-		}
-	}
+	
+	
 </script>
 
 <div class="container">
 	{#if state === 'start'}
 		{#if lensIntroComplete}
 			<div class="start-layout">
-				<h2 class="start-heading">🚀 Připrav se na hru!</h2>
+				<h2 class="start-heading">🚀 Připrav se!</h2>
 				<div class="left-card">
 					<p class="intro-text">
 						Ivan přidává další materiály – několik fotografií, které podle něj dokazují, že přistání
@@ -136,94 +206,55 @@
 		{:else}
 			<LensPrequel onComplete={handleLensIntroComplete} />
 		{/if}
+
+
 	{:else if state === 'play'}
 		<LensExplanationPopup showLensExplanation={true} />
 		<div class="game-header">
 			<button on:click={() => showTutorial.set(true)}> 📸 Google Lens návod</button>
 			<LensExplanationPopup bind:showLensExplanation={$showTutorial} />
-			<p class="instructions">Kliknutím na obrázek a zdroj vytvořte pár.</p>
+						<p>Najdi pomocí Google Lens správný zdroj. Pokud potřebuješ pomoct, mrkni na návod výše!</p>
+
 		</div>
-		{#if imageItems.length === 0 && titleItems.length === 0}
-			<div class="good-job">
-				<p>Všechny páry byly spárovány! Jak se ti dařilo?</p>
-				<button on:click={submitResults}>Zobrazit výsledky</button>
-			</div>
-		{/if}
-
-		<div class="row">
-			<!-- Images Column -->
-			<div class="column">
-				<h3>Obrázky</h3>
-				{#each imageItems as img, i}
-					<div class="card-wrapper">
-						<button
-							type="button"
-							class="card {selectedImageIndex === i ? 'selected' : ''}"
-							on:click={() => toggleImage(i)}
-						>
-							<img src={img.imgSrc} alt="Obrázek" />
-						</button>
-						<span class="download-link">
-							<a href={img.imgSrc} target="_blank" rel="noopener noreferrer">📥</a>
-						</span>
-					</div>
-				{/each}
-			</div>
-
-			<!-- Titles Column -->
-			<div class="column">
-				<h3>Zdroj</h3>
-				{#each titleItems as txt, i}
-					<button
-						type="button"
-						class="card {selectedTitleIndex === i ? 'selected' : ''}"
-						on:click={() => toggleTitle(i)}
-					>
-						{txt.imgTitle}
-					</button>
-				{/each}
-			</div>
-
-			<!-- Completed Pairs Column -->
-			<div class="completed-column">
-				<h3>Vybraný pár</h3>
-				<button on:click={startGame}>🔁</button>
-
-				{#each completedPairs as pair}
-					<div class="completed-pair">
-						<img src={pair.image.imgSrc} alt="Obrázek" class="pair-image" />
-						<span class="arrow">➡️</span>
-						<div class="pair-title">{pair.title.imgTitle}</div>
-					</div>
-				{/each}
-			</div>
-		</div>
+			<!-- Images Grid -->
+				<div class="cards-grid">
+					{#each $imageItems as img, i}
+						<div class="card-wrapper" data-index={i}>
+							<div class="image-box">
+								<img class="card" src={img.imgSrc} alt="Obrázek" loading="lazy" />
+								<button class="dl-btn" aria-label="Stáhnout" title="Stáhnout">
+									<a href={img.imgSrc} target="_blank" rel="noopener noreferrer">📥</a>
+								</button>
+							</div>
+							<div class="answer-section">
+								<Input class="my-2 w-full" placeholder="napiš popis obrázku..." bind:value={userAnswers[i]} />
+								<button on:click={() => checkAnswer(img.id, userAnswers[i], i)} class="check-btn" disabled={userLoading[i] || userFeedback[i] === 'correct' || userFeedback[i] === 'revealed'}>
+									{#if userLoading[i]}Kontroluji…{:else}Zkontrolovat{/if}
+								</button>
+								{#if userFeedback && userFeedback[i]}
+									{#if userFeedback[i] === 'correct'}
+										<p class="feedback correct">Správně ✅</p>
+									{:else if userFeedback[i] === 'wrong'}
+										<p class="feedback wrong">Špatně ❌</p>
+										<p class="attempts">Pokus {userAttempts[i]} / 3</p>
+									{:else if userFeedback[i] === 'revealed'}
+										<p class="feedback correct">Správná odpověď: {img.correctAnswer ?? 'není k dispozici'}</p>
+									{:else}
+										<p class="feedback error">Chyba při ověřování</p>
+									{/if}
+								{/if}
+							</div>
+						</div>
+					{/each}
+				</div>
+					{#if allFinished}
+						<div class="good-job">
+							<p>Hotovo — můžeš pokračovat.</p>
+							<button on:click={submitResults}>Pokračovat</button>
+						</div>
+					{/if}
 	{:else if state === 'done'}
 		<h3>Zvládl jsi rozpoznat všechny nástrahy?</h3>
-		<p>Tvé odpovědi:</p>
-		<div class="row">
-			{#each completedPairs as pair}
-				<div class="completed-pair {pair.image.imgSrc !== pair.title.imgSrc ? 'wrong' : 'correct'}">
-					<img src={pair.image.imgSrc} alt="Obrázek" class="pair-image" />
-					<span class="arrow">➡️</span>
-					<div class="pair-title">{pair.title.imgTitle}</div>
-				</div>
-			{/each}
-		</div>
-
-		<h2>Správné odpovědi:</h2>
-		<div class="row">
-			{#each get(originalSources) as source}
-				<div class="column">
-					<div class="completed-pair">
-						<img src={source.imgSrc} alt="Obrázek" class="pair-image" />
-						<span class="arrow">➡️</span>
-						<div class="pair-title">{source.imgTitle}</div>
-					</div>
-				
-				</div>
-			{/each}
-		</div>
 		<button on:click={() => (state = 'sorting')}> Jdeme dál </button>
 	{:else if state == 'sorting'}
 		<SortableList onComplete={handleSortFinish} />
@@ -235,6 +266,13 @@
 </div>
 
 <style>
+	.answer-section {
+		margin-top: 10px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 8px;
+	}
 	.start-layout {
 		background: linear-gradient(135deg, #f0f9ff, #cbebff);
 		border-radius: 16px;
@@ -256,8 +294,7 @@
 		animation: fadeInUp 0.5s ease-out both;
 	}
 
-	.column h3,
-	.completed-column h3 {
+	.column h3  {
 		position: relative;
 		font-size: 1.4rem;
 		text-transform: uppercase;
@@ -269,8 +306,7 @@
 		padding-bottom: 0.25rem;
 	}
 
-	.column h3::after,
-	.completed-column h3::after {
+	.column h3::after{
 		content: '';
 		position: absolute;
 		left: 0;
@@ -282,17 +318,20 @@
 	}
 
 	/* optional: add a little icon before */
-	.column h3::before,
-	.completed-column h3::before {
+	.column h3::before {
 		content: '📌';
 		margin-right: 0.5rem;
 	}
 	.game-header {
-		display: flex;
-		background: white;
-		border-radius: 5%;
-		padding: 1rem;
-		flex-direction: column;
+		
+    /* border: 3px black; */
+    border: 2px solid #bb703e;
+    display: flex
+;
+    background: white;
+    /* border-radius: 5%; */
+    padding: 1rem;
+    flex-direction: column;
 	}
 	.good-job {
 		display: flex;
@@ -358,9 +397,8 @@
 		color: #333;
 	}
 
-	p,
-	.description,
-	.img-description {
+	p
+	 {
 		font-size: 1rem;
 		color: #666;
 		margin: 0.5rem 0;
@@ -377,24 +415,123 @@
 		padding: 1rem 0;
 	}
 
-	.column,
-	.completed-column {
+	.column
+	 {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		gap: 1rem;
-		align-items: center;
+		align-items: self-end;
 		min-width: 260px;
 	}
 
-	.completed-column {
-		width: 260px;
+	/* New responsive grid for play state images */
+	.cards-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+		gap: 1.25rem;
+		margin: 1.5rem auto;
+		width: 100%;
+		max-width: 1100px;
+		align-items: start;
 	}
 
 	.card-wrapper {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		background: #ffffff;
+		border: 1px solid #e5e7eb;
+		padding: 0.75rem 0.75rem 0.9rem;
+		border-radius: 12px;
+		box-shadow: 0 2px 6px rgba(0,0,0,0.04);
 		position: relative;
+		transition: box-shadow .25s ease, transform .25s ease;
+	}
+	.card-wrapper:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.08); transform: translateY(-2px); }
+
+	.image-box {
+		position: relative;
+		width: 100%;
+		aspect-ratio: 4 / 3; /* consistent frame */
+		overflow: hidden;
+		border-radius: 10px;
+		background: #f3f4f6;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
-	button.card {
+	.card-wrapper img.card {
+		width: 100%;
+		height: 100%;
+		object-fit: cover; /* cover to fill frame */
+		display: block;
+	}
+
+	.dl-btn {
+		position: absolute;
+		top: 6px;
+		right: 6px;
+		background: rgba(255,255,255,0.85);
+		border: 1px solid #d1d5db;
+		border-radius: 6px;
+		padding: 0.2rem 0.45rem;
+		font-size: 1.25rem;
+		cursor: pointer;
+		transition: background .2s ease, box-shadow .2s ease;
+		line-height: 1;
+	}
+	.dl-btn:hover { background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+	.dl-btn a { text-decoration: none; }
+
+	.answer-section { align-items: stretch; }
+	.answer-section .check-btn {
+		background: #1f6feb;
+		color: #fff;
+		border: none;
+		padding: 0.45rem 0.75rem;
+		border-radius: 8px;
+		font-size: 0.9rem;
+		cursor: pointer;
+		transition: background .2s ease;
+	}
+	.answer-section .check-btn:hover { background: #1559c4; }
+
+	.answer-section .check-btn[disabled] {
+		opacity: 0.6;
+		cursor: not-allowed;
+		background: #94bff7;
+	}
+
+	.feedback { margin: 0; font-weight: 600; }
+	.feedback.correct { color: #1a7f37; }
+	.feedback.wrong { color: #b91c1c; }
+	.feedback.error { color: #b45309; }
+
+	.attempts {
+ 		margin: 0;
+ 		font-size: 0.75rem;
+ 		color: #9ca3af; /* lighter muted gray */
+ 		font-weight: 400;
+ 		margin-top: 2px;
+ 		font-style: italic;
+	}
+
+	@media (max-width: 640px) {
+		.cards-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.9rem; }
+		.image-box { aspect-ratio: 1 / 1; }
+	}
+
+	
+
+	.card-wrapper {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		max-width: max-content;
+	}
+
+	card{
 		box-sizing: border-box;
 		width: 200px;
 		height: 200px;
@@ -412,77 +549,20 @@
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 		position: relative;
 		color: black;
+		max-width: 80%;
 	}
 
-	button.card:hover {
-		transform: translateY(-4px);
-		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-	}
-
-	button.card.selected {
-		animation: pulse 2s infinite;
-	}
-
-	.card img {
-		max-width: 90%;
-		max-height: 90%;
-		border-radius: 8px;
-	}
+	
 
 	.download-link a {
 		text-decoration: none;
 		font-size: 1.4rem;
 		position: absolute;
-		bottom: 5px;
-		right: 5px;
+		bottom: 30%;
+    	right: 5%;
 	}
 
-	/* Completed pair styling */
-	.completed-pair {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.8rem;
-		border: 1px solid #ccc;
-		border-radius: 8px;
-		background: #eef;
-		width: 260px;
-		transition:
-			background 0.3s,
-			transform 0.2s;
-		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-		color: #333;
-	}
-
-	.completed-pair:hover {
-		background: #eef;
-		transform: translateY(-2px);
-	}
-
-	.completed-pair.wrong {
-		background: #ffcccc;
-	}
-
-	.completed-pair.correct {
-		background: #ccffcc;
-	}
-
-	.pair-image {
-		width: 100px;
-		height: 100px;
-		object-fit: cover;
-		border-radius: 6px;
-	}
-
-	.arrow {
-		font-size: 1.5rem;
-	}
-
-	.pair-title {
-		font-size: 1rem;
-		text-align: center;
-		flex: 1;
-	}
+	
 
 	@keyframes pulse {
 		0% {
