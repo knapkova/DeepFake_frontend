@@ -15,5 +15,8 @@ export default defineConfig({
 		  $styles: path.resolve('src/styles'),
 		  $stores: path.resolve('src/stores'),
 		}
-	  }
+	},
+	build: {
+		assetsInclude: ['**/*.ttf', '**/*.woff', '**/*.woff2'],
+	}
 });

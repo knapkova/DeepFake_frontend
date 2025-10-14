@@ -15,7 +15,10 @@ const config = {
 			"$styles/*":"src/styles/*",
 		},
 		// Using Vercel adapter for deployment
-		adapter: vercel()
+		adapter: vercel(),
+		files: {
+			assets: 'static'
+		}
 	}
 };
 

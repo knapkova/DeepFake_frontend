@@ -6,6 +6,11 @@
 @import 'flowbite';
 @import './styles/font.css';
 
+/* Apply YoureGone font globally where needed */
+.font-youregone {
+  font-family: 'YoureGone', sans-serif;
+}
+
 button,
 input[type="button"],
 input[type="submit"],
