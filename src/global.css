@@ -56,23 +56,8 @@ input[type="reset"] {
 }
 
 
-@font-face {
-    font-family: 'Alpha-echo';
-    src: url('/fonts/alpha_echo.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
-
-
-
-@font-face {
-    font-family: 'yourgone';
-    src: url('fonts/youregone.ttf') format('truetype');
-}
-
-
 h1, h2 {
-    font-family: 'yourgone';
+    font-family: 'YoureGone', sans-serif;
   }
 
 body,div,p {

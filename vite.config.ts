@@ -16,7 +16,10 @@ export default defineConfig({
 		  $stores: path.resolve('src/stores'),
 		}
 	},
+	assetsInclude: ['**/*.ttf', '**/*.woff', '**/*.woff2'],
 	build: {
-		assetsInclude: ['**/*.ttf', '**/*.woff', '**/*.woff2'],
+	},
+	optimizeDeps: {
+		include: ['src/lib/fonts/youregone.ttf']
 	}
 });
