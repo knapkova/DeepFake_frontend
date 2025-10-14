@@ -59,6 +59,7 @@
 		"flowbite-svelte": "^0.48.6",
 		"html2canvas": "^1.4.1",
 		"jwt-decode": "^4.0.0",
+		"node-fetch": "^3.3.2",
 		"react-simplemde-editor": "^5.2.0",
 		"simplemde": "^1.11.2",
 		"svelte-vertical-timeline": "^2.0.0"
