@@ -8,7 +8,9 @@
 	let categories = writable<Category[]>([]);
 
 	onMount(async () => {
+		console.log('Fetching categories from', PUBLIC_VITE_API_ROOT + request_get);
 		const response = await fetch(PUBLIC_VITE_API_ROOT + request_get);
+		console.log('Response status:', response.status);
 		const data = await response.json();
 		console.log(data);
 		categories.set(data);
