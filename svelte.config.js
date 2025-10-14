@@ -13,12 +13,11 @@ const config = {
 			"$components/*":"src/components/*",
 			"$assesments/*":"src/assesments/*",
 			"$styles/*":"src/styles/*",
+			"$lib/*":"src/lib/*",
+			"$stores/*":"src/stores/*"
 		},
 		// Using Vercel adapter for deployment
-		adapter: vercel(),
-		files: {
-			assets: 'static'
-		}
+		adapter: vercel()
 	}
 };
 
