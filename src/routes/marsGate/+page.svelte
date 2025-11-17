@@ -213,6 +213,7 @@
 	</section>
 {/if}
 
+<!--
 <Button on:click={handleRestart} class="mt-8">Restart</Button>
 
 
@@ -230,6 +231,7 @@
 	class="mt-8">
 	Další levl
 </Button>
+-->
 
 <style>
 	.container {
