@@ -29,7 +29,9 @@
   // init from quiz store
   quiz.subscribe((value) => {
     // pool (terms)
-    sourceItems.set([...value]);
+    const pool = [...value];
+    shuffle(pool);
+    sourceItems.set(pool);
     // targets (definitions)
     columnItems = value.map((q) => ({
       id: q.id,
@@ -41,6 +43,23 @@
     value.forEach((q) => (initAssignments[q.id] = null));
     assignments.set(initAssignments);
   });
+
+  
+  function shuffle(array: StartQuiz[]) {
+    let currentIndex = array.length;
+
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+
+      // Pick a remaining element...
+      let randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      // And swap it with the current element.
+      [array[currentIndex], array[randomIndex]] = [
+        array[randomIndex], array[currentIndex]];
+    }
+  }
 
   function completeQuiz() {
     onQuizComplete();

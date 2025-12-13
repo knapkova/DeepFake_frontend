@@ -152,7 +152,7 @@ let allFinished = false;
 	type GameState = 'start' | 'explain' | 'play' | 'done' | 'sorting';
 	let state: GameState = 'start'; // TODO set to 'start' for intro
 
-	let lensIntroComplete = true;
+	let lensIntroComplete = false;
 
 	async function handleLensIntroComplete() {
 		await tick();

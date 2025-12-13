@@ -131,6 +131,7 @@
 
 	let bias = writable<AssignmentCognitiveBias[]>([]);
 	const definitions = writable<string[]>([]);
+	//shuffle(definitions);
 	let examples = writable<string[]>([]);
 	const userAnswers = writable<Record<number, string>>({});
 
@@ -145,6 +146,16 @@
 	function handleAllCorrect(msg: string) {
 		message_correct = msg;
 	}
+
+	function shuffle<T>(array: T[]): T[] {
+		const a = array.slice();
+		for (let i = a.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[a[i], a[j]] = [a[j], a[i]];
+		}
+		return a;
+		}
+
 
 	onMount(async () => {
 		try {
@@ -162,8 +173,9 @@
 				}
 			});
 			bias.set(biases);
-			definitions.set(biases.map((item) => item.definition));
-			examples.set(biases.map((item) => item.example));
+			// after bias.set(biases);
+			definitions.set(shuffle(biases.map((item) => item.definition)));
+			examples.set(shuffle(biases.map((item) => item.example)));
 		} catch (error) {
 			console.error('Failed to fetch cognitive biases:', error);
 		}
