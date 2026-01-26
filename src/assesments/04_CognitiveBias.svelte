@@ -303,6 +303,7 @@
 			🚀 Těmto myšlenkovým zkratkám se říká <b>KONFIRMAČNÍ ZKRESLENÍ</b>. To znamená, že
 			vyhledáváme a pamatujeme si hlavně to, co podporuje naše přesvědčení.
 		</p>
+		<p>Teď je řada na tobě. 🫵 Přiřaď definici k typu konfirmačního zkreslení a reálné situaci.</p>
 		{#each $bias as bia}
 			<div class="card">
 				<div class="card-header">

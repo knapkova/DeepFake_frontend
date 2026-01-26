@@ -175,8 +175,7 @@
 	{:else if $state === 'comments'}
 		<div class="post">
 			<div class="post-header">
-				<h3>💬 Komentáře: Jaké manipulativní techniky poznáváte?</h3>
-				<p>U každého z komentářů rozklikni seznam a jednu vyber 🔎</p>
+				<h3>💬 Komentáře: U ostatních uživatelů vyber z nabídky jeden hlavní důvod jejich komentáře.</h3>
 			</div>
 		</div>
 
