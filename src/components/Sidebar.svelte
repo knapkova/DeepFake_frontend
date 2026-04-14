@@ -25,12 +25,11 @@
 	async function logout() {
 		isAuthenticated.set(false);
 		try {
-			const response = await fetch(`${PUBLIC_VITE_API_ROOT}/api/Security/Account/Logout`, {
+			await fetch(`${PUBLIC_VITE_API_ROOT}/api/Security/Account/Logout`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				credentials: 'include'
 			});
-			console.log('Logout response:', response);
 		} catch (error) {
 			console.error('Logout error:', error);
 		}

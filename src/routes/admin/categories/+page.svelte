@@ -4,24 +4,33 @@
     import '../../../styles/admin.css';
     import type { Category } from '$types/interfaces';
     import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
-  
+
     let updateMessage: string = '';
-  
+    let fetchError: string = '';
+    let loading = true;
+
     const request_get = '/api/Admin/Categories/GetCategories';
-    const request_update = '/api/Admin/Categories/Update'; 
+    const request_update = '/api/Admin/Categories/Update';
     const request_delete = '/api/Admin/Categories/Delete';
-  
+
     let categories = writable<Category[]>([]);
-  
+
     onMount(async () => {
-      const response = await fetch(PUBLIC_VITE_API_ROOT + request_get); 
-      const data = await response.json();
-      categories.set(data);
-      console.log(data);
+        try {
+            const response = await fetch(PUBLIC_VITE_API_ROOT + request_get, {
+                credentials: 'include'
+            });
+            if (!response.ok) throw new Error(`Server vrátil ${response.status}`);
+            const data = await response.json();
+            categories.set(data);
+        } catch {
+            fetchError = 'Nepodařilo se načíst kategorie. Zkuste stránku obnovit.';
+        } finally {
+            loading = false;
+        }
     });
-  
-    // Called when a user clicks "Save" for a row.
-    async function updateCategory(category: Category, imageFile: File) {
+
+    async function updateCategory(category: Category, imageFile: File | null) {
         const formData = new FormData();
         formData.append('id', category.id.toString());
         formData.append('name', category.name);
@@ -35,98 +44,90 @@
 
         const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_update}`, {
             method: 'POST',
-
+            credentials: 'include',
             body: formData
         });
 
         if (response.ok) {
-            updateMessage = `Category ${category.id} updated successfully!`;
+            updateMessage = `Kategorie ${category.id} úspěšně upravena!`;
         } else {
-            updateMessage = `Failed to update category ${category.id}.`;
-            console.error('Update failed', response);
+            updateMessage = `Nepodařilo se upravit kategorii ${category.id}.`;
         }
     }
 
-  
-    // Delete function (unchanged from before)
     async function deleteCategory(id: number) {
-      const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_delete}/${id}`, {
-        method: 'DELETE'
-      });
-      if (response.ok) {
-        categories.update(cats => cats.filter(cat => cat.id !== id));
-      } else {
-        console.error('Failed to delete category');
-      }
+        if (!confirm('Opravdu chcete smazat tuto kategorii?')) return;
+
+        const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_delete}/${id}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        if (response.ok) {
+            categories.update(cats => cats.filter(cat => cat.id !== id));
+            updateMessage = `Kategorie ${id} smazána.`;
+        } else {
+            updateMessage = `Nepodařilo se smazat kategorii ${id}.`;
+        }
     }
-  
-    // For adding a new category (redirect)
-    function navigate() {
-      window.location.href = "/admin/categories/addNew";
-    }
-  </script>
-  
-  <h2>Úprava kategorií</h2>
-  
-  {#if updateMessage}
+</script>
+
+<a href="/admin" class="back-link">Zpět na přehled</a>
+<h2>Úprava kategorií</h2>
+
+{#if updateMessage}
     <div class="update-message">{updateMessage}</div>
-  {/if}
-  
-  <button on:click={navigate}>+ Přidat nové</button>
-  <div class="admin-section">
-    <table>
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>Název</th>
-          <th>Popis</th>
-          <th>Délka</th>
-          <th>Zobrazit</th>
-          <th>Úvodní obrázek</th>
-          <th>Akce</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each $categories as category (category.id)}
-          <tr>
-            <td>{category.id}</td>
-            <td>
-              <input
-                type="text"
-                bind:value={category.name}
-                placeholder="Název"
-              />
-            </td>
-            <td>
-              <input
-                type="text"
-                bind:value={category.description}
-                placeholder="Popis"
-              />
-            </td>
-            <td>
-              <input
-                type="number"
-                bind:value={category.duration}
-                placeholder="Délka"
-              />
-            </td>
-            <td>
-              <input
-                type="checkbox"
-                bind:checked={category.visible}
-              />
-            </td>
-            <td>
-              <a href="{category.imgSrc}" target="_blank">Otevřít</a>
-            </td>
-            <td>
-              <button on:click={() => updateCategory(category)}>Uložit</button>
-              <button on:click={() => deleteCategory(category.id)}>Smazat</button>
-            </td>
-          </tr>
-        {/each}
-      </tbody>
-    </table>
-  </div>
-  
+{/if}
+
+{#if loading}
+    <p class="status-message">Načítání...</p>
+{:else if fetchError}
+    <p class="status-message error" role="alert">{fetchError}</p>
+{:else}
+    <button on:click={() => window.location.href = '/admin/categories/addNew'}>+ Přidat nové</button>
+    <div class="admin-section">
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Název</th>
+                    <th>Popis</th>
+                    <th>Délka</th>
+                    <th>Zobrazit</th>
+                    <th>Úvodní obrázek</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody>
+                {#each $categories as category (category.id)}
+                    <tr>
+                        <td>{category.id}</td>
+                        <td>
+                            <input type="text" bind:value={category.name} placeholder="Název" />
+                        </td>
+                        <td>
+                            <input type="text" bind:value={category.description} placeholder="Popis" />
+                        </td>
+                        <td>
+                            <input type="number" bind:value={category.duration} placeholder="Délka" />
+                        </td>
+                        <td>
+                            <input type="checkbox" bind:checked={category.visible} />
+                        </td>
+                        <td>
+                            <a href="{category.imgSrc}" target="_blank">Otevřít</a>
+                        </td>
+                        <td>
+                            <button on:click={() => updateCategory(category, null)}>Uložit</button>
+                            <button on:click={() => deleteCategory(category.id)}>Smazat</button>
+                        </td>
+                    </tr>
+                {/each}
+            </tbody>
+        </table>
+    </div>
+{/if}
+
+<style>
+    .status-message { padding: 1rem; }
+    .status-message.error { color: #dc2626; }
+</style>

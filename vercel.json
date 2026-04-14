@@ -6,5 +6,12 @@
       "src": "/api/(.*)",
       "dest": "/api/[...path].js"
     }
-  ]
+  ],
+  "github": {
+    "silent": true
+  },
+  "regions": ["fra1"],
+  "security": {
+    "forceHTTP": false
+  }
 }

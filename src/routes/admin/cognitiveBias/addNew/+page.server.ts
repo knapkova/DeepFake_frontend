@@ -23,7 +23,6 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
     default: async({request, fetch})=>{
         const form = await superValidate(request, zod(newAssignmentSchema));
-        console.log(form);
 
         if (!form.valid) {
             return fail(400,{form});
@@ -38,9 +37,6 @@ export const actions: Actions = {
                 credentials: 'include',
                 body: JSON.stringify(form.data),
             });
-            console.log("Response from server:");
-            console.log(response);
-        
             if (!response.ok) {
                 return fail(500, { message: 'Failed to save data.' });
             }

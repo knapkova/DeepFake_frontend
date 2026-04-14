@@ -28,7 +28,6 @@
         const response = await fetch(PUBLIC_VITE_API_ROOT + request_get); 
         const data = await response.json();
         categories.set(data);
-        console.log(data);
     });
 
     let manipulativeParts = writable<ManipulativePart[]>([]);

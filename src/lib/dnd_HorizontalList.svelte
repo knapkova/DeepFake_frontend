@@ -14,16 +14,16 @@
     // When true, only one item is allowed in the dropzone.
     export let singleSelection = true;
     // Callback fired after an item is dropped; useful for parent components.
-    export let onItemDropped = (event) => {};
+    export let onItemDropped = (_event: { items: AssignmentCognitiveBias[] }) => {};
   
     const flipDurationMs = 300;
   
-    function handleDndConsider(e: any) {
+    function handleDndConsider(e: CustomEvent<{ items: AssignmentCognitiveBias[] }>) {
       // Update the store using the new items array from the event.
       items.set(e.detail.items);
     }
-  
-    function handleDndFinalize(e: any) {
+
+    function handleDndFinalize(e: CustomEvent<{ items: AssignmentCognitiveBias[] }>) {
       // We create a new reference to trigger reactivity.
       items.set([...e.detail.items]);
   

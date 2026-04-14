@@ -63,14 +63,10 @@
 				Accept: 'application/json'
 			}
 		});
-		console.log('Response:', response);
 		const data = await response.json();
 		category.set(data);
-		console.log('Category data:', data);
 		feedbackMemes.set(data.feedbackMemes);
-		console.log('Feedback memes:', data.feedbackMemes);
 		funFactStore.set(data.funFacts);
-		console.log('Fun facts:', data.funFacts);
 	}
 
 	async function handleLevelComplete() {
@@ -116,9 +112,7 @@
 		let randomIndex = Math.floor(Math.random() * $funFactStore.length);
 		let randomFunFact = $funFactStore[randomIndex];
 		if (usedFunFacts.includes(randomFunFact)) {
-			console.log('Already used fun fact, getting a new one');
 			if (usedFunFacts.length === $funFactStore.length) {
-				console.log('All fun facts have been used');
 				usedFunFacts = [];
 			}
 			return getRandomFunFact();
@@ -127,9 +121,6 @@
 		funfact_header.set(randomFunFact.title);
 		funfact_text.set(randomFunFact.text);
 
-		console.log('show:', showFunFact);
-		console.log('Random fun fact:', randomFunFact);
-		console.log('Used fun facts:', usedFunFacts);
 		await tick(); // ensure changes have been processed
 		showFunFact.set(true);
 

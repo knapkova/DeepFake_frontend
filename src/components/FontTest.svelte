@@ -1,10 +1,7 @@
 <script>
 import { onMount } from 'svelte';
 
-onMount(() => {
-    // This will help us debug where Vite is looking for assets
-    console.log(import.meta.env.BASE_URL);
-});
+onMount(() => {});
 </script>
 
 <div class="font-test">

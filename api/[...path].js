@@ -1,4 +1,4 @@
-const http = require('http');
+const axios = require('axios');
 
 module.exports = async (req, res) => {
   // Enable CORS
@@ -16,43 +16,44 @@ module.exports = async (req, res) => {
     return;
   }
 
-  // Get the path from the request
+  const backendBase = process.env.BACKEND_API_URL;
+  const backendHost = new URL(backendBase).hostname;
   const path = req.url.replace(/^\/api/, '');
-  
-  // Forward the request to the Elastic Beanstalk
-  const options = {
-    hostname: 'klamarium-env-1.eba-e8kqfdqj.us-east-1.elasticbeanstalk.com',
-    port: 80,
-    path: `/api${path}`,
-    method: req.method,
-    headers: {
-      ...req.headers,
-      host: 'klamarium-env-1.eba-e8kqfdqj.us-east-1.elasticbeanstalk.com'
-    }
-  };
+  const targetUrl = `${backendBase}${path}`;
 
   try {
-    const proxyRes = await new Promise((resolve, reject) => {
-      const proxyReq = http.request(options, resolve);
-      proxyReq.on('error', reject);
-      if (req.body) {
-        proxyReq.write(JSON.stringify(req.body));
-      }
-      proxyReq.end();
-    });
+    const axiosConfig = {
+      method: req.method,
+      url: targetUrl,
+      headers: {
+        ...req.headers,
+        host: backendHost
+      },
+      data: req.body,
+      maxRedirects: 5,
+      validateStatus: (status) => true // Accept any status code
+    };
 
-    // Copy status code
-    res.status(proxyRes.statusCode);
+    const response = await axios(axiosConfig);
+
+    // Copy status
+    res.status(response.status);
 
     // Copy headers
-    Object.entries(proxyRes.headers).forEach(([key, value]) => {
-      res.setHeader(key, value);
+    Object.entries(response.headers).forEach(([key, value]) => {
+      if (key.toLowerCase() !== 'transfer-encoding') {
+        res.setHeader(key, value);
+      }
     });
 
-    // Stream the response
-    proxyRes.pipe(res);
+    // Send response
+    res.send(response.data);
   } catch (error) {
-    console.error('Proxy error:', error);
-    res.status(500).json({ error: 'Proxy error', details: error.message });
+    console.error('Proxy error:', error.message);
+    res.status(error.response?.status || 500).json({ 
+      error: 'Proxy error', 
+      details: error.message,
+      data: error.response?.data
+    });
   }
 };

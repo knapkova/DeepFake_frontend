@@ -18,7 +18,6 @@
       const response = await fetch(PUBLIC_VITE_API_ROOT + '/api/Admin/Categories/GetCategories');
       const data = await response.json();
       categories.set(data);
-      console.log(data);
     });
 
 

@@ -7,27 +7,14 @@
 
 	export let data;
 
-	let auth = false;
-
 	onMount(() => {
 		if (data.user) {
 			user.set(data.user);
 			isAuthenticated.set(true);
-			console.log('User data:', data.user);
 		}
 	});
 
-	let userData = { userName: '', email: '', role: '' };
-
-	isAuthenticated.subscribe((a) => (auth = a));
-	user.subscribe((u) => (userData = u));
-
 	let sidebarOpen = false;
-
-	function handleToggle(event: any) {
-		console.log('Sidebar toggle event:', event.detail);
-		sidebarOpen = event.detail;
-	}
 
 	function toggleSidebar() {
     sidebarOpen = !sidebarOpen;
@@ -46,13 +33,9 @@
 
 	<main class="content">
 		<slot />
-<!--
 		<footer>
-			<div class="footer">
-				<p>© 2025 Vytvořeno v rámci bakalářské práce Terezou Knápkovou.</p>
-			</div>
+			<p>© 2025 Vytvořeno v rámci bakalářské práce Terezou Knápkovou.</p>
 		</footer>
--->
 	</main>
 </div>
 
@@ -60,20 +43,6 @@
 	  .mobile-header {
     display: none;
   }
-	.footer {
-		background-color: #e9e9e9;
-		color: var(--text-color);
-		text-align: center;
-		font-style: italic;
-		margin-top: 1rem;
-		font-size: small;
-		color: gray;
-		padding: 10px;
-		/* position: fixed; */
-		bottom: 0;
-		width: 100%;
-	}
-
 	.layout {
 		display: flex;
 		height: 100vh;
@@ -96,6 +65,14 @@
 		width: 100%;
 		flex: 1;
 		overflow-y: auto; /* enable scroll on desktop */
+	}
+
+	footer {
+		padding: 1rem 1.5rem;
+		border-top: 1px solid var(--my-gray);
+		text-align: center;
+		font-size: 0.8rem;
+		color: var(--my-gray);
 	}
 
 	@media screen and (max-width: 768px) {

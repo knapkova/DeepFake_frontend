@@ -52,6 +52,7 @@
     }
   
     async function deleteUser(user: User) {
+      if (!confirm(`Opravdu chcete smazat uživatele ${user.email}?`)) return;
       loadingDelete[user.email] = true;
       const response = await fetch(
         `${PUBLIC_VITE_API_ROOT}/api/Security/Account/DeleteUser/${user.id}`,

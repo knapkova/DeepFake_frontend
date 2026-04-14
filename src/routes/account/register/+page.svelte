@@ -12,7 +12,7 @@ export let data: PageData;
 interface ActionResult {
     redirectTo?: string;
     message?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   }
 
 const { form, errors, message } = superForm(data.form);

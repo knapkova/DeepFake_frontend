@@ -4,9 +4,6 @@
     import type { Category, AssignmentCognitiveBias } from '$types/interfaces';
     import '../../../styles/admin.css';
     import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
-    import type { PageData } from './$types';
-
-    
 
     function navigate() {
         window.location.href = "/admin/cognitiveBias/addNew";
@@ -31,7 +28,6 @@
 
         const response = await fetch(PUBLIC_VITE_API_ROOT + request_get);
         const data = await response.json();
-        console.log(data);
         cognitiveBiases.set(data);
     });
 
@@ -46,7 +42,6 @@
             body: JSON.stringify(cognitiveBias)
         });
 
-        console.log(response);
         if (response.ok) {
             updateMessage = `Úkol ${cognitiveBias.id} úspěšně upraven!`;
         } else {
@@ -57,6 +52,7 @@
     }
 
     async function deleteCognitive(id: number) {
+        if (!confirm('Opravdu chcete smazat toto kognitivní zkreslení?')) return;
         loadingDelete[id] = true;
         const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_delete}/${id}`, {
             method: 'DELETE',

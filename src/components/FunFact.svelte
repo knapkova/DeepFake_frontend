@@ -4,9 +4,6 @@ export let showFunFact : boolean = false;
 export let header = "header";
 export let text = "text";
 
-console.log("show:", showFunFact);
-console.log("header:", header);
-console.log("text:", text);
 </script>
 
 {#if showFunFact}
@@ -25,17 +22,22 @@ console.log("text:", text);
  .fun-fact {
     font-size: 1.25rem;
     font-weight: 600;
-    color: light-dark(#333, #efefec);
-    /*color: #333; */
+    color: #333;
     margin-bottom: 0.5rem;
+  }
+
+  :global(.dark) .fun-fact {
+    color: #efefec;
   }
 
   .source {
     font-size: 0.7rem;
-    color: light-dark(#666, #efefec);
-    /*color: #666;*/
+    color: #666;
     line-height: 1.5;
     font-style: italic;
+  }
 
+  :global(.dark) .source {
+    color: #d0d0d0;
   }
 </style>

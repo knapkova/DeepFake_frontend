@@ -47,7 +47,6 @@ export const actions: Actions = {
           } catch (e) {
             errorData.message = await response.text();
           }
-          console.log('Error response:', errorData);
           return fail(response.status, { form,message: errorData.message || 'Unknown error' });
         }
         
@@ -56,8 +55,8 @@ export const actions: Actions = {
         cookies.set('jwt', `${token}`, {
           path: '/',
           httpOnly: true,
-          sameSite: 'lax'
-          // TODO: Secure: true in production (HTTPS)
+          sameSite: 'lax',
+          secure: process.env.NODE_ENV === 'production'
         });
         
         const jwt = cookies.get('jwt');
@@ -71,8 +70,7 @@ export const actions: Actions = {
         });
         
         let data = await response_user.json();
-        console.log('User data:', data.user);
-        
+
         // Return the updated form state along with extra data.
         return { form, user: data.user, message: "Login successful" };
         

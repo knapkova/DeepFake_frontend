@@ -46,13 +46,11 @@ export const actions: Actions = {
         formData.append('Image', form.data.Image);
         formData.append('Visible', form.data.visible.toString());
         formData.append('CategoryId', form.data.categoryId.toString());
-        console.log(formData);
 
         const response = await fetch(`${PUBLIC_VITE_API_ROOT}${api_post}`, {
             method: 'POST',
             body: formData
         });
-        console.log(response);
         if (!response.ok) {
             const errorText = await response.text();
             console.error('API error:', errorText);

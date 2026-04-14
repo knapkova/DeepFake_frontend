@@ -34,7 +34,6 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
     default: async({request, fetch}) => {
         const form = await superValidate(request, zod(newAssignmentSchema),{ allowFiles: true });
-        console.log(form);
 
         if (!form.valid) {
             return fail(400, { form });
@@ -48,7 +47,6 @@ export const actions: Actions = {
             formData.append('Image', form.data.Image);
             formData.append('Visible', form.data.visible.toString());
             formData.append('CategoryId', form.data.categoryId.toString());
-            console.log(formData);
 
             const response = await fetch(`${PUBLIC_VITE_API_ROOT}${api_post}`, {
                 method: 'POST',

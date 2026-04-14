@@ -22,7 +22,7 @@
             const fetchedArticles = await response.json();
 
             // Initialize articles with empty userHeadline
-            articles = fetchedArticles.map(article => ({
+            articles = fetchedArticles.map((article: { id: number; content: string; headline: string }) => ({
                 id: article.id,
                 content: article.content,
                 correctHeadline: article.headline,
@@ -32,16 +32,12 @@
             // Prepare headlines list
             headlines = articles.map(article => ({ id: article.id, text: article.correctHeadline }));
 
-            console.log('Fetched articles:', articles);
-            console.log('Fetched headlines:', headlines);
         } else {
             console.error('Failed to fetch articles:', response.statusText);
         }
     });
 
-    function handleDrop({ items }, article) {
-        console.log("handleDrop called", items);
-
+    function handleDrop({ items }: { items: { id: number; text: string }[] }, article: Article) {
         const droppedHeadline = items[0]; // Get first dropped item
 
         if (droppedHeadline) {
@@ -54,8 +50,6 @@
             // Reset correctness state
             article.isCorrect = null;
             resultMessage = "";
-
-            console.log("Updated article:", article);
         }
     }
     

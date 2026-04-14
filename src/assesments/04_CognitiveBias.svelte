@@ -137,6 +137,8 @@
 
 	let state: 'start' | 'reactions' | 'definition' | 'examples' | 'end' = 'start';
 	let message_correct = '';
+	let loading = true;
+	let fetchError = '';
 	let message_bad = '';
 
 	// New state variables for evaluation
@@ -160,6 +162,7 @@
 	onMount(async () => {
 		try {
 			const response = await fetch(PUBLIC_VITE_API_ROOT + get_req);
+			if (!response.ok) throw new Error(`Server vrátil ${response.status}`);
 			const data = await response.json();
 			let biases: AssignmentCognitiveBias[] = Array.isArray(data) ? data : [data];
 
@@ -167,17 +170,18 @@
 				if (typeof item.definition === 'string') {
 					try {
 						item.definition = JSON.parse(item.definition);
-					} catch (e) {
-						console.error('Parsing definition failed for bias ID', item.id, e);
+					} catch {
+						// definition stays as-is if JSON.parse fails
 					}
 				}
 			});
 			bias.set(biases);
-			// after bias.set(biases);
 			definitions.set(shuffle(biases.map((item) => item.definition)));
 			examples.set(shuffle(biases.map((item) => item.example)));
-		} catch (error) {
-			console.error('Failed to fetch cognitive biases:', error);
+		} catch {
+			fetchError = 'Nepodařilo se načíst obsah. Zkuste stránku obnovit.';
+		} finally {
+			loading = false;
 		}
 	});
 
@@ -237,6 +241,11 @@
 </script>
 
 <div class="assessment-section" in:fly={{ x: 300, duration: 400 }} out:fly={{ x: -300, duration: 400 }}>
+	{#if loading}
+		<p class="status-message">Načítání...</p>
+	{:else if fetchError}
+		<p class="status-message error" role="alert">{fetchError}</p>
+	{:else}
 	<h2>Kognitivní zkreslení</h2>
 
 	{#if message_bad}
@@ -318,7 +327,7 @@
 								: 'wrong-answer'
 							: ''}"
 						on:change={(e) => {
-							userAnswers.update((a) => ({ ...a, [bia.id]: e.target.value }));
+							userAnswers.update((a) => ({ ...a, [bia.id]: (e.target as HTMLSelectElement).value }));
 						}}
 					>
 						<option value="">-- Vyberte definici --</option>
@@ -364,6 +373,7 @@
 			</div>
 		{/if}
 	{/if}
+	{/if}
 </div>
 
 {#if state == 'end'}
@@ -388,6 +398,17 @@
 {/if}
 
 <style>
+	.status-message {
+		text-align: center;
+		padding: 2rem;
+		font-size: 1rem;
+		color: #666;
+	}
+	.status-message.error {
+		color: #c0392b;
+		font-weight: 600;
+	}
+
 	.final-step {
     display: flex;
     flex-direction: column;

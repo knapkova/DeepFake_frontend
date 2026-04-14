@@ -50,7 +50,6 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
 	default: async ({ request }: { request: Request }) => {
 		const form = await superValidate(request, zod(registerScheme));
-		console.log(form);
 		if (!form.valid) {
 			return fail(400, { form });
 		}
@@ -67,7 +66,6 @@ export const actions: Actions = {
 				} catch (e) {
 					errorData.message = await response.text();
 				}
-				console.log('Error response:', errorData);
 				if (errorData.message === "Username is already in use.") {
 					form.errors.username = [errorData.message];
 				} else if (errorData.message === "Email is already in use.") {
@@ -85,7 +83,6 @@ export const actions: Actions = {
 				return fail(response.status, { form });
 			}
 
-            console.log('Success response:', response);
             return message(form, "Registrace proběhla úspěšně! :)");
 
         		} 

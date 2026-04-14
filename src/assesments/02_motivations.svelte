@@ -19,6 +19,7 @@
 
 	let answersChecked = false;
 	let error_message = '';
+	let loading = true;
 
 	const text_id = 32;
 	const get_text =
@@ -36,6 +37,7 @@
 				method: 'GET',
 				headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
 			});
+			if (!response.ok) throw new Error(`Server vrátil ${response.status}`);
 			const data = await response.json();
 			if (Array.isArray(data) ? data.length > 0 : data) {
 				const record = Array.isArray(data) ? data[0] : data;
@@ -43,8 +45,10 @@
 				comments.set(record.manipulativeComments);
 				selectedMotivations = Array(record.manipulativeComments.length).fill('');
 			}
-		} catch (error) {
-			console.error('Error fetching text:', error);
+		} catch {
+			error_message = 'Nepodařilo se načíst obsah. Zkuste stránku obnovit.';
+		} finally {
+			loading = false;
 		}
 	}
 
@@ -83,10 +87,8 @@
 
 
 	function toggleSwitch(i: number) {
-		console.log('toggleSwitch', i);
 		if (!selectedSwitches[i] && selectedCount >= 2) return;
 		selectedSwitches[i] = !selectedSwitches[i];
-		console.log('selectedSwitches', selectedSwitches);
 	}
 
 	onMount(getText);
@@ -119,7 +121,9 @@
 </script>
 
 <div class="container" in:fly={{ x: 300, duration: 400 }} out:fly={{ x: -300, duration: 400 }}>
-	{#if $state === 'start'}
+	{#if loading}
+		<p class="status-message">Načítání...</p>
+	{:else if $state === 'start'}
 		{#if $text}
 			<div class="post-card">
 				<div class="post-header">
@@ -166,7 +170,11 @@
 			{/if}
 
 		{:else}
-			<p>Načítání příspěvku...</p>
+			{#if error_message}
+				<p class="status-message error" role="alert">{error_message}</p>
+			{:else}
+				<p class="status-message">Načítání příspěvku...</p>
+			{/if}
 		{/if}
 	{:else if $state === 'emotions'}
 		<div class="emotion-section">
@@ -286,6 +294,17 @@
 </div>
 
 <style>
+	.status-message {
+		text-align: center;
+		padding: 2rem;
+		font-size: 1rem;
+		color: #666;
+	}
+	.status-message.error {
+		color: #c0392b;
+		font-weight: 600;
+	}
+
 	@keyframes popCorrect {
 		0% {
 			transform: scale(0.8);

@@ -22,7 +22,7 @@ export const load: PageServerLoad = async () => {
     return { form };
 }
 export const actions: Actions = {
-    ddefault: async({request, fetch}) => {
+    default: async({request, fetch}) => {
         const form = await superValidate(request, zod(newSchema), { allowFiles: true });    
         if (!form.valid) {
             return fail(400, { form });

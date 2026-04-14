@@ -46,8 +46,6 @@
 
 	// --- Card-level dndzone: reordering/moving items within a column
 	function handleDndConsiderCards(cid: number | string, e) {
-		console.log('cid:' + typeof cid);
-		console.log(typeof e);
 		// Find the column by its id
 		const colIdx = columnItems.findIndex((c) => c.id === cid);
 		// Update that column’s items (while keeping the other columns unchanged)

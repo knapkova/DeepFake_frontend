@@ -204,9 +204,8 @@
 
   .scroll-container {
     height: 75vh;
-      overflow-y: auto;      /* allow scrolling when content overflows */
-
-  overflow: hidden;              
+      overflow-y: auto;
+  overflow-x: hidden;
   scroll-snap-type: y mandatory; 
   overscroll-behavior: contain;
   padding: 1rem 0;

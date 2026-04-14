@@ -37,7 +37,8 @@ let userAttempts: number[] = [];
 // Per-image revealed correct answer (fetched after attempts exhausted)
 // Flag that becomes true when all items are finished (correct or revealed)
 let allFinished = false;
-
+let loading = true;
+let fetchError = '';
 
 	const api_get_pictures = '/api/Admin/AssignmentGoogleLens/GetPhotosByCategory/'
 	const api_check_answers = '/api/Admin/AssignmentGoogleLens/CheckCorrectAnswer'
@@ -49,7 +50,6 @@ let allFinished = false;
 		let url = `${PUBLIC_VITE_API_ROOT}${api_check_answers}?photoId=${photoId}&userAnswer=${encodeURIComponent(
 			userAnswer
 		)}`;
-		console.log('Asserting answer with URL:', url);
 		try {
 			const response = await fetch(url, {
 				method: 'POST',
@@ -162,15 +162,20 @@ let allFinished = false;
 	}
 
 	onMount(async () => {
-		const response = await fetch(`${PUBLIC_VITE_API_ROOT}${api_get_pictures}${category_id}`);
-		const data = await response.json();
-		imageItems.set(data);
-		userAnswers = data.map(() => '');
-		userFeedback = data.map(() => '');
-		userLoading = data.map(() => false);
-		userAttempts = data.map(() => 0);
-
-		console.log('Fetched image items:', data);
+		try {
+			const response = await fetch(`${PUBLIC_VITE_API_ROOT}${api_get_pictures}${category_id}`);
+			if (!response.ok) throw new Error(`Server vrátil ${response.status}`);
+			const data = await response.json();
+			imageItems.set(data);
+			userAnswers = data.map(() => '');
+			userFeedback = data.map(() => '');
+			userLoading = data.map(() => false);
+			userAttempts = data.map(() => 0);
+		} catch (e) {
+			fetchError = 'Nepodařilo se načíst obrázky. Zkuste stránku obnovit.';
+		} finally {
+			loading = false;
+		}
 	});
 
 	function startGame() {
@@ -188,7 +193,11 @@ let allFinished = false;
 </script>
 
 <div class="container">
-	{#if state === 'start'}
+	{#if loading}
+		<p class="status-message">Načítání...</p>
+	{:else if fetchError}
+		<p class="status-message error" role="alert">{fetchError}</p>
+	{:else if state === 'start'}
 		{#if lensIntroComplete}
 			<div class="start-layout">
 				<h2 class="start-heading">🚀 Připrav se!</h2>
@@ -383,6 +392,17 @@ let allFinished = false;
 		max-width: 100%;
 		border-radius: 12px;
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	}
+
+	.status-message {
+		text-align: center;
+		padding: 2rem;
+		font-size: 1rem;
+		color: #666;
+	}
+	.status-message.error {
+		color: #c0392b;
+		font-weight: 600;
 	}
 
 	.container {

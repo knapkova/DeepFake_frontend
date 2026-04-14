@@ -24,12 +24,10 @@ const newQuestionWithAnswersSchema = z.object({
       // Validace odeslaného payloadu podle našeho schématu
       const form = await superValidate(request, zod(newQuestionWithAnswersSchema));
       if (!form.valid) {
-        console.log('Form validation failed:', form);
         return fail(400, { form });
       }
-  
+
       try {
-        console.log('Form data:', form.data);
         // Odeslání kompletního payloadu na endpoint, který vytvoří otázku i odpovědi v jedné operaci
         const response = await fetch(`${PUBLIC_VITE_API_ROOT}${api_post}`, {
           method: 'POST',

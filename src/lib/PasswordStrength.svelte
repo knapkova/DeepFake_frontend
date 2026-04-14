@@ -31,7 +31,6 @@
 </div>
 {#if strength.id >= 3}
     <p>Silné heslo!</p>
-    {console.log(strength.id)}
 {:else}
     <p>Zvolte silnější heslo</p>
     <ul>
