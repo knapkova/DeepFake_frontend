@@ -3,8 +3,13 @@
 	import '../global.css';
 	import { onMount } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
+	import { dev } from '$app/environment';
+	import { injectAnalytics } from '@vercel/analytics/sveltekit';
 	import Sidebar from '$components/Sidebar.svelte';
 	import { isAuthenticated, user } from '../stores/auth';
+
+	// Vercel Web Analytics (page views). Development mode only logs to the console.
+	injectAnalytics({ mode: dev ? 'development' : 'production' });
 
 	export let data;
 
