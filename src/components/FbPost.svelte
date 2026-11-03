@@ -1,33 +1,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
 	import { writable } from 'svelte/store';
 	import type { AssignmentIntroductionArticle } from '$types/interfaces';
-
+	import { getIntroArticle } from '$lib/db/introArticles';
 
 	const article_id = 6;
 	let article = writable<AssignmentIntroductionArticle[]>([]);
-	const get_req =
-		'/api/Admin/AssignmentIntroductionArticle/GetAssignmentIntroductionArticlesById/' + article_id;
 
-	onMount(() => {
-		fetchArticle().then((data) => {
-			article.set(data);
-		});
+	onMount(async () => {
+		article.set([await getIntroArticle(article_id)]);
 	});
-
-	async function fetchArticle() {
-		const response = await fetch(PUBLIC_VITE_API_ROOT + get_req, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				Accept: 'application/json'
-			}
-		});
-		const data = await response.json();
-		const fetchedArticle: AssignmentIntroductionArticle[] = Array.isArray(data) ? data : [data];
-		return fetchedArticle;
-	}
 </script>
 
 <div class="fb-post">

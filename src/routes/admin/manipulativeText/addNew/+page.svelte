@@ -7,7 +7,7 @@
     import { onMount } from 'svelte';
 
     import '../../../../styles/form.css'
-    import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+    import { getCategories } from '$lib/db/categories';
 
 
     // `data` comes from the server load function
@@ -23,11 +23,7 @@
     let categories = writable<Category[]>([]);
   
     onMount(async () => {
-        const request_get = '/api/Admin/Categories/GetCategories';
-
-        const response = await fetch(PUBLIC_VITE_API_ROOT + request_get); 
-        const data = await response.json();
-        categories.set(data);
+        categories.set(await getCategories());
     });
 
     let manipulativeParts = writable<ManipulativePart[]>([]);

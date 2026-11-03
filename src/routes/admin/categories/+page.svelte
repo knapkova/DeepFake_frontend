@@ -3,26 +3,17 @@
     import { writable } from 'svelte/store';
     import '../../../styles/admin.css';
     import type { Category } from '$types/interfaces';
-    import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+    import * as db from '$lib/db/categories';
 
     let updateMessage: string = '';
     let fetchError: string = '';
     let loading = true;
 
-    const request_get = '/api/Admin/Categories/GetCategories';
-    const request_update = '/api/Admin/Categories/Update';
-    const request_delete = '/api/Admin/Categories/Delete';
-
     let categories = writable<Category[]>([]);
 
     onMount(async () => {
         try {
-            const response = await fetch(PUBLIC_VITE_API_ROOT + request_get, {
-                credentials: 'include'
-            });
-            if (!response.ok) throw new Error(`Server vrátil ${response.status}`);
-            const data = await response.json();
-            categories.set(data);
+            categories.set(await db.getCategories());
         } catch {
             fetchError = 'Nepodařilo se načíst kategorie. Zkuste stránku obnovit.';
         } finally {
@@ -31,26 +22,11 @@
     });
 
     async function updateCategory(category: Category, imageFile: File | null) {
-        const formData = new FormData();
-        formData.append('id', category.id.toString());
-        formData.append('name', category.name);
-        formData.append('description', category.description);
-        formData.append('duration', category.duration.toString());
-        formData.append('visible', category.visible.toString());
-        formData.append('imgSrc', category.imgSrc);
-        if (imageFile) {
-            formData.append('image', imageFile);
-        }
-
-        const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_update}`, {
-            method: 'POST',
-            credentials: 'include',
-            body: formData
-        });
-
-        if (response.ok) {
+        try {
+            await db.updateCategory(category, imageFile);
             updateMessage = `Kategorie ${category.id} úspěšně upravena!`;
-        } else {
+        } catch (e) {
+            console.error(e);
             updateMessage = `Nepodařilo se upravit kategorii ${category.id}.`;
         }
     }
@@ -58,14 +34,12 @@
     async function deleteCategory(id: number) {
         if (!confirm('Opravdu chcete smazat tuto kategorii?')) return;
 
-        const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_delete}/${id}`, {
-            method: 'DELETE',
-            credentials: 'include'
-        });
-        if (response.ok) {
+        try {
+            await db.deleteCategory(id);
             categories.update(cats => cats.filter(cat => cat.id !== id));
             updateMessage = `Kategorie ${id} smazána.`;
-        } else {
+        } catch (e) {
+            console.error(e);
             updateMessage = `Nepodařilo se smazat kategorii ${id}.`;
         }
     }

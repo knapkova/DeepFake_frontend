@@ -5,22 +5,15 @@
 <nav class="menu-options">
     Mainpage
     <a href="/">Úvodní fotografie</a>
-    <a href="admin/categories">Kategorie</a>
-    <a href="admin/endQuiz">Úkol - kvíz</a>
-    <a href="admin/findPictureSource">Úkol - Najdi zdroj k obrázku</a>
-    <a href="admin/manipulativeText">Úkol - Manipulační text</a>
-    <a href="admin/introductionArticle">Úkol - Úvodní článek</a>
-    <a href="admin/cognitiveBias">Úkol - Konfirmační zkreslení</a>
+    <a href="/admin/categories">Kategorie</a>
+    <a href="/admin/endQuiz">Úkol - kvíz</a>
+    <a href="/admin/googleLens">Úkol - Google Lens (najdi zdroj obrázku)</a>
+    <a href="/admin/manipulativeText">Úkol - Manipulační text</a>
+    <a href="/admin/introductionArticle">Úkol - Úvodní článek</a>
+    <a href="/admin/cognitiveBias">Úkol - Konfirmační zkreslení</a>
 </nav>
 
-<nav class="menu-options">
-    hry
-    <a href="/games/match_headline">match headline</a>
-</nav>
-
-<nav class="menu-options">
-    <a href="/admin/users">Uživatelé</a>
-</nav>
+<p>Účty administrátorů a zpětnou vazbu od hráčů spravujte v Supabase dashboardu.</p>
 
 <style>
 .menu-options {

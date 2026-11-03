@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { writable, get } from 'svelte/store';
-    import type { QuestionEndQuiz, answersEndQuiz } from '$types/interfaces';
-    import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+    import type { QuestionEndQuiz } from '$types/interfaces';
+    import { getQuizQuestionsByCategory } from '$lib/db/quiz';
     export let onLevelComplete: () => void = () => {};
 
   function completeLevel() {
@@ -10,7 +10,6 @@
   }
   
     let category_id = 11;
-    const api_get_by_category = "/api/AssignmentQuiz/GetQuestionsByCategoryId/";
   
     let questions = writable<QuestionEndQuiz[]>([]);
     let selectedAnswers = writable<number[]>([]);
@@ -20,16 +19,8 @@
     let progress = writable(0);
   
     onMount(async () => {
-      const response = await fetch(PUBLIC_VITE_API_ROOT + api_get_by_category + category_id);
-      const data = await response.json();
-  
-      // If the API returns a single object, wrap it in an array
-      const questionsData: QuestionEndQuiz[] = Array.isArray(data) ? data : [data];
-  
-      // Parse JSON answers for each question
-      questionsData.forEach((item: QuestionEndQuiz) => {
-        item.answer = JSON.parse(item.answer as unknown as string) as answersEndQuiz[];
-      });
+      // answers come back already parsed (jsonb)
+      const questionsData = await getQuizQuestionsByCategory(category_id);
       questions.set(questionsData);
   
       // Initialize selectedAnswers to -1 for each question

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
 	import { writable, get } from 'svelte/store';
-	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+	import { getLensPhotosByCategory, checkLensAnswer } from '$lib/db/lens';
 	import LensExplanationPopup from '$components/LensExplanation_popup.svelte';
 	import LensPrequel from '$components/LensPrequel.svelte';
 	import SortableList from '$components/sortable_list_lens.svelte';
@@ -40,37 +40,12 @@ let allFinished = false;
 let loading = true;
 let fetchError = '';
 
-	const api_get_pictures = '/api/Admin/AssignmentGoogleLens/GetPhotosByCategory/'
-	const api_check_answers = '/api/Admin/AssignmentGoogleLens/CheckCorrectAnswer'
-
-
 	let imageItems = writable<AssignmentFindPictureSource[]>([]);
 
 	async function assertAnswer(photoId: number, userAnswer: string) {
-		let url = `${PUBLIC_VITE_API_ROOT}${api_check_answers}?photoId=${photoId}&userAnswer=${encodeURIComponent(
-			userAnswer
-		)}`;
 		try {
-			const response = await fetch(url, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
-
-			// Backend contract:
-			// - returns 200 OK with message for correct answer
-			// - returns 404 NotFound for incorrect answer
-			if (response.ok) {
-				// correct
-				return { ok: true, isCorrect: true };
-			} else if (response.status === 404) {
-				// incorrect answer
-				return { ok: true, isCorrect: false };
-			} else {
-				console.warn('Server returned unexpected status', response.status);
-				return { ok: false, isCorrect: false };
-			}
+			const isCorrect = await checkLensAnswer(photoId, userAnswer);
+			return { ok: true, isCorrect };
 		} catch (error) {
 			console.error('Error while asserting answer', error);
 			return { ok: false, isCorrect: false };
@@ -163,9 +138,7 @@ let fetchError = '';
 
 	onMount(async () => {
 		try {
-			const response = await fetch(`${PUBLIC_VITE_API_ROOT}${api_get_pictures}${category_id}`);
-			if (!response.ok) throw new Error(`Server vrátil ${response.status}`);
-			const data = await response.json();
+			const data = await getLensPhotosByCategory(category_id);
 			imageItems.set(data);
 			userAnswers = data.map(() => '');
 			userFeedback = data.map(() => '');

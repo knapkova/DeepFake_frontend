@@ -4,7 +4,7 @@
 	import { writable } from 'svelte/store';
 	import ToggleSwitch from '$lib/toggle_switch.svelte';
 	import type { ManipulativeTextComments, AssignmentManipulativeText } from '$types/interfaces';
-	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+	import { getManipulativeText } from '$lib/db/manipulativeText';
 	import FbPost from '$components/FbPost.svelte';
 
 	export let onLevelComplete: () => void = () => {};
@@ -22,8 +22,6 @@
 	let loading = true;
 
 	const text_id = 32;
-	const get_text =
-		'/api/Admin/AssignmentManipulativeText/GetAssignmentManipulativeTextsById/' + text_id;
 
 	let comments = writable<ManipulativeTextComments[]>([]);
 	let text = writable<AssignmentManipulativeText | null>(null);
@@ -33,18 +31,10 @@
 
 	async function getText() {
 		try {
-			const response = await fetch(PUBLIC_VITE_API_ROOT + get_text, {
-				method: 'GET',
-				headers: { 'Content-Type': 'application/json', Accept: 'application/json' }
-			});
-			if (!response.ok) throw new Error(`Server vrátil ${response.status}`);
-			const data = await response.json();
-			if (Array.isArray(data) ? data.length > 0 : data) {
-				const record = Array.isArray(data) ? data[0] : data;
-				text.set(record as AssignmentManipulativeText);
-				comments.set(record.manipulativeComments);
-				selectedMotivations = Array(record.manipulativeComments.length).fill('');
-			}
+			const record = await getManipulativeText(text_id);
+			text.set(record);
+			comments.set(record.manipulativeComments);
+			selectedMotivations = Array(record.manipulativeComments.length).fill('');
 		} catch {
 			error_message = 'Nepodařilo se načíst obsah. Zkuste stránku obnovit.';
 		} finally {

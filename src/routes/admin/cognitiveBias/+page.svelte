@@ -3,50 +3,35 @@
     import { writable } from 'svelte/store';
     import type { Category, AssignmentCognitiveBias } from '$types/interfaces';
     import '../../../styles/admin.css';
-    import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+    import { getCategories } from '$lib/db/categories';
+    import * as db from '$lib/db/cognitiveBias';
 
     function navigate() {
         window.location.href = "/admin/cognitiveBias/addNew";
     }
 
     let updateMessage: string = '';
-    const request_get = "/api/Admin/AssignmentCognitiveBias/GetAssignmentCognitiveBiases";
-    const request_get_categories = '/api/Admin/Categories/GetCategories';
-    const request_delete = "/api/Admin/AssignmentCognitiveBias/Delete";
-    const request_update = "/api/Admin/AssignmentCognitiveBias/Update";
 
     let categories = writable<Category[]>([]);
     let cognitiveBiases = writable<AssignmentCognitiveBias[]>([]);
+
     // Track loading state per cognitive bias (keyed by its id)
     let loadingUpdate: Record<number, boolean> = {};
     let loadingDelete: Record<number, boolean> = {};
 
     onMount(async () => {
-        let response_cat = await fetch(PUBLIC_VITE_API_ROOT + request_get_categories);
-        let data_cat = await response_cat.json();
-        categories.set(data_cat);
-
-        const response = await fetch(PUBLIC_VITE_API_ROOT + request_get);
-        const data = await response.json();
-        cognitiveBiases.set(data);
+        categories.set(await getCategories());
+        cognitiveBiases.set(await db.getCognitiveBiases());
     });
 
     async function updateCognitive(cognitiveBias: AssignmentCognitiveBias) {
         loadingUpdate[cognitiveBias.id] = true;
-        const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_update}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify(cognitiveBias)
-        });
-
-        if (response.ok) {
+        try {
+            await db.updateCognitiveBias(cognitiveBias);
             updateMessage = `Úkol ${cognitiveBias.id} úspěšně upraven!`;
-        } else {
+        } catch (e) {
             updateMessage = `Nepodařilo se upravit: ${cognitiveBias.id}.`;
-            console.error('Update failed', response);
+            console.error('Update failed', e);
         }
         loadingUpdate[cognitiveBias.id] = false;
     }
@@ -54,16 +39,13 @@
     async function deleteCognitive(id: number) {
         if (!confirm('Opravdu chcete smazat toto kognitivní zkreslení?')) return;
         loadingDelete[id] = true;
-        const response = await fetch(`${PUBLIC_VITE_API_ROOT}${request_delete}/${id}`, {
-            method: 'DELETE',
-            credentials: 'include'
-        });
-        if (response.ok) {
+        try {
+            await db.deleteCognitiveBias(id);
             cognitiveBiases.update(biases => biases.filter(b => b.id !== id));
             updateMessage = `Úkol ${id} úspěšně smazán.`;
-        } else {
+        } catch (e) {
             updateMessage = `Nepodařilo se smazat úkol: ${id}.`;
-            console.error('Failed to delete cognitive bias', response);
+            console.error('Failed to delete cognitive bias', e);
         }
         loadingDelete[id] = false;
     }

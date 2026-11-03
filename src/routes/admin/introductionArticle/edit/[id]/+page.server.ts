@@ -2,8 +2,8 @@ import { fail, message } from 'sveltekit-superforms';
 import { z } from 'zod';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
-import { zod } from 'sveltekit-superforms/adapters';
-import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+import { zod4 as zod } from 'sveltekit-superforms/adapters';
+import { getIntroArticle, updateIntroArticle } from '$lib/db/introArticles';
 import { error } from '@sveltejs/kit';
 
 const MAX_FILE_SIZE = 5000000;
@@ -24,24 +24,20 @@ const editSchema = z.object({
         .optional()
 });
 
-export const load: PageServerLoad = async ({ params, fetch }) => {
-    const res = await fetch(
-        `${PUBLIC_VITE_API_ROOT}/api/Admin/AssignmentIntroductionArticle/Get/${params.id}`,
-        { credentials: 'include' }
-    );
-
-    if (!res.ok) {
+export const load: PageServerLoad = async ({ params, locals }) => {
+    let article;
+    try {
+        article = await getIntroArticle(Number(params.id), locals.supabase);
+    } catch {
         throw error(404, 'Článek nebyl nalezen.');
     }
-
-    const article = await res.json();
 
     const form = await superValidate(
         {
             id: article.id,
             Title: article.title ?? '',
             Content: article.content ?? '',
-            Instructions: article.Instructions ?? '',
+            Instructions: article.instructions ?? '',
             ImgSrc: article.imgSrc ?? '',
             visible: article.visible ?? false,
             categoryId: article.categoryId ?? 0
@@ -53,7 +49,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
 };
 
 export const actions: Actions = {
-    default: async ({ request, fetch }) => {
+    default: async ({ request, locals }) => {
         const form = await superValidate(request, zod(editSchema), { allowFiles: true });
 
         if (!form.valid) {
@@ -61,27 +57,18 @@ export const actions: Actions = {
         }
 
         try {
-            const formData = new FormData();
-            formData.append('Id', form.data.id.toString());
-            formData.append('Title', form.data.Title);
-            formData.append('Content', form.data.Content);
-            formData.append('Instructions', form.data.Instructions);
-            formData.append('ImgSrc', form.data.ImgSrc || 'non-empty');
-            formData.append('Visible', form.data.visible.toString());
-            formData.append('CategoryId', form.data.categoryId.toString());
-            if (form.data.Image) {
-                formData.append('Image', form.data.Image);
-            }
-
-            const response = await fetch(
-                `${PUBLIC_VITE_API_ROOT}/api/Admin/AssignmentIntroductionArticle/Update`,
-                { method: 'POST', body: formData, credentials: 'include' }
+            await updateIntroArticle(
+                locals.supabase,
+                form.data.id,
+                {
+                    title: form.data.Title,
+                    content: form.data.Content,
+                    instructions: form.data.Instructions,
+                    visible: form.data.visible,
+                    categoryId: form.data.categoryId
+                },
+                form.data.Image || null
             );
-
-            if (!response.ok) {
-                return fail(500, { form, message: 'Nepodařilo se uložit změny.' });
-            }
-
             return message(form, 'Změny byly uloženy.');
         } catch (e) {
             console.error(e);

@@ -1,17 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Category } from '$types/interfaces';
-	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+	import { getActiveCategories } from '$lib/db/categories';
 	import { writable } from 'svelte/store';
 
-	const request_get = '/api/Admin/Categories/GetActiveCategories';
 	let categories = writable<Category[]>([]);
 
 	onMount(async () => {
-		const url = PUBLIC_VITE_API_ROOT ? `${PUBLIC_VITE_API_ROOT}${request_get}` : request_get;
-		const response = await fetch(url);
-		const data = await response.json();
-		categories.set(data);
+		categories.set(await getActiveCategories());
 	});
 
 	function navigate(dest: string) {

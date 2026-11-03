@@ -3,10 +3,9 @@
 	import StarRating from '$lib/star-rating.svelte';
 	import { onMount } from 'svelte';
 	import type { Feedback } from '$types/interfaces';
-	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+	import { createFeedback } from '$lib/db/feedback';
 	export let showNewsletter: boolean;
 
-	const post_feedback_api = '/api/Admin/Feedback/Create';
  let currentFeedback: Feedback = {
     typeOfUser: '',
     name: '',
@@ -26,16 +25,11 @@
 	});
 
   async function sendFeedback() {
-    currentFeedback.date = new Date();
-    const res = await fetch(
-      `${PUBLIC_VITE_API_ROOT}${post_feedback_api}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(currentFeedback)
-      }
-    );
-    if (!res.ok) console.error('Feedback error:', await res.text());
+    try {
+      await createFeedback(currentFeedback);
+    } catch (e) {
+      console.error('Feedback error:', e);
+    }
   }
 
 	// Multistep form state

@@ -1,21 +1,38 @@
-import type { HandleFetch } from '@sveltejs/kit';
-import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+import { createServerClient } from '@supabase/ssr';
+import type { Handle } from '@sveltejs/kit';
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
 
-export const handleFetch: HandleFetch = async ({ event, request, fetch }) => {
-    if (request.url.startsWith(PUBLIC_VITE_API_ROOT)) {
-    // Get the plain cookie header (e.g., "a=1; jwt=TOKEN; b=2")
-    const cookieHeader = event.request.headers.get('cookie');
-    if (cookieHeader) {
-      // Extract the jwt value from the cookie header.
-      const jwtMatch = cookieHeader.match(/jwt=([^;]+)/);
-      if (jwtMatch && jwtMatch[1]) {
-        const jwt = jwtMatch[1];
-        if (!jwt) {
-          return fetch(request);
-        }
-        request.headers.set('Authorization', `Bearer ${jwt}`);
-      }
-    }
-  }
-  return fetch(request);
-}; 
+export const handle: Handle = async ({ event, resolve }) => {
+	event.locals.supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
+		cookies: {
+			getAll: () => event.cookies.getAll(),
+			setAll: (cookiesToSet) => {
+				cookiesToSet.forEach(({ name, value, options }) => {
+					event.cookies.set(name, value, { ...options, path: '/' });
+				});
+			}
+		}
+	});
+
+	// getSession() alone trusts the cookie; getUser() verifies it with Supabase Auth.
+	event.locals.safeGetSession = async () => {
+		const {
+			data: { session }
+		} = await event.locals.supabase.auth.getSession();
+		if (!session) return { session: null, user: null };
+
+		const {
+			data: { user },
+			error
+		} = await event.locals.supabase.auth.getUser();
+		if (error) return { session: null, user: null };
+
+		return { session, user };
+	};
+
+	return resolve(event, {
+		filterSerializedResponseHeaders(name) {
+			return name === 'content-range' || name === 'x-supabase-api-version';
+		}
+	});
+};

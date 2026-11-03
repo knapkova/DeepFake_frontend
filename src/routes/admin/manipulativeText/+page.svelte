@@ -2,11 +2,8 @@
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
     import type { AssignmentManipulativeText, ManipulativePart } from '$types/interfaces';
-    import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+    import * as db from '$lib/db/manipulativeText';
     import '../../../styles/admin_tables.css';
-
-    const api_get = "/api/Admin/AssignmentManipulativeText/GetAssignmentManipulativeTexts";
-    const api_delete = "/api/Admin/AssignmentManipulativeText/Delete";
 
     let updateMessage: string = '';
     let fetchError: string = '';
@@ -16,15 +13,7 @@
 
     onMount(async () => {
         try {
-            const response = await fetch(PUBLIC_VITE_API_ROOT + api_get, {
-                credentials: 'include'
-            });
-            if (!response.ok) throw new Error(`Server vrátil ${response.status}`);
-            const data = await response.json();
-            data.forEach((item: AssignmentManipulativeText) => {
-                item.manipulativeParts = JSON.parse(item.manipulativeParts as unknown as string);
-            });
-            manipulativeTexts.set(data);
+            manipulativeTexts.set(await db.getManipulativeTexts());
         } catch {
             fetchError = 'Nepodařilo se načíst texty. Zkuste stránku obnovit.';
         } finally {
@@ -34,15 +23,12 @@
 
     async function deleteText(id: number) {
         if (!confirm('Opravdu chcete smazat tento text?')) return;
-
-        const response = await fetch(`${PUBLIC_VITE_API_ROOT}${api_delete}/${id}`, {
-            method: 'DELETE',
-            credentials: 'include'
-        });
-        if (response.ok) {
+        try {
+            await db.deleteManipulativeText(id);
             manipulativeTexts.update(texts => texts.filter(text => text.id !== id));
             updateMessage = `Text ${id} smazán.`;
-        } else {
+        } catch (e) {
+            console.error(e);
             updateMessage = `Nepodařilo se smazat text ${id}.`;
         }
     }

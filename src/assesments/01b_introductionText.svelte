@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+	import { getIntroArticle } from '$lib/db/introArticles';
 	import { writable } from 'svelte/store';
 	import type { AssignmentIntroductionArticle, StartQuiz } from '$types/interfaces';
-	//import DndConditional from '$lib/dnd_conditional_fr_now.svelte';
 	import DndConditional from '$lib/dnd_intro.svelte';
 
 	import { fly, fade, scale } from 'svelte/transition';
@@ -32,8 +31,6 @@
 	const article_id = 6;
 	let article = writable<AssignmentIntroductionArticle[]>([]);
 	let quiz = writable<StartQuiz[]>([]);
-	const get_req =
-		'/api/Admin/AssignmentIntroductionArticle/GetAssignmentIntroductionArticlesById/' + article_id;
 
 	onMount(() => {
 		fetchArticle().then((data) => {
@@ -57,17 +54,8 @@
 		requestAnimationFrame(tick);
 	});
 
-	async function fetchArticle() {
-		const response = await fetch(PUBLIC_VITE_API_ROOT + get_req, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				Accept: 'application/json'
-			}
-		});
-		const data = await response.json();
-		const fetchedArticle: AssignmentIntroductionArticle[] = Array.isArray(data) ? data : [data];
-		return fetchedArticle;
+	async function fetchArticle(): Promise<AssignmentIntroductionArticle[]> {
+		return [await getIntroArticle(article_id)];
 	}
 </script>
 

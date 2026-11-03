@@ -2,8 +2,8 @@
 	import fbLogo from '../assets/fb_logo.png';
 	import igLogo from '../assets/ig_logo.png';
 	import zvolsiinfoSidebar from '../assets/zvolsiingo_redLogo.png';
-	import { goto } from '$app/navigation';
-	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { supabase } from '$lib/supabase';
 	import { fade } from 'svelte/transition';
 
 	import { isAuthenticated, user } from '$stores/auth';
@@ -24,17 +24,11 @@
 	}
 	async function logout() {
 		isAuthenticated.set(false);
-		try {
-			await fetch(`${PUBLIC_VITE_API_ROOT}/api/Security/Account/Logout`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				credentials: 'include'
-			});
-		} catch (error) {
-			console.error('Logout error:', error);
-		}
+		const { error } = await supabase.auth.signOut();
+		if (error) console.error('Logout error:', error);
 
 		user.set({ userName: '', email: '', role: '' });
+		await invalidateAll();
 		goto('/account/login');
 	}
 </script>

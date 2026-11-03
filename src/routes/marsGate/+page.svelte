@@ -5,7 +5,7 @@
 	import { tick } from 'svelte';
 	import IntroductionText from '$assesments/01b_introductionText.svelte';
 	import { onMount } from 'svelte';
-	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+	import { getCategoryById } from '$lib/db/categories';
 	import FunFactPopUp from '$components/FunFact.svelte';
 	import NewsletterPopUp from '$components/Newsletter_Popup.svelte';
 	import type { FunFact, FeedbackMeme, Category } from '$types/interfaces.ts';
@@ -25,8 +25,6 @@
 	let level_name = writable('');
 
 	const categoryId = 11;
-
-	const api_get_category = '/api/Admin/Categories/GetCategoryById/' + categoryId;
 
 	let category = writable<Category | null>(null);
 
@@ -56,14 +54,7 @@
 	//let progress = writable(100);
 
 	async function getCategory() {
-		const response = await fetch(PUBLIC_VITE_API_ROOT + api_get_category, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				Accept: 'application/json'
-			}
-		});
-		const data = await response.json();
+		const data = await getCategoryById(categoryId);
 		category.set(data);
 		feedbackMemes.set(data.feedbackMemes);
 		funFactStore.set(data.funFacts);

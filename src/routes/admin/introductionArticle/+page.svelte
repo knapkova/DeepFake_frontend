@@ -2,11 +2,8 @@
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
     import type { AssignmentIntroductionArticle } from '$types/interfaces';
-    import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+    import * as db from '$lib/db/introArticles';
     import '../../../styles/admin_tables.css';
-
-    const api_get = "/api/Admin/AssignmentIntroductionArticle/GetAssignmentIntroductionArticles";
-    const api_delete = "/api/Admin/AssignmentIntroductionArticle/Delete";
 
     let updateMessage: string = '';
     let fetchError: string = '';
@@ -16,12 +13,7 @@
 
     onMount(async () => {
         try {
-            const response = await fetch(PUBLIC_VITE_API_ROOT + api_get, {
-                credentials: 'include'
-            });
-            if (!response.ok) throw new Error(`Server vrátil ${response.status}`);
-            const data = await response.json();
-            introductionArticles.set(data);
+            introductionArticles.set(await db.getIntroArticles());
         } catch {
             fetchError = 'Nepodařilo se načíst články. Zkuste stránku obnovit.';
         } finally {
@@ -31,15 +23,12 @@
 
     async function deleteText(id: number) {
         if (!confirm('Opravdu chcete smazat tento článek?')) return;
-
-        const response = await fetch(`${PUBLIC_VITE_API_ROOT}${api_delete}/${id}`, {
-            method: 'DELETE',
-            credentials: 'include'
-        });
-        if (response.ok) {
+        try {
+            await db.deleteIntroArticle(id);
             introductionArticles.update(texts => texts.filter(text => text.id !== id));
             updateMessage = `Článek ${id} smazán.`;
-        } else {
+        } catch (e) {
+            console.error(e);
             updateMessage = `Nepodařilo se smazat článek ${id}.`;
         }
     }

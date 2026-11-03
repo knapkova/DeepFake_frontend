@@ -6,20 +6,17 @@
     import { onMount } from 'svelte';
     import type { Category } from '$types/interfaces';
     import '../../../../styles/form.css'
-    import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+    import { getCategories } from '$lib/db/categories';
 
 
     export let data: PageData;
     const { form, errors, message } = superForm(data.form);
-    const request_get = '/api/Admin/Categories/GetCategories';
 
 
     let categories = writable<Category[]>([]);
   
     onMount(async () => {
-        const response = await fetch(PUBLIC_VITE_API_ROOT + request_get); 
-        const data = await response.json();
-        categories.set(data);
+        categories.set(await getCategories());
     });
 
 </script>   

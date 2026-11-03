@@ -1,17 +1,6 @@
 {
-  "version": 2,
-  "framework": "sveltekit",
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/[...path].js"
-    }
-  ],
+  "regions": ["fra1"],
   "github": {
     "silent": true
-  },
-  "regions": ["fra1"],
-  "security": {
-    "forceHTTP": false
   }
 }

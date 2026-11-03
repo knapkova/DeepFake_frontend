@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+	import { getCognitiveBiasesByCategory } from '$lib/db/cognitiveBias';
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import type { ManipulativeTextComments, ManipulativeMotivation } from '$types/interfaces';
@@ -126,8 +126,6 @@
 	}
 
 	const category_id = 11;
-	const get_req =
-		'/api/Admin/AssignmentCognitiveBias/GetAssignmentsCognitiveBiasByCategoryId/' + category_id;
 
 	let bias = writable<AssignmentCognitiveBias[]>([]);
 	const definitions = writable<string[]>([]);
@@ -161,10 +159,7 @@
 
 	onMount(async () => {
 		try {
-			const response = await fetch(PUBLIC_VITE_API_ROOT + get_req);
-			if (!response.ok) throw new Error(`Server vrátil ${response.status}`);
-			const data = await response.json();
-			let biases: AssignmentCognitiveBias[] = Array.isArray(data) ? data : [data];
+			let biases = await getCognitiveBiasesByCategory(category_id);
 
 			biases.forEach((item: AssignmentCognitiveBias) => {
 				if (typeof item.definition === 'string') {

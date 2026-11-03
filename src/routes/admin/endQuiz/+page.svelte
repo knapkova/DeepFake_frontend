@@ -1,12 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
-    import type { QuestionEndQuiz, answersEndQuiz } from '$types/interfaces';
+    import type { QuestionEndQuiz } from '$types/interfaces';
     import '../../../styles/admin.css';
-    import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
-
-    const api_get = "/api/AssignmentQuiz/GetQuestions";
-    const api_delete = "/api/AssignmentQuiz/DeleteQuestion/";
+    import * as db from '$lib/db/quiz';
 
     let updateMessage: string = '';
     let fetchError: string = '';
@@ -16,15 +13,7 @@
 
     onMount(async () => {
         try {
-            const response = await fetch(PUBLIC_VITE_API_ROOT + api_get, {
-                credentials: 'include'
-            });
-            if (!response.ok) throw new Error(`Server vrátil ${response.status}`);
-            const data = await response.json();
-            data.forEach((item: QuestionEndQuiz) => {
-                item.answer = JSON.parse(item.answer as unknown as string) as answersEndQuiz[];
-            });
-            questions.set(data);
+            questions.set(await db.getQuizQuestions());
         } catch {
             fetchError = 'Nepodařilo se načíst otázky. Zkuste stránku obnovit.';
         } finally {
@@ -34,15 +23,12 @@
 
     async function deleteQuestion(id: number) {
         if (!confirm('Opravdu chcete smazat tuto otázku?')) return;
-
-        const response = await fetch(`${PUBLIC_VITE_API_ROOT}${api_delete}${id}`, {
-            method: 'DELETE',
-            credentials: 'include'
-        });
-        if (response.ok) {
+        try {
+            await db.deleteQuizQuestion(id);
             questions.update(qs => qs.filter(q => q.id !== id));
             updateMessage = `Otázka ${id} smazána.`;
-        } else {
+        } catch (e) {
+            console.error(e);
             updateMessage = `Nepodařilo se smazat otázku ${id}.`;
         }
     }

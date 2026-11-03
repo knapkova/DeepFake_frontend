@@ -2,13 +2,12 @@ import { fail, message } from 'sveltekit-superforms';
 import { z } from 'zod';
 import { superValidate } from 'sveltekit-superforms/server';
 import type { Actions, PageServerLoad } from './$types';
-import { zod } from 'sveltekit-superforms/adapters';
-import { PUBLIC_VITE_API_ROOT } from '$env/static/public';
+import { zod4 as zod } from 'sveltekit-superforms/adapters';
+import { createCategory } from '$lib/db/categories';
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-const api_post = "/api/Admin/Categories/Create"
 
 const newCategorySchema = z.object({
     Name: z.string().min(5, { message: 'min. 5 znaků' }),
@@ -29,38 +28,27 @@ export const load: PageServerLoad = async () => {
     return { form };
 }
 export const actions: Actions = {
-    default: async ({ request, fetch }) => {
-        const form = await superValidate(request, zod(newCategorySchema), { allowFiles: true });    
+    default: async ({ request, locals }) => {
+        const form = await superValidate(request, zod(newCategorySchema), { allowFiles: true });
         if (!form.valid) {
             return fail(400, { form });
         }
+
         try {
-            const formData = new FormData();
-            formData.append('Name', form.data.Name);
-            formData.append('Description', form.data.Description);
-            formData.append('Duration', String(form.data.Duration));
-            formData.append('ImgSrc', 'non-empty');
-            formData.append('Visible', String(form.data.Visible));
-            formData.append('Image', form.data.Image);
-
-            const response = await fetch(`${PUBLIC_VITE_API_ROOT}${api_post}`, {
-                method: 'POST',
-                body: formData
-            });
-            if(!response.ok) {
-                const errorText = await response.text();
-                console.error('API error:', errorText);
-                return fail(500, { message: 'Failed to save data.' });
-            }
-            else {
-                return message(form, 'Data byly uloženy! :)');
-            
-            }
-        }
-
-        catch (error) {
+            await createCategory(
+                locals.supabase,
+                {
+                    name: form.data.Name,
+                    description: form.data.Description,
+                    duration: form.data.Duration,
+                    visible: form.data.Visible
+                },
+                form.data.Image
+            );
+            return message(form, 'Data byly uloženy! :)');
+        } catch (error) {
             console.error('Error:', error);
-            return fail(500, { message: 'Failed to save data.' });
+            return fail(500, { form, message: 'Failed to save data.' });
         }
     }
 }
