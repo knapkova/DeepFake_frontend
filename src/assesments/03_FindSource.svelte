@@ -145,7 +145,7 @@ let fetchError = '';
 			userLoading = data.map(() => false);
 			userAttempts = data.map(() => 0);
 		} catch (e) {
-			fetchError = 'Nepodařilo se načíst obrázky. Zkuste stránku obnovit.';
+			fetchError = 'Nepodařilo se načíst obrázky. Zkus stránku obnovit.';
 		} finally {
 			loading = false;
 		}
@@ -177,12 +177,12 @@ let fetchError = '';
 				<div class="left-card">
 					<p class="intro-text">
 						Ivan přidává další materiály – několik fotografií, které podle něj dokazují, že přistání
-						na Marsu už proběhlo. … Dokážeš o nich zjistit víc?
+						na Marsu už proběhlo. Dokážeš o nich zjistit víc?
 					</p>
 					<button on:click={startGame}>Začít hru</button>
 				</div>
 				<div class="right-images">
-					<img src="/mars_fake2.webp" alt="Mars falešný 2" />
+					<img src="/mars_fake2.webp" alt="Jedna z Ivanových fotek „z Marsu“" />
 				</div>
 			</div>
 		{:else}
@@ -203,13 +203,18 @@ let fetchError = '';
 					{#each $imageItems as img, i}
 						<div class="card-wrapper" data-index={i}>
 							<div class="image-box">
-								<img class="card" src={img.imgSrc} alt="Obrázek" loading="lazy" />
-								<button class="dl-btn" aria-label="Stáhnout" title="Stáhnout">
-									<a href={img.imgSrc} target="_blank" rel="noopener noreferrer">📥</a>
-								</button>
+								<img class="card" src={img.imgSrc} alt="Ivanova fotka {i + 1}" loading="lazy" />
+								<a
+									class="dl-btn"
+									href={img.imgSrc}
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Otevřít obrázek {i + 1} pro stažení"
+									title="Stáhnout">📥</a
+								>
 							</div>
 							<div class="answer-section">
-								<Input class="my-2 w-full" placeholder="napiš popis obrázku..." bind:value={userAnswers[i]} />
+								<Input class="my-2 w-full" placeholder="Odkud fotka pochází?" bind:value={userAnswers[i]} />
 								<button on:click={() => checkAnswer(img.id, userAnswers[i], i)} class="check-btn" disabled={userLoading[i] || userFeedback[i] === 'correct' || userFeedback[i] === 'revealed'}>
 									{#if userLoading[i]}Kontroluji…{:else}Zkontrolovat{/if}
 								</button>
@@ -236,7 +241,7 @@ let fetchError = '';
 						</div>
 					{/if}
 	{:else if state === 'done'}
-		<h3>Zvládl jsi rozpoznat všechny nástrahy?</h3>
+		<h3>Zvládl/a jsi rozpoznat všechny nástrahy?</h3>
 		<button on:click={() => (state = 'sorting')}> Jdeme dál </button>
 	{:else if state == 'sorting'}
 		<SortableList onComplete={handleSortFinish} />
@@ -475,7 +480,7 @@ let fetchError = '';
 		line-height: 1;
 	}
 	.dl-btn:hover { background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
-	.dl-btn a { text-decoration: none; }
+	.dl-btn { text-decoration: none; }
 
 	.answer-section { align-items: stretch; }
 	.answer-section .check-btn {

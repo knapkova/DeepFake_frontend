@@ -13,7 +13,7 @@
 		{ id: '1', content: 'Fotku stáhni nebo vyscreenshotuj' },
 		{ id: '2', content: 'Ve vyhledávací liště na Googlu klikni na ikonku foťáku' },
 		{ id: '3', content: 'Vlož svůj soubor do Google Lens' },
-		{ id: '4', content: 'Klikni na zobrazit přesné shody' },
+		{ id: '4', content: 'Klikni na „Zobrazit přesné shody“' },
 		{ id: '5', content: 'Z nabídnutého seznamu vyber stránku, na které se fotka objevila' }
 	];
 
@@ -52,12 +52,12 @@
 		// zavoláme callback v rodiči
 	}
 
-  const fullMessage = `Fotky, které Ivan sdílí, nejsou z Marsu. Jsou z Jordánska, kde se natáčel film Marťan. Můžete si to sami ověřit, tady je, jak na to:
-Fotku stáhni nebo vyscreenshotuj
-Ve vyhledávací liště na Googlu klikni na ikonku foťáku
-Vlož svůj soubor do Google Lens
-Klikni na zobrazit přesné shody
-Z nabídnutého seznamu vyber stránku, na které se fotka objevila`;
+  const fullMessage = `Fotky, které Ivan sdílí, nejsou z Marsu. Jsou z Jordánska, kde se natáčel film Marťan. Každý si to může ověřit sám, tady je návod:
+1. Fotku stáhni nebo si udělej snímek obrazovky.
+2. Ve vyhledávací liště na Googlu klikni na ikonku foťáku.
+3. Vlož svůj soubor do Google Lens.
+4. Klikni na „Zobrazit přesné shody“.
+5. Z nabídnutého seznamu vyber stránku, na které se fotka objevila.`;
 
   let typedMessage = '';
   let typingStarted = false;
@@ -81,7 +81,7 @@ Z nabídnutého seznamu vyber stránku, na které se fotka objevila`;
 {#if status === 'start'}
 <div class="wrapper" in:fly={{ x: 300, duration: 400 }} out:fly={{ x: -300, duration: 400 }}>
 
-<h4>Zpětné vyhledávání obrázků přes vyhledávač máš za sebou. Nebylo to tak těžké, co? Škoda, že tohle neví každý, pak by si mohl informace snadno ověřit… Tak co, kdybychom je to naučili!</h4>
+<h4>Zpětné vyhledávání obrázků přes vyhledávač máš za sebou. Nebylo to tak těžké, co? Škoda, že tohle neví každý, pak by si mohl informace snadno ověřit… Tak co kdybychom je to naučili?</h4>
       <p>Sestav správné pořadí jednotlivých kroků pro vyhledání obrázku přes Google Lens:
       </p>
 	<ul

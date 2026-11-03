@@ -2,6 +2,7 @@
 	import '../app.css';
 	import '../global.css';
 	import { onMount } from 'svelte';
+	import { afterNavigate } from '$app/navigation';
 	import Sidebar from '$components/Sidebar.svelte';
 	import { isAuthenticated, user } from '../stores/auth';
 
@@ -17,18 +18,32 @@
 	let sidebarOpen = false;
 
 	function toggleSidebar() {
-    sidebarOpen = !sidebarOpen;
-  }
+		sidebarOpen = !sidebarOpen;
+	}
+
+	// On phones the menu is a drawer over the page: close it once the user has navigated.
+	afterNavigate(() => {
+		if (window.matchMedia('(max-width: 768px)').matches) sidebarOpen = false;
+	});
 </script>
 
 <div class="mobile-header">
-  <button class="hamburger" on:click={toggleSidebar}>☰</button>
+	<button
+		class="hamburger"
+		on:click={toggleSidebar}
+		aria-label={sidebarOpen ? 'Zavřít menu' : 'Otevřít menu'}
+		aria-expanded={sidebarOpen}>☰</button
+	>
 </div>
 
+{#if sidebarOpen}
+	<button class="mobile-backdrop" aria-label="Zavřít menu" on:click={() => (sidebarOpen = false)}
+	></button>
+{/if}
 
 <div class="layout">
-	<aside class="sidebar-container {sidebarOpen ? '' : 'closed'}">
-		<Sidebar/>
+	<aside class="sidebar-container">
+		<Sidebar bind:sidebarOpen />
 	</aside>
 
 	<main class="content">
@@ -40,9 +55,10 @@
 </div>
 
 <style>
-	  .mobile-header {
-    display: none;
-  }
+	.mobile-header,
+	.mobile-backdrop {
+		display: none;
+	}
 	.layout {
 		display: flex;
 		height: 100vh;
@@ -102,16 +118,18 @@
     }
 
 
-   .sidebar-container {
+    /* The Sidebar positions itself as a fixed drawer on phones; the wrapper takes no space. */
+    .sidebar-container {
+      display: contents;
+    }
+
+    .mobile-backdrop {
+      display: block;
       position: fixed;
-      top: 0;
-      right: 0;
-      left: auto;
-      width: 150px;       /* same width you had on desktop */
-      height: auto;
-      background: var(--background-color);
-      padding: 10px;
-      z-index: 1000;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.3);
+      border: none;
+      z-index: 999;
     }
 
    .content {

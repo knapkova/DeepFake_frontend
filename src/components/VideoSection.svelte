@@ -10,22 +10,30 @@
 		categories.set(await getActiveCategories());
 	});
 
-	function navigate(dest: string) {
-		window.location.href = dest;
-	}
+	// Categories that have a playable game. Others are shown as "coming soon".
+	const GAME_ROUTES: Record<number, string> = {
+		11: '/marsGate'
+	};
 </script>
 
 <div class="scrollable-container">
 	{#each $categories as video (video.id)}
+		{@const route = GAME_ROUTES[video.id]}
 		<div class="selection">
-			<button onclick={() => navigate('/marsGate')} class="play-btn">▷</button>
+			{#if route}
+				<a href={route} class="play-btn" aria-label="Hrát {video.name}" data-sveltekit-reload>▷</a>
+			{:else}
+				<span class="play-btn soon">Již brzy</span>
+			{/if}
 			<div class="video-card" style="background-image: url({video.imgSrc});">
 				<div class="video-info">
 					<div class="video-text">
 						<h2>{video.name}</h2>
 						<p>{video.description}</p>
 					</div>
-					<h3>{video.duration}:00 min</h3> <!-- -->
+					{#if route}
+						<h3>{video.duration} min</h3>
+					{/if}
 				</div>
 			</div>
 		</div>
@@ -63,6 +71,18 @@
 		width: 72px;
 		height: 72px;
 		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-decoration: none;
+		flex-shrink: 0;
+	}
+
+	.play-btn.soon {
+		background-color: #6b7280;
+		font-size: 0.7rem;
+		text-align: center;
+		cursor: default;
 	}
 
 	/* The thumbnail container */

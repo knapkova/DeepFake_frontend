@@ -180,13 +180,13 @@
 				úspěch.
 			</p>
 			<p class="message">
-				Možná sis ale všiml/a, že progress bar přesto neklesl na nulu. Jak to? Protože cesta za 100%
+				Možná sis ale všiml/a, že ukazatel chaosu přesto neklesl na nulu. Jak to? Protože cesta za 100%
 				mediálně gramotnou společností nemá cíl. Některé lidi nepřesvědčíme a někteří se mění
 				pomalu. S oběma skupinami je třeba počítat, když se do takové mise pouštíme. Přestože hra
 				končí, ty už víš, jak na to, a můžeš chránit společnost před informačním chaosem i v reálném
 				světě.
 			</p>
-			<p class="note">Důležité je, se o to alespoň pokusit</p>
+			<p class="note">Důležité je alespoň se o to pokusit.</p>
 		</div>
 
 		<button onclick={handleRestart}> Vrátit se na hlavní obrazovku </button>

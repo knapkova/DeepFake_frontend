@@ -15,13 +15,13 @@
 		`Ověřovat si každou informaci na internetu je nereálné, na to nikdo nemá čas. Někdy si
      stačí uvědomit, kdo a proč danou zprávu sdílel, a jakou se ve mně snaží vyvolat reakci.`,
 		`Takovému přístupu se říká <b>kritické myšlení.</b>`,
-		`To funguje jako taková kontrolka, která vysílá signál, že je něco podezřelé a možná by
+		`To funguje jako taková kontrolka, která vysílá signál, že je něco podezřelého a možná by
      stálo za to zpomalit a informaci prozkoumat podrobněji.`
 	];
 	const endMessages = [
 		`Super otázka!`,
 		`Ověřovat úplně všechno nejde, ale můžeš se naučit pár triků:`,
-		`Dávej pozor, když ti něco hned sedne do tvého přesvědčení – to je právě chvíle na ověření. Občas si zkus přečíst i názor, se kterým nesouhlasíš. A hlavně – neboj se si přiznat, že něco nevíš a potřebuješ další informace.`,
+		`Dávej pozor, když ti něco hned sedne do tvého přesvědčení – to je právě chvíle na ověření. Občas si zkus přečíst i názor, se kterým nesouhlasíš. A hlavně – neboj se přiznat si, že něco nevíš a potřebuješ další informace.`,
 		`Každý krok se počítá a uvědomění, že náš mozek není bezchybný, je skvělý začátek.`
 	];
 	let endVisibleCount = 0;
@@ -84,7 +84,7 @@
 				<div class="chat-message-from">
 					<p>
 						Čau, podle tvého návodu jsem si zkusil ten obrázek najít a fakt máš pravdu. Byl to záběr
-						z filmu. A já tomu doteď věřil 🙏. Jak tě vůbec vůbec napadlo si ten příspěvek ověřit?
+						z filmu. A já tomu doteď věřil 🙏. Jak tě vůbec napadlo si ten příspěvek ověřit?
 						Mně to na první pohled dávalo docela smysl.
 					</p>
 				</div>
@@ -105,7 +105,7 @@
 				{#each endMessages.slice(0, endVisibleCount) as msg}
 					<div class="task-message-to" on:click={showNextEnd}>
 						<p>{@html msg}</p>
-						<img src="/anonym.png" alt="Vaše avatar" class="message-avatar" />
+						<img src="/anonym.png" alt="Tvůj avatar" class="message-avatar" />
 					</div>
 				{/each}
 

@@ -73,10 +73,11 @@
 
 	let selected = writable<number[]>([]);
 	let resultMessage = '';
+	let wrongExplanations: string[] = [];
 	const options = [
 		{
 			id: 0,
-			comment: 'Protože věří tomu, co si pamatují, i když to nemusí pravda.',
+			comment: 'Protože věří tomu, co si pamatují, i když to nemusí být pravda.',
 			explanation: ''
 		},
 		{
@@ -114,15 +115,21 @@
 		selected.subscribe((val) => (sel = val))();
 		// Ensure there are exactly two selections.
 		if (sel.length !== 2) {
-			resultMessage = 'Prosím vyberte přesně dvě možnosti.';
+			resultMessage = 'Vyber prosím přesně dvě možnosti.';
+			wrongExplanations = [];
 			return;
 		}
 		sel.sort();
 		const correctSorted = [...correctAnswers].sort();
-		resultMessage =
-			JSON.stringify(sel) === JSON.stringify(correctSorted)
-				? 'Správně!'
-				: 'Nesprávně. Zkuste to znovu.';
+		const isCorrect = JSON.stringify(sel) === JSON.stringify(correctSorted);
+		resultMessage = isCorrect ? 'Správně!' : 'Nesprávně. Zkus to znovu.';
+		// explain the wrong picks that have an explanation written for them
+		wrongExplanations = isCorrect
+			? []
+			: sel
+					.filter((i) => !correctAnswers.includes(i))
+					.map((i) => options[i].explanation)
+					.filter(Boolean);
 	}
 
 	const category_id = 11;
@@ -174,7 +181,7 @@
 			definitions.set(shuffle(biases.map((item) => item.definition)));
 			examples.set(shuffle(biases.map((item) => item.example)));
 		} catch {
-			fetchError = 'Nepodařilo se načíst obsah. Zkuste stránku obnovit.';
+			fetchError = 'Nepodařilo se načíst obsah. Zkus stránku obnovit.';
 		} finally {
 			loading = false;
 		}
@@ -197,7 +204,7 @@
 		evaluated = true;
 		if (correct === biasesArray.length) {
 			message_bad = '';
-			message_correct = 'Všechny odpovědi jsou správné! Jsi připraven pokračovat dále?';
+			message_correct = 'Všechny odpovědi jsou správné! Jsi připraven/a pokračovat dál?';
 		} else {
 			message_correct = '';
 			message_bad = 'Některé odpovědi jsou špatné. Zkus to znovu.';
@@ -289,6 +296,9 @@
 						class="feedback {resultMessage === 'Správně!' ? 'feedback-success' : 'feedback-error'}"
 					>
 						<p class="result">{resultMessage}</p>
+						{#each wrongExplanations as explanation}
+							<p class="explanation">{explanation}</p>
+						{/each}
 						{#if resultMessage === 'Správně!'}
 							<button class="next-btn" on:click={() => (state = 'definition')}>Začít</button>
 						{/if}
@@ -300,21 +310,22 @@
 
 	{#if state == 'definition'}
 		<p>
-			Ano! Ivan využil známé prostředí filmu (film Marťan je populární, spousta lidí jej viděla) a
-			spoléhal na to, že lidé si tyto vizuály snadno spojí s realitou, což se také stalo. Navíc,
+			Ano! Ivan využil známé prostředí filmu (film <i>Marťan</i> je populární, spousta lidí ho viděla)
+			a spoléhal na to, že lidé si tyto vizuály snadno spojí s realitou, což se také stalo. Navíc
 			jakmile jednou uvěřili, že na Marsu opravdu někdo je, vše další (např. fotky) jim připadalo
-			důvěryhodnější. <br>
-			🚀 Těmto myšlenkovým zkratkám se říká <b>KONFIRMAČNÍ ZKRESLENÍ</b>. To znamená, že
-			vyhledáváme a pamatujeme si hlavně to, co podporuje naše přesvědčení.
+			důvěryhodnější. <br />
+			🚀 Takovým myšlenkovým zkratkám se říká <b>KOGNITIVNÍ ZKRESLENÍ</b>. To, co se stalo tady, je
+			<b>konfirmační zkreslení</b>: vyhledáváme a pamatujeme si hlavně to, co podporuje naše
+			přesvědčení. Kognitivních zkreslení je ale víc.
 		</p>
-		<p>Teď je řada na tobě. 🫵 Přiřaď definici k typu konfirmačního zkreslení a reálné situaci.</p>
+		<p>Teď je řada na tobě. 🫵 Přiřaď ke každému kognitivnímu zkreslení správnou definici.</p>
 		{#each $bias as bia}
 			<div class="card">
 				<div class="card-header">
 					{bia.cognitiveBias}
 				</div>
 				<div class="card-body">
-					<p><strong>Vyberte správnou definici:</strong></p>
+					<p><strong>Vyber správnou definici:</strong></p>
 					<select
 						class="form-select {evaluated
 							? evaluation[bia.id] === 'correct'
@@ -325,7 +336,7 @@
 							userAnswers.update((a) => ({ ...a, [bia.id]: (e.target as HTMLSelectElement).value }));
 						}}
 					>
-						<option value="">-- Vyberte definici --</option>
+						<option value="">-- Vyber definici --</option>
 						{#each $definitions as option}
 							<option value={option}>{option}</option>
 						{/each}
@@ -351,7 +362,7 @@
 
 	{#if state == 'examples'}
 		<p>
-			Přiřaď jednotlivá konfirmační zkreslení k situacím z příběhu. Najetím myší na žárovku 💡 se ti
+			Přiřaď jednotlivá kognitivní zkreslení k situacím z příběhu. Najetím myší na žárovku 💡 se ti
 			zobrazí nápověda.
 		</p>
 		<Board {columnItems} onAllCorrect={handleAllCorrect} />
@@ -385,7 +396,7 @@
 		{#if chatDone}
 			<div class="final-step">
 				<p>Skvěle! Teď už víš, jak se bránit manipulaci.</p>
-				<p>Jsi připraven své znalosti otestovat?</p>
+				<p>Jsi připraven/a si své znalosti otestovat?</p>
 				<button on:click={completeLevel}>Začít test</button>
 			</div>
 		{/if}
@@ -455,6 +466,11 @@
 	}
 	.feedback-error .result {
 		color: #dc3545;
+	}
+	.feedback .explanation {
+		margin: 0.5rem 0 0;
+		font-size: 0.95rem;
+		color: #4a5568;
 	}
 	@keyframes fadeInUp {
 		from {

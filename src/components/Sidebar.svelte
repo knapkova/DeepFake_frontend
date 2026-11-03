@@ -36,7 +36,12 @@
 <div class="sidebar {sidebarOpen ? 'open' : ''}">
 	<div class="logo"><img src={zvolsiinfoSidebar} alt="Zvolsiinfo" /></div>
 	<div class="menu">
-		<button class="hamburger" on:click={toggleSidebar} aria-label="Toggle sidebar">☰</button>
+		<button
+			class="hamburger"
+			on:click={toggleSidebar}
+			aria-label={sidebarOpen ? 'Zavřít menu' : 'Otevřít menu'}
+			aria-expanded={sidebarOpen}>☰</button
+		>
 		{#if sidebarOpen}
 			{#if auth}
 				<header class="sidebar-header" in:fade={{ delay: 300, duration: 400 }}>
@@ -47,7 +52,9 @@
 							<span class="user-role">{$user.role}</span>
 						</div>
 					</div>
-					<button class="logout-btn" on:click={logout}>🚪↩️</button>
+					<button class="logout-btn" on:click={logout} aria-label="Odhlásit se" title="Odhlásit se"
+						>🚪↩️</button
+					>
 				</header>
 			{:else}
 				<!--
@@ -233,11 +240,6 @@
 		background: #d5d3d3cb;
 	}
 	@media screen and (max-width: 768px) {
-		/* Hide the wrapper so only this fixed sidebar shows */
-		.sidebar-container {
-			display: none !important;
-		}
-
 		/* Base sidebar: off-canvas to the right when closed */
 		.sidebar {
 			position: fixed;
@@ -258,15 +260,9 @@
 			transform: translateX(0);
 		}
 
-		/* Always-visible hamburger trigger */
+		/* On phones the layout's top bar has the menu button */
 		button.hamburger {
-			position: fixed;
-			top: 16px;
-			right: 16px;
-			font-size: 24px;
-			background: transparent;
-			border: none;
-			z-index: 1001;
+			display: none;
 		}
 
 		/* Make sure your header & menu have a solid bg */

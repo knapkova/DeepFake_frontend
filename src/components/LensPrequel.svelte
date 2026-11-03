@@ -20,10 +20,10 @@
       {
         question: `Zkusím je teda nějak přesvědčit. Jak je ale nejlépe konfrontovat?`,
         options: [
-          { answer: `Upozornit je, že věří konspiračním teoriím..`, isCorrect: false,
+          { answer: `Upozornit je, že věří konspiračním teoriím.`, isCorrect: false,
             explanation: `Nálepkování většinou nikam nevede, budeš potřebovat lepší argument.` },
           { answer: `Zesměšnit a zpochybnit důvěryhodnost Ivana.`, isCorrect: false,
-            explanation: `Útokem na “šiřitele pravdy” můžeš nechtěně podpořit konspirační teorii o tajném spiknutí.` },
+            explanation: `Útokem na „šiřitele pravdy“ můžeš nechtěně podpořit konspirační teorii o tajném spiknutí.` },
           { answer: `Dokázat, že Ivan prezentuje nepravdivé informace.`, isCorrect: true,
             explanation: `` }
         ]
@@ -33,7 +33,7 @@
         options: [
           { answer: 'Dohledat informace o tajné misi, kterou Ivan zmiňuje.', isCorrect: false,
             explanation: `Vždycky je těžší dokázat, že něco neexistuje, než naopak...` },
-          { answer: 'Ověřit, jestli nejsou vytržené z kontextu.', isCorrect: true,
+          { answer: 'Ověřit, jestli fotky nejsou vytržené z kontextu.', isCorrect: true,
             explanation: `` }
         ]
       },

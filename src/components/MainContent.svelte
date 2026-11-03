@@ -10,7 +10,7 @@
 			<p>
 				interaktivní vzdělávací platformě od Zvol si info, kde se učení spojuje se zábavou a
 				kritickým myšlením. V Klamáriu najdete hry, které vám pomohou porozumět světu dezinformací,
-				manipulace a mediálního chaosu
+				manipulace a mediálního chaosu.
 			</p>
 		</div>
 		<div class="funfact">

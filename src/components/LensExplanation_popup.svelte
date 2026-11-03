@@ -87,7 +87,7 @@
         <!-- Step 5: Exact Matches -->
         <div class="p-6 space-y-4 text-center">
           <p class="text-gray-700">
-            Okamžitě se ti zobrazí hromada výsledků. Pokud chceš mít jistotu, klikni na "Zobrazit přesné shody". Tato možnost se ti obvykle ukáže pod první fotkou.
+            Okamžitě se ti zobrazí hromada výsledků. Pokud chceš mít jistotu, klikni na „Zobrazit přesné shody“. Tato možnost se ti obvykle ukáže pod první fotkou.
           </p>
           <img src="lens_tutorial/lens_4.png" alt="Zobrazení přesných shod" class="mx-auto w-full max-w-xs rounded-lg object-contain" />
           <div class="flex justify-between">
@@ -113,7 +113,7 @@
         <!-- Step 7: Final message -->
         <div class="p-6 space-y-4 text-center">
           <p class="text-gray-700">
-            Teď už víš, jak na to! Zkus to s fotkami, které sdílel Ivan, a zjisti, odkud si je Ivan "půjčil".
+            Teď už víš, jak na to! Zkus to s fotkami, které sdílel Ivan, a zjisti, odkud si je Ivan „půjčil“.
           </p>
           <div class="flex justify-end">
             <Button on:click={closeModal} class="mt-4">Zavřít</Button>

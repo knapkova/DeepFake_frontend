@@ -65,16 +65,14 @@
 
 		{#if $article.length > 0}
 			<div class="fb-header">
-				<img class="fb-avatar" src="/profile_pic_ivan.png" alt="User avatar" />
+				<img class="fb-avatar" src="/profile_pic_ivan.png" alt="Profilová fotka autora" />
 				<div class="fb-user-info">
 					<span class="fb-name">{$article[0].title}</span>
 					<span class="fb-time">před minutou</span>
 				</div>
 				<div class="fb-options">⋯</div>
 			</div>
-			<div class="fb-content">
-				{@html $article[0].content}
-			</div>
+			<div class="fb-content">{@html $article[0].content.trim()}</div>
 			{#if $article[0].imgSrc}
 				<img src={$article[0].imgSrc} alt="" class="fb-media" />
 			{/if}
@@ -108,9 +106,9 @@
 	<div class="emotions-layout" in:fly={{ x: 300, duration: 400 }} out:fly={{ x: -300 }}>
 		<div class="emoji-box">
 			<p class="emoji-box-title">
-				Příspěvek strhl vlnu emocí. Jaké emoce myslíš, že takový příspěvek v lidech nejspíš vyvolá? <b
+				Příspěvek strhl vlnu emocí. Jaké emoce podle tebe takový příspěvek v lidech nejspíš vyvolá? <b
 					>Kliknutím na kolo vyber 3 nejsilnější emoce.</b
-				> Můžeš si také udělat screen ze své odpovědi.
+				> Můžeš si také udělat snímek obrazovky se svou odpovědí.
 			</p>
 
 			<Wheel bind:wheelSelected />
@@ -256,8 +254,10 @@
 
 	.fb-content {
 		margin: 8px 12px;
-		font-size: 0.7rem;
+		font-size: 0.9rem;
 		line-height: 1.4;
+		/* the post is stored as plain text with line breaks */
+		white-space: pre-line;
 	}
 	.fb-media {
 		width: 100%;

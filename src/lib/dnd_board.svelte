@@ -40,7 +40,7 @@
 		});
 
 		if (allCorrect) {
-			onAllCorrect('Všechny odpovědi jsou správné! Jsi připraven pokračovat dále?');
+			onAllCorrect('Všechny odpovědi jsou správné! Jsi připraven/a pokračovat dál?');
 		}
 	}
 

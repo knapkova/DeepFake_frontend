@@ -29,7 +29,8 @@
 	$: localNickname = $nickname;
 
 	function saveNickname() {
-		nickname.set('@' + localNickname);
+		// Strip any '@' the player (or a previous save) already added, so it never doubles.
+		nickname.set('@' + localNickname.trim().replace(/^@+/, ''));
 		showInput = false; // Hide the input after saving.
 		// Any additional actions can be performed here.
 	}
@@ -120,12 +121,12 @@
 					<div class="intro-part-row">
 						<input
 							type="text"
-							placeholder="Zadej jméno"
+							placeholder="Zadej přezdívku"
 							class="nickname-input"
 							bind:value={localNickname}
 							required
 						/>
-						<button type="submit" onclick={saveNickname} disabled={!localNickname}> Uložit </button>
+						<button type="submit" onclick={saveNickname} disabled={!localNickname.trim().replace(/^@+/, '')}> Uložit </button>
 					</div>
 				</div>
 			{/if}

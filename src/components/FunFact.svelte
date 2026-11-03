@@ -8,7 +8,7 @@ export let text = "text";
 
 {#if showFunFact}
   <div class="fixed inset-0 z-40 bg-black/50 dark:bg-black/50">
-    <Modal title="Vědel jsi, že..." backdropClass=true bind:open={showFunFact} size="lg" color="blue" autoclose class="w-full">
+    <Modal title="Věděl/a jsi, že…" backdropClass=true bind:open={showFunFact} size="lg" color="blue" autoclose class="w-full">
       <p class="fun-fact">{header}</p>
       <p class="source">Zdroj: {text}</p>
       <svelte:fragment slot="footer">

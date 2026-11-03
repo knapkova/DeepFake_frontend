@@ -36,7 +36,7 @@
 			comments.set(record.manipulativeComments);
 			selectedMotivations = Array(record.manipulativeComments.length).fill('');
 		} catch {
-			error_message = 'Nepodařilo se načíst obsah. Zkuste stránku obnovit.';
+			error_message = 'Nepodařilo se načíst obsah. Zkus stránku obnovit.';
 		} finally {
 			loading = false;
 		}
@@ -63,17 +63,23 @@
   }
 
 
-  function checkMotivations() {
-    error_message = '';
+	// Ivan's motivations: "Mocenský důvod" (3) and "Finanční důvod" (4) in manipulative_motivations.
+	// Checked by id so reordering the motivations in the admin can't change the answer.
+	const CORRECT_MOTIVATION_IDS = [3, 4];
 
-    // only positions 1 and 2 must be true
-    if (selectedSwitches[1] && selectedSwitches[0]) {
-      canProceed = true;
-    } else {
-      canProceed = false;
-      error_message = 'Ne všechny motivace jsou správně – zkuste to prosím znovu.';
-    }
-  }
+	function checkMotivations() {
+		error_message = '';
+		const chosenIds = ($text?.manipulativeMotivations ?? [])
+			.filter((_, i) => selectedSwitches[i])
+			.map((m) => m.id);
+
+		if (CORRECT_MOTIVATION_IDS.every((id) => chosenIds.includes(id))) {
+			canProceed = true;
+		} else {
+			canProceed = false;
+			error_message = 'Ne všechny motivace jsou správně – zkus to znovu.';
+		}
+	}
 
 
 	function toggleSwitch(i: number) {
@@ -150,7 +156,7 @@
 
 			{#if canProceed && error_message == ''}
 				<div class="continue-wrapper">
-					<button on:click={() => state.set('comments')}> Pokračovat 📸 </button>
+					<button on:click={() => state.set('comments')}> Pokračovat </button>
 				</div>
 			{/if}
 			{#if twoSelected && !canProceed }
@@ -243,7 +249,7 @@
 								</div>
 								<div class="motivation-select">
 								<select bind:value={selectedMotivations[i]}>
-									<option value="" disabled selected>-- Vyberte z motivací --</option>
+									<option value="" disabled selected>-- Vyber motivaci --</option>
 									{#each $text?.manipulativeMotivations ?? [] as motivation}
 										<option value={motivation.id}>{motivation.motivation}</option>
 									{/each}

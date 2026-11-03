@@ -15,16 +15,14 @@
 <div class="fb-post">
     {#if $article.length > 0}
         <div class="fb-header">
-            <img class="fb-avatar" src="/path/to/avatar.jpg" alt="User avatar" />
+            <img class="fb-avatar" src="/profile_pic_ivan.png" alt="Profilová fotka autora" />
             <div class="fb-user-info">
                 <span class="fb-name">{$article[0].title}</span>
                 <span class="fb-time">před minutou</span>
             </div>
             <div class="fb-options">⋯</div>
         </div>
-        <div class="fb-content">
-            {@html $article[0].content}
-        </div>
+        <div class="fb-content">{@html $article[0].content.trim()}</div>
         {#if $article[0].imgSrc}
             <img src={$article[0].imgSrc} alt="" class="fb-media" />
         {/if}
@@ -125,6 +123,8 @@
 		margin: 8px 12px;
 		font-size: 14px;
 		line-height: 1.4;
+		/* the post is stored as plain text with line breaks */
+		white-space: pre-line;
 	}
 	.fb-media {
 		width: 100%;

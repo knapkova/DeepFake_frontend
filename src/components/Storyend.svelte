@@ -27,7 +27,7 @@ interface Tip {
 		},
 		{
 			id: 4,
-			text: 'Zastavit se, když cítím silnou emoci – nadechnout se, a chvíli neklikat nebo nesdílet dál.',
+			text: 'Zastavit se, když cítím silnou emoci – nadechnout se a chvíli neklikat nebo nesdílet dál.',
 			correct: true
 		},
 		{
@@ -83,7 +83,7 @@ function allowDrop(e: DragEvent) {
 		success = false;
 	}
 </script>
-	<h3 class="task"> Vyber tipy, které pomáhají rozvíjet kritické myšlení, a přesuň je doleva, do své odpovědi  💬  . Ty, které by mohly být zavádějící nebo škodlivé, odhoď doprava, do koše 🗑️.</h3>
+	<h3 class="task"> Vyber tipy, které pomáhají rozvíjet kritické myšlení, a přesuň je doleva, do své odpovědi 💬. Ty, které by mohly být zavádějící nebo škodlivé, odhoď doprava, do koše 🗑️.</h3>
 
     <div class="available-zone">
     {#each available as tip}
@@ -94,8 +94,8 @@ function allowDrop(e: DragEvent) {
 </div>
 <div class="drag-container">
 
-    <div class="drop-zone" role="region" aria-label="Odpověd Janovi" on:dragover={allowDrop} on:drop={(e) => onDropZone(e, 'reaction')}>
-        <h4>💬 Odpověd Janovi</h4>
+    <div class="drop-zone" role="region" aria-label="Odpověď Janovi" on:dragover={allowDrop} on:drop={(e) => onDropZone(e, 'reaction')}>
+        <h4>💬 Odpověď Janovi</h4>
         <p><i>Co pomáhá</i></p>
 
         {#each reaction as tip}

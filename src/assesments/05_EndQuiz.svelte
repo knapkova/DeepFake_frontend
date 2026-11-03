@@ -16,6 +16,13 @@
     let state: 'quiz'; 
     let quizEvaluated = false; 
     let score = 0;
+
+    // 1 bod, 2–4 body, 0 / 5+ bodů
+    function pointsWord(n: number) {
+      if (n === 1) return 'bod';
+      if (n >= 2 && n <= 4) return 'body';
+      return 'bodů';
+    }
     let progress = writable(0);
   
     onMount(async () => {
@@ -73,7 +80,7 @@
     <div class="quiz-container">
 
       <h2>Závěrečný kvíz</h2>
-      <p>Jste připraveni zopakovat si, co jste se naučili?</p>
+      <p>Jsi připraven/a zopakovat si, co ses naučil/a?</p>
       <!-- Progress bar -->
       <div class="progress-bar">
         <div class="progress" style="width: {$progress}%"></div>
@@ -132,7 +139,7 @@
         <div class="quiz-result">
           <h2>Výsledek</h2>
           <p>
-            Dosáhli jste <strong>{score}</strong> bodů z <strong>{$questions.length}</strong>.
+            Získal/a jsi <strong>{score}</strong> {pointsWord(score)} z <strong>{$questions.length}</strong>.
           </p>
           <button on:click={() =>completeLevel()}>Dokončit </button>
         </div>
